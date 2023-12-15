@@ -1,0 +1,6 @@
+[submodule "alacritty/catppuccin"]
+	path = alacritty/catppuccin
+	url = git@github.com:catppuccin/alacritty.git
+[submodule "tmux/plugins/tpm"]
+	path = tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
