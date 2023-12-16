@@ -36,7 +36,10 @@ lspconfig.tailwindcss.setup {
   capabilities = capabilities,
 }
 
-
+lspconfig.relay_lsp.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
 
 
 

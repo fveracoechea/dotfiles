@@ -7,7 +7,7 @@ return {
     "neovim/nvim-lspconfig",
     config = function ()
       require "plugins.configs.lspconfig"
-      require "custom.confgs.lspconfig"
+      require "custom.configs.lspconfig"
     end,
   },
   {
@@ -15,7 +15,7 @@ return {
     opts = {
       ensure_installed = {
         "lua-language-server",
-        "stylua", 
+        "stylua",
         "eslint-lsp",
         "graphql-language-service-cli",
         "html-lsp",
@@ -47,7 +47,7 @@ return {
         -- text files
         "markdown",
         "make",
-        "yml",
+        -- "yml",
         "dockerfile"
       },
     },
