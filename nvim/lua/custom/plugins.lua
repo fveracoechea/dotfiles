@@ -14,6 +14,8 @@ return {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
+        "lua-language-server",
+        "stylua", 
         "eslint-lsp",
         "graphql-language-service-cli",
         "html-lsp",
@@ -22,6 +24,32 @@ return {
         "typescript-language-server",
         "css-lsp",
       }
-    }
-  }
+   }
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        -- defaults 
+        "vim",
+        "lua",
+        "gitignore",
+        "gitattributes",
+
+        -- web dev 
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "tsx",
+        "json",
+        "graphql",
+        -- text files
+        "markdown",
+        "make",
+        "yml",
+        "dockerfile"
+      },
+    },
+  },
 }
