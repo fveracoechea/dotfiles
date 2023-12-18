@@ -27,7 +27,7 @@ vim.keymap.set({ "n", "v" }, "<leader>cf", function()
   conform.format {
     lsp_fallback = true,
     async = false,
-    timeout_ms = 1000,
+    timeout_ms = 2000,
   }
 end, {
   desc = "Code Format (Normal and Visual)",
