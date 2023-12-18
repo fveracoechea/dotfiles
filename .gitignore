@@ -1,3 +1,4 @@
 .DS_Store
+lazygit/state.yml
 tmux/plugins
 !tmux/plugins/tpm
