@@ -5,3 +5,5 @@ brew-install:
 	brew install --cask font-hack-nerd-font
 	brew install --cask font-jetbrains-mono-nerd-font
 	brew install --cask font-sauce-code-pro-nerd-font
+	brew install jesseduffield/lazygit/lazygit
+	brew install lazygit
