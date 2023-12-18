@@ -5,10 +5,16 @@ return {
   },
   {
     "stevearc/conform.nvim",
-    lazy = true,
-    event = { "BufReadPre", "BufNewFile" },
+    event = "VeryLazy",
     config = function()
       require "custom.configs.formatter"
+    end,
+  },
+  {
+    "mfussenegger/nvim-lint",
+    event = "VeryLazy",
+    config = function()
+      require "custom.configs.linter"
     end,
   },
   {
