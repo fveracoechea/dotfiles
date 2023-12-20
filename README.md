@@ -1,4 +1,4 @@
-# 💻 🚀 Development Environment Config
+# 💻 Development Environment Config
 
 This repository contains my dotfile configuration.
 
