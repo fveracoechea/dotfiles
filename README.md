@@ -23,12 +23,20 @@ It guarantees a consistent and optimized environment tailored to my preferences 
 
 ## Installation
 
+1. Run:
+
 ```zsh
 git clone --recurse-submodules git@github.com:fveracoechea/dotfiles.git ~/.config
 cd ~/config
 make brew-install
 ```
 
-Then open `tmux` and press `prefix` + <kbd>I</kbd> (capital i, as in **I**nstall) to fetch the plugin.
+2. Add the following at the top of your `.zshrc`:
+
+```zsh
+source ~/.config/zsh/oh-my-zsh.conf
+```
+
+3. Then open `tmux` and press `prefix` + <kbd>I</kbd> (capital i, as in **I**nstall) to fetch the plugin.
 
 You're good to go!
