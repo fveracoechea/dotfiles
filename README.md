@@ -15,10 +15,10 @@ It guarantees a consistent and optimized environment tailored to my preferences 
 
 ## Tooling:
 
-- [Alacritty](alacritty.org): A cross-platform, OpenGL terminal emulator.
-- [Oh My Zsh](ohmyz.sh): Community-driven framework for managing your Zsh configuration.
+- [Alacritty](https://alacritty.org): A cross-platform, OpenGL terminal emulator.
+- [Oh My Zsh](https://ohmyz.sh): Community-driven framework for managing your Zsh configuration.
 - [TMUX](https://github.com/tmux/tmux): Terminal Multiplexer.
-- [NvChad](nvchad.com): Blazing fast Neovim config providing solid defaults and a beautiful UI.
+- [NvChad](https://nvchad.com): Blazing fast Neovim config providing solid defaults and a beautiful UI.
 - [lazygit](https://github.com/jesseduffield/lazygit): A simple terminal UI for git commands.
 
 ## Installation
