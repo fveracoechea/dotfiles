@@ -34,7 +34,7 @@ make brew-install
 2. Add the following at the top of your `.zshrc`:
 
 ```zsh
-source ~/.config/zsh/oh-my-zsh.conf
+source ~/.config/zsh/oh-my-zsh.zsh
 ```
 
 3. Then open `tmux` and press `prefix` + <kbd>I</kbd> (capital i, as in **I**nstall) to fetch the plugin.
