@@ -6,7 +6,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 # Path to your oh-my-zsh installation.
 export ZSH="$XDG_CONFIG_HOME/zsh/oh-my-zsh"
 
-# Offer a reminder every few days, if there are updates avaiable
+# Offer a reminder every few days, if there areupdates avaiable
 style ':omz:update' mode reminder
 
 # Set name of the theme to load --- if set to "random", it will
