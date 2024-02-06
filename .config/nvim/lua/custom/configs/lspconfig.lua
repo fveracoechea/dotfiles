@@ -7,11 +7,20 @@ local lspconfig = require "lspconfig"
 lspconfig.denols.setup {
   on_attach = on_attach,
   capabilities = capabilities,
-  root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc", "import_map.json"),
+  root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
 }
 
 lspconfig.tsserver.setup {
-  on_attach = on_attach,
+  on_attach = function(client, bufnr)
+    if lspconfig.util.root_pattern("deno.json", "deno.jsonc")(vim.fn.getcwd()) then
+      if client.name == "tsserver" then
+        client.stop()
+        return
+      end
+    end
+
+    return on_attach(client, bufnr)
+  end,
   capabilities = capabilities,
   single_file_support = false,
   root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "node_modules"),
@@ -20,6 +29,11 @@ lspconfig.tsserver.setup {
       disableSuggestions = true,
     },
   },
+}
+
+lspconfig.tailwindcss.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
 }
 
 lspconfig.html.setup {
@@ -35,15 +49,23 @@ lspconfig.cssls.setup {
 lspconfig.graphql.setup {
   on_attach = on_attach,
   capabilities = capabilities,
-  filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
+  filetypes = {
+    "graphql",
+    "gql",
+    "svelte",
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "javascriptreact",
+  },
 }
 
-lspconfig.tailwindcss.setup {
+lspconfig.relay_lsp.setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
 
-lspconfig.relay_lsp.setup {
+lspconfig.eslint.setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }

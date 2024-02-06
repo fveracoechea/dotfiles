@@ -10,17 +10,10 @@ return {
     lazy = false,
   },
   {
-    "stevearc/conform.nvim",
+    "nvimtools/none-ls.nvim",
     event = "VeryLazy",
-    config = function()
-      require "custom.configs.formatter"
-    end,
-  },
-  {
-    "mfussenegger/nvim-lint",
-    event = "VeryLazy",
-    config = function()
-      require "custom.configs.linter"
+    opts = function()
+      return require "custom.configs.none-ls"
     end,
   },
   {
@@ -42,9 +35,10 @@ return {
         "prettier",
         "tailwindcss-language-server",
         "typescript-language-server",
+        "deno",
         "css-lsp",
-        "black",
-        "isort",
+        -- "black",
+        -- "isort",
       },
     },
   },
