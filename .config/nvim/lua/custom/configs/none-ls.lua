@@ -3,6 +3,7 @@ local null_ls = require "null-ls"
 
 local is_deno = function(utils)
   return utils.root_has_file { "deno.json", "deno.jsonc" }
+    and not utils.root_has_file { ".prettierrc", ".prettierrc.json" }
 end
 
 local sources = {
