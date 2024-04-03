@@ -1,3 +1,4 @@
+-- enable mdx
 ---@type ChadrcConfig
 local M = {}
 

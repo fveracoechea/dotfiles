@@ -81,6 +81,7 @@ return {
         "graphql",
         -- text files
         "markdown",
+        "markdown_inline",
         "make",
         "yaml",
         "dockerfile",
