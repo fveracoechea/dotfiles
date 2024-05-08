@@ -34,12 +34,12 @@ local sources = {
       return is_prettier(utils)
     end,
   },
-  null_ls.builtins.diagnostics.deno_lint.with {
-    condition = is_deno,
-  },
-  null_ls.builtins.formatting.deno_fmt.with {
-    condition = is_deno,
-  },
+  -- null_ls.builtins.diagnostics.deno_lint.with {
+  --   condition = is_deno,
+  -- },
+  -- null_ls.builtins.formatting.deno_fmt.with {
+  --   condition = is_deno,
+  -- },
   null_ls.builtins.formatting.stylua,
 }
 
