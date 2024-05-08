@@ -37,6 +37,7 @@ return {
         "typescript-language-server",
         "deno",
         "css-lsp",
+        "json-lsp",
         -- "black",
         -- "isort",
       },

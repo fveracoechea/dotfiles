@@ -3,13 +3,35 @@ local null_ls = require "null-ls"
 
 local is_deno = function(utils)
   return utils.root_has_file { "deno.json", "deno.jsonc" }
-    and not utils.root_has_file { ".prettierrc", ".prettierrc.json" }
+end
+
+local is_prettier = function(utils)
+  return utils.root_has_file { ".prettierrc", ".prettierrc.json" }
 end
 
 local sources = {
   null_ls.builtins.formatting.prettier.with {
+    filetypes = {
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "vue",
+      "css",
+      "scss",
+      "less",
+      "html",
+      "json",
+      "jsonc",
+      "yaml",
+      "markdown",
+      "markdown.mdx",
+      "mdx",
+      "graphql",
+      "handlebars",
+    },
     condition = function(utils)
-      return not is_deno(utils)
+      return is_prettier(utils)
     end,
   },
   null_ls.builtins.diagnostics.deno_lint.with {
