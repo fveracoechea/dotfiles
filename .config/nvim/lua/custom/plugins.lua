@@ -71,7 +71,6 @@ return {
         "lua",
         "gitignore",
         "gitattributes",
-
         -- web dev
         "html",
         "css",

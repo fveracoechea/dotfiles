@@ -15,6 +15,10 @@ lspconfig.jsonls.setup {
       -- Schemas https://www.schemastore.org
       schemas = {
         {
+          fileMatch = { "deno.json" },
+          url = "https://raw.githubusercontent.com/denoland/deno/main/cli/schemas/config-file.v1.json",
+        },
+        {
           fileMatch = { "package.json" },
           url = "https://json.schemastore.org/package.json",
         },
