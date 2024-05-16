@@ -12,6 +12,9 @@ return {
   {
     "nvimtools/none-ls.nvim",
     event = "VeryLazy",
+    dependencies = {
+      "nvimtools/none-ls-extras.nvim",
+    },
     opts = function()
       return require "custom.configs.none-ls"
     end,
@@ -30,6 +33,7 @@ return {
         "lua-language-server",
         "stylua",
         "eslint-lsp",
+        "eslint_d",
         "graphql-language-service-cli",
         "html-lsp",
         "prettierd",
@@ -38,6 +42,8 @@ return {
         "deno",
         "css-lsp",
         "json-lsp",
+        "codespell",
+        "editorconfig-checker",
         -- "black",
         -- "isort",
       },

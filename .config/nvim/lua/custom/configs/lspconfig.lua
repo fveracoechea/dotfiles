@@ -72,6 +72,7 @@ lspconfig.jsonls.setup {
 }
 
 lspconfig.denols.setup {
+  lint = true,
   on_attach = on_attach,
   capabilities = capabilities,
   root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
@@ -168,7 +169,7 @@ lspconfig.relay_lsp.setup {
   root_dir = lspconfig.util.root_pattern "relay.config.json",
 }
 
-lspconfig.eslint.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
+-- lspconfig.eslint.setup {
+--   on_attach = on_attach,
+--   capabilities = capabilities,
+-- }
