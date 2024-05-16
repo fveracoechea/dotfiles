@@ -1,15 +1,15 @@
-[submodule "alacritty/catppuccin"]
+[submodule ".config/alacritty/catppuccin"]
 	path = .config/alacritty/catppuccin
 	url = git@github.com:catppuccin/alacritty.git
-[submodule "tmux/plugins/tpm"]
+[submodule ".config/tmux/plugins/tpm"]
 	path = .config/tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm
-[submodule "zsh/oh-my-zsh"]
+	url = git@github.com:tmux-plugins/tpm.git
+[submodule ".config/zsh/oh-my-zsh"]
 	path = .config/zsh/oh-my-zsh
 	url = git@github.com:ohmyzsh/ohmyzsh.git
-[submodule "zsh/custom/plugins/zsh-autosuggestions"]
+[submodule ".config/zsh/custom/plugins/zsh-autosuggestions"]
 	path = .config/zsh/custom/plugins/zsh-autosuggestions
 	url = git@github.com:zsh-users/zsh-autosuggestions.git
-[submodule "zsh/custom/plugins/zsh-syntax-highlighting"]
+[submodule ".config/zsh/custom/plugins/zsh-syntax-highlighting"]
 	path = .config/zsh/custom/plugins/zsh-syntax-highlighting
 	url = git@github.com:zsh-users/zsh-syntax-highlighting.git
