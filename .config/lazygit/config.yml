@@ -1,8 +1,4 @@
 customCommands:
-  - key: "f"
-    command: "git difftool -y {{.SelectedLocalCommit.Sha}} -- {{.SelectedCommitFile.Name}}"
-    context: "commitFiles"
-    description: "Compare (difftool) with local copy"
   - key: "<c-r>"
     command: "gh pr create --fill --web"
     context: "global"
