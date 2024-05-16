@@ -32,7 +32,7 @@ return {
         "eslint-lsp",
         "graphql-language-service-cli",
         "html-lsp",
-        "prettier",
+        "prettierd",
         "tailwindcss-language-server",
         "typescript-language-server",
         "deno",
