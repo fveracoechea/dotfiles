@@ -1,5 +1,5 @@
 import = ["/home/fveracoechea/.config/alacritty/catppuccin/catppuccin-mocha.toml"]
-live_config_reload = true
+live_config_reload = false
 
 [colors]
 draw_bold_text_with_bright_colors = false
@@ -41,8 +41,8 @@ opacity = 1.0
 startup_mode = "Maximized"
 
 [window.padding]
-x = 6
-y = 6
+x = 2
+y = 2
 
 [selection]
 save_to_clipboard = true
