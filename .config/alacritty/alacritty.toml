@@ -35,14 +35,14 @@ x = 0
 y = 0
 
 [window]
-decorations = "None"
+decorations = "Full"
 dynamic_title = true
 opacity = 1.0
 startup_mode = "Maximized"
 dynamic_padding = true
 
 [window.padding]
-x = 2
+x = 4
 y = 2
 
 [selection]
