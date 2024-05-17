@@ -17,5 +17,4 @@ set -g @catppuccin_status_connect_separator "no"
 
 
 set -g @clima_unit imperial
-set -g @clima_show_location 0
 set -g @clima_use_nerd_font 1

@@ -108,3 +108,6 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+#
+# Clima tmux 
+export OPEN_WEATHER_API_KEY="cec5661fed25a78feb69fc0ce951be55"
