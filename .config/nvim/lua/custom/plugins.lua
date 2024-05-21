@@ -43,7 +43,7 @@ return {
         "css-lsp",
         "json-lsp",
         "codespell",
-        "editorconfig-checker",
+        -- "editorconfig-checker",
         -- "black",
         -- "isort",
       },
