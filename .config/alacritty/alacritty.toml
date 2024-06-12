@@ -1,5 +1,5 @@
 import = ["~/.config/alacritty/catppuccin/catppuccin-mocha.toml"]
-live_config_reload = false
+live_config_reload = false 
 
 [colors]
 draw_bold_text_with_bright_colors = true 
@@ -35,15 +35,15 @@ x = 0
 y = 0
 
 [window]
-decorations = "Full"
+decorations = "None"
 dynamic_title = true
-opacity = 1.0
+opacity = 0.95
 startup_mode = "Maximized"
 dynamic_padding = true
 
 [window.padding]
-x = 4
-y = 2
+x = 6
+y = 6
 
 [selection]
 save_to_clipboard = true
