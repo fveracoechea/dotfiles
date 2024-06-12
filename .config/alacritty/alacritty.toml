@@ -1,5 +1,5 @@
 import = ["~/.config/alacritty/catppuccin/catppuccin-mocha.toml"]
-live_config_reload = false 
+live_config_reload = true 
 
 [colors]
 draw_bold_text_with_bright_colors = true 
@@ -37,7 +37,7 @@ y = 0
 [window]
 decorations = "None"
 dynamic_title = true
-opacity = 0.95
+opacity = 0.9
 startup_mode = "Maximized"
 dynamic_padding = true
 
