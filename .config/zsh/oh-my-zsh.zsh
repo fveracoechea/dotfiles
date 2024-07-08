@@ -76,7 +76,6 @@ export ZSH_CUSTOM="$XDG_CONFIG_HOME/zsh/custom"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  web-search
   zsh-autosuggestions
   zsh-syntax-highlighting
 )
