@@ -1,4 +1,4 @@
-return {
+local plugins = {
   {
     "barrett-ruth/import-cost.nvim",
     event = "VeryLazy",
@@ -43,7 +43,8 @@ return {
         "css-lsp",
         "json-lsp",
         "codespell",
-        -- "editorconfig-checker",
+        "nginx-language-server",
+        "editorconfig-checker",
         -- "black",
         -- "isort",
       },
@@ -102,3 +103,23 @@ return {
     end,
   },
 }
+
+-- enable mdx
+vim.filetype.add {
+  extension = {
+    mdx = "markdown",
+    nginx = "conf.tmpl",
+  },
+}
+
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+
+parser_config.nginx = {
+  install_info = {
+    url = "https://gitlab.com/joncoole/tree-sitter-nginx",
+    branch = "main",
+    files = { "src/parser.c" },
+  },
+}
+
+return plugins

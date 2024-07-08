@@ -169,6 +169,11 @@ lspconfig.relay_lsp.setup {
   root_dir = lspconfig.util.root_pattern "relay.config.json",
 }
 
+lspconfig.nginx_language_server.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
 -- lspconfig.eslint.setup {
 --   on_attach = on_attach,
 --   capabilities = capabilities,
