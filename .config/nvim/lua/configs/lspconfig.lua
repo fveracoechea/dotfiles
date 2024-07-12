@@ -1,13 +1,31 @@
-local configs = require "plugins.configs.lspconfig"
-local on_attach = configs.on_attach
-local capabilities = configs.capabilities
-
---Enable (broadcasting) snippet capability for completion
-capabilities.textDocument.completion.completionItem.snippetSupport = true
+-- EXAMPLE
+local on_attach = require("nvchad.configs.lspconfig").on_attach
+local on_init = require("nvchad.configs.lspconfig").on_init
+local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
 
+-- lsps with default config
+local servers = { "html", "cssls", "nginx_language_server" }
+
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup {
+    on_attach = on_attach,
+    on_init = on_init,
+    capabilities = capabilities,
+  }
+end
+
+-- lsps with custom config
+
+lspconfig.tsserver.setup {
+  on_attach = on_attach,
+  on_init = on_init,
+  capabilities = capabilities,
+}
+
 lspconfig.jsonls.setup {
+  on_init = on_init,
   capabilities = capabilities,
   filetypes = { "json", "jsonc" },
   settings = {
@@ -73,6 +91,7 @@ lspconfig.jsonls.setup {
 
 lspconfig.denols.setup {
   lint = true,
+  on_init = on_init,
   on_attach = on_attach,
   capabilities = capabilities,
   root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
@@ -89,6 +108,7 @@ lspconfig.tsserver.setup {
 
     return on_attach(client, bufnr)
   end,
+  on_init = on_init,
   capabilities = capabilities,
   single_file_support = false,
   root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "node_modules"),
@@ -139,18 +159,9 @@ lspconfig.tailwindcss.setup {
   },
 }
 
-lspconfig.html.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
-
-lspconfig.cssls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
-
 lspconfig.graphql.setup {
   on_attach = on_attach,
+  on_init = on_init,
   capabilities = capabilities,
   filetypes = {
     "graphql",
@@ -164,17 +175,8 @@ lspconfig.graphql.setup {
 }
 
 lspconfig.relay_lsp.setup {
+  on_init = on_init,
   on_attach = on_attach,
   capabilities = capabilities,
   root_dir = lspconfig.util.root_pattern "relay.config.json",
 }
-
-lspconfig.nginx_language_server.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
-
--- lspconfig.eslint.setup {
---   on_attach = on_attach,
---   capabilities = capabilities,
--- }
