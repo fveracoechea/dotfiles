@@ -12,4 +12,16 @@ map("n", "<C-l>", "<cmd> TmuxNavigateRight<CR>", { desc = "window right" })
 map("n", "<C-j>", "<cmd> TmuxNavigateDown<CR>", { desc = "window down" })
 map("n", "<C-k>", "<cmd> TmuxNavigateUp<CR>", { desc = "window up" })
 
--- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+-- hover keymaps
+map("n", "K", require("hover").hover, { desc = "hover.nvim" })
+map("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
+map("n", "<C-p>", function()
+  require("hover").hover_switch "previous"
+end, { desc = "hover.nvim (previous source)" })
+map("n", "<C-n>", function()
+  require("hover").hover_switch "next"
+end, { desc = "hover.nvim (next source)" })
+
+-- Hover Mouse support
+map("n", "<MouseMove>", require("hover").hover_mouse, { desc = "hover.nvim (mouse)" })
+vim.o.mousemoveevent = true
