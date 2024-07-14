@@ -166,18 +166,18 @@ local servers = {
   },
 }
 
-for name, configs in pairs(servers) do
-  if not configs.on_init then
-    configs.on_init = on_init
+for name, opts in pairs(servers) do
+  if not opts.on_init then
+    opts.on_init = on_init
   end
 
-  if not configs.capabilities then
-    configs.capabilities = capabilities
+  if not opts.capabilities then
+    opts.capabilities = capabilities
   end
 
-  if not configs.on_attach then
-    configs.on_attach = on_attach
+  if not opts.on_attach then
+    opts.on_attach = on_attach
   end
 
-  lspconfig[name].setup(configs)
+  lspconfig[name].setup(opts)
 end
