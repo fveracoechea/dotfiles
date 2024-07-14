@@ -91,10 +91,6 @@ local servers = {
             url = "https://json.schemastore.org/eslintrc.json",
           },
           {
-            fileMatch = { ".eslintrc", ".eslintrc.json" },
-            url = "https://json.schemastore.org/eslintrc.json",
-          },
-          {
             fileMatch = { ".babelrc", ".babelrc.json", "babel.config.json" },
             url = "https://json.schemastore.org/babelrc.json",
           },
