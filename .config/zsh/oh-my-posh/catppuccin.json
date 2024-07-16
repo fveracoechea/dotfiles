@@ -52,7 +52,7 @@
           "type": "path",
           "style": "plain",
           "foreground": "p:crust",
-          "background": "p:rosewater",
+          "background": "p:flamingo",
           "powerline_symbol": "\ue0b4",
           "style": "powerline",
           "properties": {
@@ -65,7 +65,7 @@
           "type": "git",
           "style": "plain",
           "foreground": "p:crust",
-          "background": "p:lavender",
+          "background": "p:maroon",
           "style": "powerline",
           "powerline_symbol": "\ue0b4",
           "properties": {
