@@ -48,6 +48,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 alias ls='ls --color'
 alias vim='nvim'
 alias c='clear'
+alias e='exit'
 
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
