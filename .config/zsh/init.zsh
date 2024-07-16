@@ -7,8 +7,6 @@ export ZINIT_HOME="$XDG_CONFIG_HOME/zsh/zinit"
 # source ZINIT
 source "${ZINIT_HOME}/zinit.zsh"
 
-
-
 # Add in zsh plugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
@@ -25,7 +23,6 @@ zinit snippet OMZP::command-not-found
 
 # Load completions
 autoload -Uz compinit && compinit
-
 
 # History
 HISTSIZE=5000

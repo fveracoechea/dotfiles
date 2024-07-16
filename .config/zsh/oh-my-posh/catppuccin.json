@@ -7,13 +7,18 @@
     "muave": "#CBA6F7",
     "blue": "#89B4FA",
     "weight": "#FFFFFF",
-    "text": "#494D64",
+    "text": "#CDD6F4",
     "peach": "#FAB387",
     "yellow": "#F9E2AF",
     "flamingo": "#F2CDCD",
     "rosewater": "#F5E0DC",
     "red": "#F38BA8",
-    "crust": "#11111B"
+    "sky": "#89DCEB",
+    "maroon": "#EBA0AC",
+    "lavender": "#B4BEFE",
+    "crust": "#11111B",
+    "overlay": "#9399B2",
+    "subtext": "#CDD6F4"
   },
   "blocks": [
     {
@@ -21,31 +26,48 @@
       "alignment": "left",
       "segments": [
         {
-          "type": "os",
+          "type": "text",
           "style": "plain",
-          "foreground": "p:os",
-          "template": "\n{{.Icon}} "
+          "template": "\n"
+        },
+        {
+          "type": "os",
+          "style": "diamond",
+          "foreground": "p:crust",
+          "background": "p:blue",
+          "powerline_symbol": "\ue0b4",
+          "leading_diamond": "\ue0b6",
+          "template": "{{.Icon}} "
         },
         {
           "type": "session",
           "style": "plain",
-          "foreground": "p:blue",
-          "template": "{{ .UserName }} "
+          "powerline_symbol": "\ue0b4",
+          "style": "diamond",
+          "foreground": "p:crust",
+          "background": "p:blue",
+          "template": "{{ .UserName }}"
         },
         {
           "type": "path",
           "style": "plain",
-          "foreground": "p:pink",
+          "foreground": "p:crust",
+          "background": "p:rosewater",
+          "powerline_symbol": "\ue0b4",
+          "style": "powerline",
           "properties": {
             "home_icon": "~",
             "style": "agnoster_full"
           },
-          "template": "{{ .Path }} "
+          "template": " {{ .Path }}"
         },
         {
           "type": "git",
           "style": "plain",
-          "foreground": "p:muave",
+          "foreground": "p:crust",
+          "background": "p:lavender",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b4",
           "properties": {
             "branch_icon": "\ue725 ",
             "cherry_pick_icon": "\ue29b ",
@@ -58,7 +80,7 @@
             "revert_icon": "\uf0e2 ",
             "tag_icon": "\uf412 "
           },
-          "template": "{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}"
+          "template": " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}"
         }
       ]
     },
@@ -68,10 +90,11 @@
       "segments": [
         {
           "type": "executiontime",
-          "style": "plain",
-          "powerline_symbol": "",
-          "foreground": "p:peach",
-          "background": "transparent",
+          "style": "diamond",
+          "powerline_symbol": "\ue0b4",
+          "leading_diamond": "\ue0b6",
+          "foreground": "p:crust",
+          "background": "p:flamingo",
           "template": " {{ .FormattedMs }} ",
           "properties": {
             "threshold": 200,
