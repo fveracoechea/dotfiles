@@ -5,6 +5,11 @@ This repository contains my dotfile configuration.
 These dotfiles provide a seamless and uniform development experience across different MacOS devices.
 It guarantees a consistent and optimized environment tailored to my preferences and workflow.
 
+![image](https://github.com/user-attachments/assets/1b153979-9d6d-4937-aa67-ca4c5e33dac9)
+![image](https://github.com/user-attachments/assets/73f9ad70-955f-4e12-9187-613b95a9a628)
+
+
+
 ## Main Features:
 
 - Keyboard Focused
