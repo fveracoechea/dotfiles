@@ -56,3 +56,6 @@ source <(fzf --zsh)
 if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
   eval "$(oh-my-posh init zsh --config $XDG_CONFIG_HOME/zsh/oh-my-posh/catppuccin.json)"
 fi
+
+# load functions
+# FPATH=$XDG_CONFIG_HOME/zsh/functions:$FPATH

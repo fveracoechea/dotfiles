@@ -8,6 +8,8 @@ local lspconfig = require "lspconfig"
 
 --LSP configurations
 local servers = {
+  -- BASH
+  bashls = {},
   -- HTML
   html = {},
   -- CSS

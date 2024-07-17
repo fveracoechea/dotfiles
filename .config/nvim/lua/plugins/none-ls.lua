@@ -3,6 +3,7 @@ local getOptions = function()
   local null_ls = require "null-ls"
 
   local sources = {
+    null_ls.builtins.formatting.shfmt,
     null_ls.builtins.formatting.prettierd,
     null_ls.builtins.formatting.stylua,
     null_ls.builtins.diagnostics.codespell,
@@ -20,7 +21,7 @@ local getOptions = function()
     },
   }
 
-  local opts = {
+  return {
     sources = sources,
     on_attach = function(client, bufnr)
       if client.supports_method "textDocument/formatting" then
@@ -38,8 +39,6 @@ local getOptions = function()
       end
     end,
   }
-
-  return opts
 end
 
 ---@type NvPluginSpec

@@ -18,6 +18,8 @@ return {
       "codespell",
       "nginx-language-server",
       "editorconfig-checker",
+      "bash-language-server",
+      "shfmt",
     },
   },
 }
