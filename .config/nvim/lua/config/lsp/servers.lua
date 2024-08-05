@@ -1,15 +1,12 @@
-local configs = require "nvchad.configs.lspconfig"
-
-local on_attach = configs.on_attach
-local on_init = configs.on_init
-local capabilities = configs.capabilities
-
+local settings = require "config.lsp.settings"
 local lspconfig = require "lspconfig"
 
 --LSP configurations
 local servers = {
   -- BASH
   bashls = {},
+  -- HTML
+  html = {},
   -- LUA
   lua_ls = {
     settings = {
@@ -24,8 +21,6 @@ local servers = {
       },
     },
   },
-  -- HTML
-  html = {},
   -- EMMET
   emmet_ls = {
     filetypes = {
@@ -74,7 +69,7 @@ local servers = {
         end
       end
 
-      return on_attach(client, bufnr)
+      return settings.on_attach(client, bufnr)
     end,
     single_file_support = false,
     root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "node_modules"),
@@ -193,15 +188,15 @@ local servers = {
 
 for name, opts in pairs(servers) do
   if not opts.on_init then
-    opts.on_init = on_init
+    opts.on_init = settings.on_init
   end
 
   if not opts.capabilities then
-    opts.capabilities = capabilities
+    opts.capabilities = settings.capabilities
   end
 
   if not opts.on_attach then
-    opts.on_attach = on_attach
+    opts.on_attach = settings.on_attach
   end
 
   lspconfig[name].setup(opts)

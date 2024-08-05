@@ -17,20 +17,47 @@ return {
 
     -- or create your custom action
     local custom_actions = transform_mod {
-      open_trouble_qflist = function(prompt_bufnr)
+      open_trouble_qflist = function()
         trouble.toggle "quickfix"
       end,
     }
 
     telescope.setup {
+      pickers = {
+        buffers = {
+          mappings = {
+            i = {
+              ["<C-x>"] = actions.delete_buffer + actions.move_to_top,
+              -- If you'd prefer Telescope not to enter a normal mode when hitting escape and instead exiting.
+              ["<esc>"] = actions.close,
+            },
+          },
+        },
+      },
       defaults = {
         path_display = { "smart" },
+        prompt_prefix = "   ",
+        test = "should break",
+        -- selection_caret = " ",
+        -- entry_prefix = " ",
+        sorting_strategy = "ascending",
+        layout_config = {
+          horizontal = {
+            prompt_position = "top",
+            preview_width = 0.60,
+          },
+          width = 0.90,
+          height = 0.90,
+        },
         mappings = {
           i = {
-            ["<C-k>"] = actions.move_selection_previous, -- move to prev result
-            ["<C-j>"] = actions.move_selection_next, -- move to next result
+            -- move to prev result
+            ["<C-k>"] = actions.move_selection_previous,
+            -- move to next result
+            ["<C-j>"] = actions.move_selection_next,
             ["<C-q>"] = actions.send_selected_to_qflist + custom_actions.open_trouble_qflist,
             ["<C-t>"] = trouble_telescope.open,
+            ["<C-h>"] = "which_key",
           },
         },
       },

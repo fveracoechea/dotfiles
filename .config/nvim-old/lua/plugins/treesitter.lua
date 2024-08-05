@@ -1,17 +1,11 @@
 -- Register nginx paerser
 local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+
 parser_config.nginx = {
   install_info = {
     url = "https://gitlab.com/joncoole/tree-sitter-nginx",
     branch = "main",
     files = { "src/parser.c" },
-  },
-}
-
--- Enable mdx
-vim.filetype.add {
-  extension = {
-    mdx = "markdown",
   },
 }
 
@@ -44,6 +38,8 @@ return {
       "lua",
       "gitignore",
       "gitattributes",
+      "bash",
+      "c",
       -- web dev
       "html",
       "css",
@@ -58,6 +54,7 @@ return {
       "make",
       "yaml",
       "dockerfile",
+      "vimdoc",
     },
   },
 }

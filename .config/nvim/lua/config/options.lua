@@ -2,13 +2,20 @@ local opt = vim.opt
 local o = vim.o
 local g = vim.g
 
+-- enable mdx
+vim.filetype.add {
+  extension = {
+    mdx = "markdown",
+  },
+}
+
 -- disable netrw at the very start of your init.lua
 -- recommended settings from nvim-tree documentation
 g.loaded_netrw = 1
 g.loaded_netrwPlugin = 1
 
--- mouse mode (all modes)
-o.mouse = "a"
+-- mouse mode (disabled)
+o.mouse = ""
 
 -- set highlight on search
 o.hlsearch = true

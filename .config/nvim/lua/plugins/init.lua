@@ -4,4 +4,10 @@ return {
 
   -- tmux & split window navigation
   "christoomey/vim-tmux-navigator",
+
+  -- improves the default vim.ui interfaces
+  {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+  },
 }
