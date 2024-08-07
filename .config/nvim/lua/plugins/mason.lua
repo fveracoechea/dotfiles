@@ -47,28 +47,9 @@ return {
         "black", -- python formatter
         "pylint",
         "eslint_d",
+        "codespell",
+        "shfmt",
       },
     }
   end,
-  -- opts = {
-  --   ensure_installed = {
-  --     "lua-language-server",
-  --     "stylua",
-  --     "eslint-lsp",
-  --     "eslint_d",
-  --     "graphql-language-service-cli",
-  --     "html-lsp",
-  --     "prettierd",
-  --     "tailwindcss-language-server",
-  --     "typescript-language-server",
-  --     "deno",
-  --     "css-lsp",
-  --     "json-lsp",
-  --     "codespell",
-  --     "nginx-language-server",
-  --     "editorconfig-checker",
-  --     "bash-language-server",
-  --     "shfmt",
-  --   },
-  -- },
 }

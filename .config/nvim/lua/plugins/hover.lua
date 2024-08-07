@@ -1,6 +1,6 @@
 return {
   "lewis6991/hover.nvim",
-  event = { "BufReadPre", "BufNewFile" },
+  event = "VeryLazy",
   dependencies = {
     "nvim-lua/plenary.nvim",
   },
