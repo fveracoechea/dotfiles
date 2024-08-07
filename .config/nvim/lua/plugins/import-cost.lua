@@ -1,4 +1,3 @@
----@type NvPluginSpec
 return {
   "barrett-ruth/import-cost.nvim",
   event = "VeryLazy",
