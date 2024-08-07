@@ -8,7 +8,10 @@ return {
       hijack_cursor = true,
       view = {
         side = "right",
-        width = 42,
+        width = {
+          min = 32,
+          max = 52,
+        },
         relativenumber = true,
         preserve_window_proportions = true,
       },
@@ -43,40 +46,25 @@ return {
       git = {
         ignore = false,
       },
-
-      -- on_attach = function(bufnr)
-      --   local function opts(desc)
-      --     return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-      --   end
-      --   local ok, api = pcall(require, "nvim-tree.api")
-      --   assert(ok, "api module is not found")
-      --   vim.keymap.set("n", "<CR>", api.node.open.tab_drop, opts "Tab drop")
-      -- end,
     }
 
-    -- local view = require "nvim-tree.view"
-    -- local api = require "nvim-tree.api"
-    -- local augroup = vim.api.nvim_create_augroup
-    -- local autocmd = vim.api.nvim_create_autocmd
-    --
-    -- -- save nvim-tree window width on WinResized event
-    -- augroup("save_nvim_tree_width", { clear = true })
-    -- autocmd("WinResized", {
-    --   group = "save_nvim_tree_width",
-    --   pattern = "*",
-    --   callback = function()
-    --     local filetree_winnr = view.get_winnr()
-    --     if filetree_winnr ~= nil and vim.tbl_contains(vim.v.event["windows"], filetree_winnr) then
-    --       vim.t["filetree_width"] = vim.api.nvim_win_get_width(filetree_winnr)
-    --     end
-    --   end,
-    -- })
-    --
-    -- -- restore window size when opening nvim-tree
-    -- api.events.subscribe(api.events.Event.TreeOpen, function()
-    --   if vim.t["filetree_width"] ~= nil then
-    --     view.resize(vim.t["filetree_width"])
-    --   end
-    -- end)
+    local api = require "nvim-tree.api"
+
+    -- Automatically open file upon creation
+    api.events.subscribe(api.events.Event.FileCreated, function(file)
+      vim.cmd("edit " .. file.fname)
+    end)
+
+    -- Workaround when using auto-session
+    vim.api.nvim_create_autocmd({ "BufEnter" }, {
+      pattern = "NvimTree*",
+      callback = function()
+        local view = require "nvim-tree.view"
+
+        if not view.is_visible() then
+          api.tree.open()
+        end
+      end,
+    })
   end,
 }
