@@ -12,13 +12,19 @@
     "yellow": "#F9E2AF",
     "flamingo": "#F2CDCD",
     "rosewater": "#F5E0DC",
-    "red": "#F38BA8",
     "sky": "#89DCEB",
+    "sapphire": "#74C7EC",
+    "teal": "#94E2D5",
     "maroon": "#EBA0AC",
     "lavender": "#B4BEFE",
     "crust": "#11111B",
     "overlay": "#9399B2",
-    "subtext": "#CDD6F4"
+    "subtext": "#CDD6F4",
+    "base": "#1E1E2E",
+    "mantle": "#181825",
+    "green": "#A6E3A1",
+    "red": "#F38BA8",
+    "surface0": "#313244"
   },
   "blocks": [
     {
@@ -36,38 +42,32 @@
           "foreground": "p:crust",
           "background": "p:blue",
           "powerline_symbol": "\ue0b4",
-          "leading_diamond": "\ue0b6",
-          "template": "{{.Icon}} "
+          "template": " {{.Icon}} "
         },
         {
           "type": "session",
-          "style": "plain",
           "powerline_symbol": "\ue0b4",
           "style": "diamond",
           "foreground": "p:crust",
           "background": "p:blue",
-          "template": "{{ .UserName }}"
+          "template": "<b>{{ .UserName }}</b>"
         },
         {
           "type": "path",
-          "style": "plain",
-          "foreground": "p:crust",
-          "background": "p:flamingo",
+          "foreground": "p:blue",
+          "background": "p:surface0",
           "powerline_symbol": "\ue0b4",
           "style": "powerline",
           "properties": {
             "home_icon": "~",
             "style": "agnoster_full"
           },
-          "template": " {{ .Path }}"
+          "template": " {{ .Path }} "
         },
         {
           "type": "git",
+          "foreground": "p:rosewater",
           "style": "plain",
-          "foreground": "p:crust",
-          "background": "p:maroon",
-          "style": "powerline",
-          "powerline_symbol": "\ue0b4",
           "properties": {
             "branch_icon": "\ue725 ",
             "cherry_pick_icon": "\ue29b ",
@@ -80,7 +80,11 @@
             "revert_icon": "\uf0e2 ",
             "tag_icon": "\uf412 "
           },
-          "template": " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}"
+          "templates": [
+            " {{ .HEAD }}",
+            "{{if .BranchStatus}}  {{ .BranchStatus }}{{ end }}",
+            "{{if .Working.Changed}}  {{ .Working.String }}{{ end }}"
+          ]
         }
       ]
     },
@@ -94,7 +98,7 @@
           "powerline_symbol": "\ue0b4",
           "leading_diamond": "\ue0b6",
           "foreground": "p:crust",
-          "background": "p:flamingo",
+          "background": "p:rosewater",
           "template": " {{ .FormattedMs }} ",
           "properties": {
             "threshold": 200,
