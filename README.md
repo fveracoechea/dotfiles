@@ -1,6 +1,7 @@
 # 💻 Development Environment Configuration
 
 These dotfiles provide a uniform development experience across different MacOS and Linux devices.
+
 Its main goal is to guarantee a consistent and optimized environment.
 
 ![image](https://github.com/user-attachments/assets/1b153979-9d6d-4937-aa67-ca4c5e33dac9)
