@@ -2,7 +2,9 @@
 
 These dotfiles provide a consistent and optimized development experience across different MacOS and Linux devices.
 
-![image](https://github.com/user-attachments/assets/73f9ad70-955f-4e12-9187-613b95a9a628)
+https://github.com/user-attachments/assets/d0bfe629-405e-45f3-b25b-0b6af091a902
+
+
 
 
 ## Main Features:
