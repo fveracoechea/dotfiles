@@ -1,13 +1,10 @@
-# 💻 Development Environment Config
+# 💻 Development Environment Configuration
 
-This repository contains my dotfile configuration.
-
-These dotfiles provide a seamless and uniform development experience across different MacOS devices.
-It guarantees a consistent and optimized environment tailored to my preferences and workflow.
+These dotfiles provide a uniform development experience across different MacOS and Linux devices.
+Its main goal is to guarantee a consistent and optimized environment.
 
 ![image](https://github.com/user-attachments/assets/1b153979-9d6d-4937-aa67-ca4c5e33dac9)
 ![image](https://github.com/user-attachments/assets/73f9ad70-955f-4e12-9187-613b95a9a628)
-
 
 
 ## Main Features:
@@ -20,11 +17,15 @@ It guarantees a consistent and optimized environment tailored to my preferences 
 
 ## Tooling:
 
-- [Alacritty](https://alacritty.org): A cross-platform, OpenGL terminal emulator.
-- [Oh My Zsh](https://ohmyz.sh): Community-driven framework for managing your Zsh configuration.
+- [Kitty](https://sw.kovidgoyal.net/kitty/): Cross-platform, fast, feature-rich, GPU based terminal.
 - [TMUX](https://github.com/tmux/tmux): Terminal Multiplexer.
-- [NvChad](https://nvchad.com): Blazing fast Neovim config providing solid defaults and a beautiful UI.
-- [lazygit](https://github.com/jesseduffield/lazygit): A simple terminal UI for git commands.
+- [LazyGit](https://github.com/jesseduffield/lazygit): A simple terminal UI for git commands.
+- [ZSH](https://zsh.sourceforge.io/)
+  - [Zinit](https://github.com/zdharma-continuum/zinit): Flexible and fast ZSH plugin manager.
+  - [Oh My Posh](https://ohmyposh.dev/): Customisable and low-latency cross platform/shell prompt renderer.
+- [Neovim](https://neovim.io/)
+  - [lazy.nvim](https://github.com/folke/lazy.nvim): A modern plugin manager for Neovim.
+  - [catppuccin](https://github.com/catppuccin/nvim): Soothing pastel theme for Neovim.
 
 ## Installation
 
