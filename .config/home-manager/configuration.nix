@@ -85,8 +85,8 @@
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
-
-
+  home-manager.backupFileExtension = "backup";
+  
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.fveracoechea = {
     isNormalUser = true;

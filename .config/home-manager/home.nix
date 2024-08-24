@@ -18,6 +18,7 @@
     oh-my-posh
     volta
     fira-code-nerdfont
+    gnumake
   ];
 
   programs.git.enable = true;
@@ -30,13 +31,17 @@
   xdg.enable = true;
 
   xdg.configFile = {
-    "~/.config".recursive = true;
-    "~/.config".source = "~/dotfiles/.config";
+    "kitty".source = ../kitty;
+    "nvim".source = ../nvim;
+    "tmux".source = ../tmux;
+    "zsh".source = ../zsh;
+    "git".source = ../git;
+    "lazygit".source = ../lazygit;
   };
 
-  programs.zsh.initExtra = ""
-    source ~/.config/zsh/init.zsh
-  "";
+  home.file = {
+    ".zshrc".source = ../zsh/init.zsh;
+  };
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage
