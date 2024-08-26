@@ -32,8 +32,8 @@
     alejandra,
     ...
   }: {
-    # The host with the hostname `desktop` will use this configuration
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem rec {
+    # The host with the hostname `nixos-vm` will use this configuration
+    nixosConfigurations.nixos-vm = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
 
       specialArgs = {
@@ -50,14 +50,11 @@
         # so the old configuration file still takes effect
         ./configuration.nix
 
-        {
-          environment.systemPackages = [alejandra.defaultPackage.${system}];
-        }
-
         # make home-manager as a module of nixos
         # so that home-manager configuration will be deployed automatically
         # when executing `nixos-rebuild switch`
         home-manager.nixosModules.home-manager
+
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
@@ -66,6 +63,8 @@
 
           # extraSpecialArgs passes arguments to home.nix
           home-manager.extraSpecialArgs = specialArgs;
+
+          environment.systemPackages = [alejandra.defaultPackage.${system}];
         }
       ];
     };

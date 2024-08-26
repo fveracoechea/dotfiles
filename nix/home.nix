@@ -20,6 +20,8 @@
     fira-code-nerdfont
     neofetch
     python3
+    google-chrome
+    cmatrix
 
     # unstable packages
     # unstable.nodejs_22
@@ -34,7 +36,12 @@
   programs.git = {
     enable = true;
     userEmail = "veracoecheafrancisco@gmail.com";
-    userName = "Francisco V";
+    userName = "Francisco Veracoechea";
+    extraConfig = {
+      pull = {
+        rebase = true;
+      };
+    };
   };
 
   programs.zsh = {
@@ -108,7 +115,7 @@
     "tmux/tmux.extra.conf".source = ../tmux/tmux.extra.conf;
     "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
     "nvim" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/.config/nvim";
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/nvim";
       recursive = true;
     };
   };
