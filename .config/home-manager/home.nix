@@ -59,7 +59,7 @@
     };
 
     initExtra = '' 
-      source "${XDG_CONFIG_HOME}/extra.zsh"
+      source "~/.config/zsh/extra.zsh"
     '';
   };
 
@@ -89,7 +89,7 @@
     ];
 
     extraConfig = ''
-      source-file "$XDG_CONFIG_HOME/tmux/tmux.extra.conf"
+      source-file "$XDG_CONFIG_HOME/tmux-config/tmux.extra.conf"
     '';
   };
 
@@ -100,7 +100,8 @@
     "kitty".source = ../kitty;
     "nvim".source = ../nvim;
     # "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
-    "oh-my-posh".source = ../oh-my-posh;
+    "zsh".source = ../zsh;
+    "tmux-config".source = ../tmux-config;
     # "git".source = ../git;
     "lazygit".source = ../lazygit;
   };
