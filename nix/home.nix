@@ -29,8 +29,8 @@
     unstable.neovim
 
     # scripts
-    (writeShellScriptBin "uptime-tmux" (builtins.readFile ../../scripts/uptime-tmux.zsh))
-    (writeShellScriptBin "git-tmux" (builtins.readFile ../../scripts/git-tmux.zsh))
+    (writeShellScriptBin "uptime-tmux" (builtins.readFile ../scripts/uptime-tmux.zsh))
+    (writeShellScriptBin "git-tmux" (builtins.readFile ../scripts/git-tmux.zsh))
   ];
 
   programs.git = {
