@@ -24,6 +24,10 @@
     # unstable packages
     # unstable.nodejs_22
     unstable.deno 
+    
+    # scripts
+    (writeScriptBin "uptime-tmux"  (builtins.readFile ../../scripts/uptime-tmux))
+    (writeScriptBin "git-tmux"  (builtins.readFile ../../scripts/git-tmux))
   ];
 
   programs.git = {
