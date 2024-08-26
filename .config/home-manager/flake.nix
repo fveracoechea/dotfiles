@@ -3,9 +3,12 @@
 
   inputs = {
     # NixOS official package source, using the nixos-24.05 branch here
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
-    # home-manager, used for managing user configuration
+    # Unstable packages
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    # home-manager, used for managing user configuration - 
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
       # The `follows` keyword in inputs is used for inheritance.
@@ -16,10 +19,20 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, nixpkgs-unstable,... }@inputs: {
     # The host with the hostname `desktop` will use this configuration
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
+
+      specialArgs = {
+        # Configure parameters to use nixpkgs-unstable 
+        pkgs-unstable = import nixpkgs-unstable {
+          # Refer to the `system` parameter form the outer scope
+          inherit system;
+          config.allowUnfree = true;
+        };
+      };
+
       modules = [
         # Import previous configuration used,
         # so the old configuration file still takes effect
@@ -35,7 +48,8 @@
 
           home-manager.users.fveracoechea = import ./home.nix;
 
-          # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+          # extraSpecialArgs passes arguments to home.nix
+          home-manager.extraSpecialArgs = specialArgs;
         }
       ]; 
     };

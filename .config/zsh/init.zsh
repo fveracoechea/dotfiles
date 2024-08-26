@@ -54,3 +54,7 @@ fi
 
 # load functions
 # FPATH=$XDG_CONFIG_HOME/zsh/functions:$FPATH
+
+# Volta
+# export VOLTA_HOME="$HOME/.volta"
+# PATH="$VOLTA_HOME/bin:$PATH"
