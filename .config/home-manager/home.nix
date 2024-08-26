@@ -20,15 +20,20 @@
     gnumake
     neofetch
     python3
+    libgcc
+    cmake
+
 
     # unstable packages
     # unstable.nodejs_22
     unstable.deno 
+    unstable.neovim
     
     # scripts
     (writeShellScriptBin "uptime-tmux"  (builtins.readFile ../../scripts/uptime-tmux.zsh))
     (writeShellScriptBin "git-tmux"  (builtins.readFile ../../scripts/git-tmux.zsh))
   ];
+
 
   programs.git = {
     enable = true;
@@ -36,10 +41,13 @@
     userName = "Francisco V";
   };
 
-  programs.neovim = {
-    enable = true;
-    package = unstable.neovim.unwrapped;
-  };
+  # programs.neovim = {
+  #   enable = true;
+  #   package = unstable.neovim.unwrapped;
+  #   extraLuaPackages = ps: [
+  #     ps.luaPackages.luarocks
+  #   ];
+  # };
 
   programs.zsh = {
     enable = true;
@@ -62,6 +70,8 @@
       ls = "ls -lca";
       e = "exit";
       c = "clear";
+      node = "$HOME/.volta/bin/node";
+      npm = "$HOME/.volta/bin/npm";
     };
 
     initExtra = '' 
@@ -75,7 +85,6 @@
     enableZshIntegration = true;
     tmux.enableShellIntegration = true;
   };
-
 
   programs.tmux = {
     enable = true;
@@ -96,8 +105,8 @@
     ];
 
     extraConfig = ''
-      source-file "${../tmux/tmux.extra.conf}"
-      source-file "${../tmux/tmux.catppuccin.conf}"
+      ${(builtins.readFile ../tmux/tmux.extra.conf)}
+      ${(builtins.readFile ../tmux/tmux.catppuccin.conf)}
     '';
   };
 
@@ -105,25 +114,26 @@
   xdg.enable = true;
 
   xdg.configFile = {
-    "kitty".source = ../kitty;
-    "nvim".source = ../nvim;
     "zsh".source = ../zsh;
+    "kitty".source = ../kitty;
+    "lazygit".source = ../lazygit;
     "tmux/tmux.extra.conf".source = ../tmux/tmux.extra.conf;
     "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
-    "lazygit".source = ../lazygit;
+    "nvim"= {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/.config/nvim";
+      recursive = true;
+    };
   };
 
-  # xdg.configFile."tmux/tmux.conf".enable = false;
+  # home.file = {};
 
-  home.file = {
-    # ".zshrc".source = ../zsh/init.zsh;
+  home.sessionVariables = {
+    VOLTA_HOME = "$HOME/.volta";
   };
 
-  # home.sessionVariables = {
-  #   NIX_LD_LIBRARY_PATH =
-  #     lib.makeLibraryPath (with pkgs; [ stdenv.cc.cc openssl ]);
-  #   NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
-  # };
+  home.sessionPath = [
+    "$HOME/.volta/bin"
+  ];
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage

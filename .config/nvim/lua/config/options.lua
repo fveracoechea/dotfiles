@@ -9,6 +9,9 @@ vim.filetype.add {
   },
 }
 
+
+o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
 -- disable netrw at the very start of your init.lua
 -- recommended settings from nvim-tree documentation
 g.loaded_netrw = 1
