@@ -58,15 +58,8 @@
       c = "clear";
     };
 
-    initExtra = ''
-      # Completion styling
-      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-      zstyle ':completion:*' menu no
-      zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-      zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
-
-      # Run oh-my-posh
-      eval "$(oh-my-posh init zsh --config $XDG_CONFIG_HOME/oh-my-posh/catppuccin.json)"
+    initExtra = '' 
+      source "${XDG_CONFIG_HOME}/extra.zsh"
     '';
   };
 
@@ -84,6 +77,20 @@
     mouse = true;
     terminal = "screen-256color";
     baseIndex = 1;
+
+    plugins = with pkgs; [ 
+      tmuxPlugins.vim-tmux-navigator
+      tmuxPlugins.yank
+      tmuxPlugins.resurrect
+      tmuxPlugins.continuum
+      tmuxPlugins.cpu
+      tmuxPlugins.continuum
+      tmuxPlugins.catppuccin
+    ];
+
+    extraConfig = ''
+      source-file "$XDG_CONFIG_HOME/tmux/tmux.extra.conf"
+    '';
   };
 
   # Enable management of XDG base directories
@@ -92,9 +99,9 @@
   xdg.configFile = {
     "kitty".source = ../kitty;
     "nvim".source = ../nvim;
-    "tmux".source = ../tmux;
+    # "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
     "oh-my-posh".source = ../oh-my-posh;
-    "git".source = ../git;
+    # "git".source = ../git;
     "lazygit".source = ../lazygit;
   };
 
