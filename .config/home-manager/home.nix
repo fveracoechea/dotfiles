@@ -9,24 +9,17 @@
   home.homeDirectory = "/home/fveracoechea";
 
   home.packages = with pkgs; [
-    zip
-    unzip
     kitty
     ripgrep
     eza
     yazi
     btop
-    stow
     lazygit
     oh-my-posh
     volta
     fira-code-nerdfont
-    gnumake
     neofetch
     python3
-    libgcc
-    cmake
-    cargo
 
     # unstable packages
     # unstable.nodejs_22
@@ -43,14 +36,6 @@
     userEmail = "veracoecheafrancisco@gmail.com";
     userName = "Francisco V";
   };
-
-  # programs.neovim = {
-  #   enable = true;
-  #   package = unstable.neovim.unwrapped;
-  #   extraLuaPackages = ps: [
-  #     ps.luaPackages.luarocks
-  #   ];
-  # };
 
   programs.zsh = {
     enable = true;

@@ -21,9 +21,19 @@ return {
       },
     }
 
-    mason_lspconfig.setup {
-      -- list of servers for mason to install
+    mason_lspconfig.setup {}
+
+    mason_tool_installer.setup {
       ensure_installed = {
+        "prettier", -- prettier formatter
+        "stylua", -- lua formatter
+        "isort", -- python formatter
+        "black", -- python formatter
+        "pylint",
+        "eslint_d",
+        "codespell",
+        "shfmt",
+        "nil", -- nix lsp
         "tsserver",
         "html",
         "cssls",
@@ -36,20 +46,6 @@ return {
         "nginx_language_server",
         "bashls",
         "jsonls",
-        "rnix-lsp",
-      },
-    }
-
-    mason_tool_installer.setup {
-      ensure_installed = {
-        "prettier", -- prettier formatter
-        "stylua", -- lua formatter
-        "isort", -- python formatter
-        "black", -- python formatter
-        "pylint",
-        "eslint_d",
-        "codespell",
-        "shfmt",
       },
     }
   end,

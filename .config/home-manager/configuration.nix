@@ -10,6 +10,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./nix-ld.nix
   ];
 
   # Bootloader.
@@ -83,12 +84,6 @@
   # Enable the Flakes feature and the accompanying new nix command-line tool
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-    # Add any missing dynamic libraries for unpackaged programs
-    # here, NOT in environment.systemPackages
-  ];
-
   # sets ZSH has default shell
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -126,6 +121,12 @@
     wget
     git
     curl
+    zip
+    unzip
+    libgcc
+    cmake
+    gnumake
+    cargo
   ];
 
   environment.pathsToLink = ["/share/zsh"];
