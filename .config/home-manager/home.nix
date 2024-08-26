@@ -18,6 +18,7 @@
     volta
     fira-code-nerdfont
     gnumake
+
     # unstable packages
     pkgs-unstable.nodejs_22
     pkgs-unstable.deno
@@ -29,11 +30,6 @@
     userName = "Francisco V";
   };
 
-  programs.fzf = {
-    enable = true;
-    enableZshIntegration = true;
-  };
-  
   programs.neovim = {
     enable = true;
     package = pkgs-unstable.neovim.unwrapped;
@@ -45,7 +41,6 @@
     # dotDir = ".config/zsh";
 
     syntaxHighlighting.enable = true;
-
     autosuggestion.enable = true;
 
     history = {
@@ -62,13 +57,34 @@
       e = "exit";
       c = "clear";
     };
+
+    initExtra = ''
+      # Completion styling
+      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+      zstyle ':completion:*' menu no
+      zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+      zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+      # Run oh-my-posh
+      eval "$(oh-my-posh init zsh --config $XDG_CONFIG_HOME/oh-my-posh/catppuccin.json)"
+    '';
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+    tmux.enableShellIntegration = true;
   };
 
 
-  # programs.tmux = {
-  #   enable = true;
-  #   shell = "\${pkgs.zsh}/bin/zsh";
-  # };
+  programs.tmux = {
+    enable = true;
+    shell = "\${pkgs.zsh}/bin/zsh";
+    keyMode = "vi";
+    mouse = true;
+    terminal = "screen-256color";
+    baseIndex = 1;
+  };
 
   # Enable management of XDG base directories
   xdg.enable = true;
@@ -78,7 +94,7 @@
     "nvim".source = ../nvim;
     "tmux".source = ../tmux;
     "oh-my-posh".source = ../oh-my-posh;
-    # "git".source = ../git;
+    "git".source = ../git;
     "lazygit".source = ../lazygit;
   };
 
