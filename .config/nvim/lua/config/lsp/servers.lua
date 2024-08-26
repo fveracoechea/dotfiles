@@ -7,6 +7,8 @@ local servers = {
   bashls = {},
   -- HTML
   html = {},
+  -- NIX
+  nil_ls = {},
   -- LUA
   lua_ls = {
     settings = {

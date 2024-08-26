@@ -33,7 +33,6 @@ return {
         "eslint_d",
         "codespell",
         "shfmt",
-        "nil", -- nix lsp
         "tsserver",
         "html",
         "cssls",

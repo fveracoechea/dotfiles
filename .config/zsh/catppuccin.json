@@ -126,16 +126,8 @@
       ]
     }
   ],
-  "transient_prompt": {
-    "background": "transparent",
-    "template": "\n❯ ",
-    "foreground_templates": [
-      "{{if gt .Code 0}}p:red{{end}}",
-      "{{if eq .Code 0}}p:muave{{end}}"
-    ]
-  },
   "secondary_prompt": {
-    "foreground": "p:blue",
+    "foreground": "p:muave",
     "background": "transparent",
     "template": "❯❯ "
   },

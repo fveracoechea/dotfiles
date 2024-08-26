@@ -1,12 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -95,9 +90,6 @@
     isNormalUser = true;
     description = "fveracoechea";
     extraGroups = ["networkmanager" "wheel"];
-    packages = with pkgs; [
-      #  thunderbird
-    ];
   };
 
   # Enable automatic login for the user.
@@ -121,9 +113,9 @@
     wget
     git
     curl
+    nil
     zip
     unzip
-    libgcc
     cmake
     gnumake
     cargo

@@ -26,13 +26,12 @@
   };
 
   outputs = {
-    self,
     nixpkgs,
     home-manager,
     nixpkgs-unstable,
     alejandra,
     ...
-  } @ inputs: {
+  }: {
     # The host with the hostname `desktop` will use this configuration
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";

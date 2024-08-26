@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   programs.nix-ld.enable = true;
+
   # Add any missing dynamic libraries for unpackaged programs
   # here, NOT in environment.systemPackages
   programs.nix-ld.libraries = with pkgs; [
@@ -37,6 +38,8 @@
     pango
     pipewire
     stdenv.cc.cc
+    gcc
+    libgcc
     systemd
     vulkan-loader
     xorg.libX11
