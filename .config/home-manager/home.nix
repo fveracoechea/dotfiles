@@ -24,11 +24,10 @@
     # unstable packages
     # unstable.nodejs_22
     unstable.deno 
-    unstable.tmux
     
     # scripts
-    (writeShellScriptBin "uptime-tmux"  (builtins.readFile ../../scripts/uptime-tmux))
-    (writeShellScriptBin "git-tmux"  (builtins.readFile ../../scripts/git-tmux))
+    (writeShellScriptBin "uptime-tmux"  (builtins.readFile ../../scripts/uptime-tmux.zsh))
+    (writeShellScriptBin "git-tmux"  (builtins.readFile ../../scripts/git-tmux.zsh))
   ];
 
   programs.git = {
@@ -78,29 +77,29 @@
   };
 
 
-  # programs.tmux = {
-  #   enable = true;
-  #   package = unstable.tmux;
-  #   keyMode = "vi";
-  #   mouse = true;
-  #   terminal = "screen-256color";
-  #   baseIndex = 1;
-  #
-  #   plugins = with unstable; [ 
-  #     tmuxPlugins.vim-tmux-navigator
-  #     tmuxPlugins.yank
-  #     tmuxPlugins.resurrect
-  #     tmuxPlugins.continuum
-  #     tmuxPlugins.cpu
-  #     tmuxPlugins.continuum
-  #     tmuxPlugins.catppuccin
-  #   ];
-  #
-  #   extraConfig = ''
-  #     source-file "${../tmux/tmux.extra.conf}"
-  #     source-file "${../tmux/tmux.catppuccin.conf}"
-  #   '';
-  # };
+  programs.tmux = {
+    enable = true;
+    package = unstable.tmux;
+    keyMode = "vi";
+    mouse = true;
+    terminal = "screen-256color";
+    baseIndex = 1;
+
+    plugins = with unstable; [ 
+      tmuxPlugins.vim-tmux-navigator
+      tmuxPlugins.yank
+      tmuxPlugins.resurrect
+      tmuxPlugins.continuum
+      tmuxPlugins.cpu
+      tmuxPlugins.continuum
+      tmuxPlugins.catppuccin
+    ];
+
+    extraConfig = ''
+      source-file "${../tmux/tmux.extra.conf}"
+      source-file "${../tmux/tmux.catppuccin.conf}"
+    '';
+  };
 
   # Enable management of XDG base directories
   xdg.enable = true;
@@ -109,7 +108,6 @@
     "kitty".source = ../kitty;
     "nvim".source = ../nvim;
     "zsh".source = ../zsh;
-    "tmux/tmux.conf".source = ../tmux/tmux.conf;
     "tmux/tmux.extra.conf".source = ../tmux/tmux.extra.conf;
     "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
     "lazygit".source = ../lazygit;
