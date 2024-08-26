@@ -18,6 +18,7 @@
     volta
     fira-code-nerdfont
     gnumake
+    neofetch
 
     # unstable packages
     pkgs-unstable.nodejs_22
@@ -59,7 +60,7 @@
     };
 
     initExtra = '' 
-      source "~/.config/zsh/extra.zsh"
+      source "$XDG_CONFIG_HOME/zsh/extra.zsh"
     '';
   };
 
@@ -72,7 +73,7 @@
 
   programs.tmux = {
     enable = true;
-    shell = "\${pkgs.zsh}/bin/zsh";
+    # shell = "\${pkgs.zsh}/bin/zsh";
     keyMode = "vi";
     mouse = true;
     terminal = "screen-256color";
@@ -99,9 +100,9 @@
   xdg.configFile = {
     "kitty".source = ../kitty;
     "nvim".source = ../nvim;
-    # "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
     "zsh".source = ../zsh;
-    "tmux-config".source = ../tmux-config;
+    "tmux/tmux.extra.conf".source = ../tmux/tmux.extra.conf;
+    "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
     # "git".source = ../git;
     "lazygit".source = ../lazygit;
   };
