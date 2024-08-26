@@ -53,6 +53,7 @@ return {
         "query",
         "vimdoc",
         "c",
+        "nix",
       },
 
       incremental_selection = {

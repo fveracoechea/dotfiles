@@ -8,7 +8,13 @@
     # Unstable packages
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # home-manager, used for managing user configuration - 
+    # alejandra nix formatter
+    alejandra = {
+      url = "github:kamadorueda/alejandra/3.0.0";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    # home-manager, used for managing user configuration -
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
       # The `follows` keyword in inputs is used for inheritance.
@@ -19,13 +25,20 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixpkgs-unstable,... }@inputs: {
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    nixpkgs-unstable,
+    alejandra,
+    ...
+  } @ inputs: {
     # The host with the hostname `desktop` will use this configuration
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
 
       specialArgs = {
-        # Configure parameters to use nixpkgs-unstable 
+        # Configure parameters to use nixpkgs-unstable
         unstable = import nixpkgs-unstable {
           # Refer to the `system` parameter form the outer scope
           inherit system;
@@ -37,6 +50,10 @@
         # Import previous configuration used,
         # so the old configuration file still takes effect
         ./configuration.nix
+
+        {
+          environment.systemPackages = [alejandra.defaultPackage.${system}];
+        }
 
         # make home-manager as a module of nixos
         # so that home-manager configuration will be deployed automatically
@@ -51,7 +68,7 @@
           # extraSpecialArgs passes arguments to home.nix
           home-manager.extraSpecialArgs = specialArgs;
         }
-      ]; 
+      ];
     };
   };
 }

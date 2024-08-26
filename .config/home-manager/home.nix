@@ -1,6 +1,10 @@
-{ config, pkgs, unstable, lib, ...  }:
-
 {
+  config,
+  pkgs,
+  unstable,
+  lib,
+  ...
+}: {
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
 
@@ -22,18 +26,17 @@
     python3
     libgcc
     cmake
-
+    cargo
 
     # unstable packages
     # unstable.nodejs_22
-    unstable.deno 
+    unstable.deno
     unstable.neovim
-    
-    # scripts
-    (writeShellScriptBin "uptime-tmux"  (builtins.readFile ../../scripts/uptime-tmux.zsh))
-    (writeShellScriptBin "git-tmux"  (builtins.readFile ../../scripts/git-tmux.zsh))
-  ];
 
+    # scripts
+    (writeShellScriptBin "uptime-tmux" (builtins.readFile ../../scripts/uptime-tmux.zsh))
+    (writeShellScriptBin "git-tmux" (builtins.readFile ../../scripts/git-tmux.zsh))
+  ];
 
   programs.git = {
     enable = true;
@@ -74,7 +77,7 @@
       npm = "$HOME/.volta/bin/npm";
     };
 
-    initExtra = '' 
+    initExtra = ''
       source "${../zsh/extra.zsh}"
     '';
   };
@@ -94,7 +97,7 @@
     terminal = "screen-256color";
     baseIndex = 1;
 
-    plugins = with unstable; [ 
+    plugins = with unstable; [
       tmuxPlugins.vim-tmux-navigator
       tmuxPlugins.yank
       tmuxPlugins.resurrect
@@ -119,7 +122,7 @@
     "lazygit".source = ../lazygit;
     "tmux/tmux.extra.conf".source = ../tmux/tmux.extra.conf;
     "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
-    "nvim"= {
+    "nvim" = {
       source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/.config/nvim";
       recursive = true;
     };
@@ -147,5 +150,4 @@
 
   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
-
 }

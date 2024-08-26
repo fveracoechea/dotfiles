@@ -36,6 +36,7 @@ return {
         "nginx_language_server",
         "bashls",
         "jsonls",
+        "rnix-lsp",
       },
     }
 
