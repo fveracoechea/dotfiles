@@ -81,6 +81,8 @@
   # Enable the Flakes feature and the accompanying new nix command-line tool
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  programs.nix-ld.enable = true;
+
   # sets ZSH has default shell
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;

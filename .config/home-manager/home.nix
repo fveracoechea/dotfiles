@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-unstable, lib, ...  }:
+{ config, pkgs, unstable, lib, ...  }:
 
 {
   home.username = "fveracoechea";
@@ -19,10 +19,11 @@
     fira-code-nerdfont
     gnumake
     neofetch
+    python3
 
     # unstable packages
-    pkgs-unstable.nodejs_22
-    pkgs-unstable.deno
+    # unstable.nodejs_22
+    unstable.deno 
   ];
 
   programs.git = {
@@ -33,7 +34,7 @@
 
   programs.neovim = {
     enable = true;
-    package = pkgs-unstable.neovim.unwrapped;
+    package = unstable.neovim.unwrapped;
   };
 
   programs.zsh = {
@@ -60,12 +61,13 @@
     };
 
     initExtra = '' 
-      source "$XDG_CONFIG_HOME/zsh/extra.zsh"
+      source "${../zsh/extra.zsh}"
     '';
   };
 
   programs.fzf = {
     enable = true;
+    package = unstable.fzf;
     enableZshIntegration = true;
     tmux.enableShellIntegration = true;
   };
@@ -73,13 +75,13 @@
 
   programs.tmux = {
     enable = true;
-    # shell = "\${pkgs.zsh}/bin/zsh";
+    package = unstable.tmux;
     keyMode = "vi";
     mouse = true;
     terminal = "screen-256color";
     baseIndex = 1;
 
-    plugins = with pkgs; [ 
+    plugins = with unstable; [ 
       tmuxPlugins.vim-tmux-navigator
       tmuxPlugins.yank
       tmuxPlugins.resurrect
@@ -90,7 +92,8 @@
     ];
 
     extraConfig = ''
-      source-file "$XDG_CONFIG_HOME/tmux-config/tmux.extra.conf"
+      source-file "${../tmux/tmux.extra.conf}"
+      source-file "${../tmux/tmux.catppuccin.conf}"
     '';
   };
 
@@ -103,7 +106,6 @@
     "zsh".source = ../zsh;
     "tmux/tmux.extra.conf".source = ../tmux/tmux.extra.conf;
     "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
-    # "git".source = ../git;
     "lazygit".source = ../lazygit;
   };
 

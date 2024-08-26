@@ -26,7 +26,7 @@
 
       specialArgs = {
         # Configure parameters to use nixpkgs-unstable 
-        pkgs-unstable = import nixpkgs-unstable {
+        unstable = import nixpkgs-unstable {
           # Refer to the `system` parameter form the outer scope
           inherit system;
           config.allowUnfree = true;
