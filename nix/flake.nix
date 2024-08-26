@@ -48,7 +48,7 @@
       modules = [
         # Import previous configuration used,
         # so the old configuration file still takes effect
-        ./configuration.nix
+        ./hosts/nixos-vm/configuration.nix
 
         # make home-manager as a module of nixos
         # so that home-manager configuration will be deployed automatically
@@ -59,7 +59,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
 
-          home-manager.users.fveracoechea = import ./home.nix;
+          home-manager.users.fveracoechea = import ./hosts/nixos-vm/home.nix;
 
           # extraSpecialArgs passes arguments to home.nix
           home-manager.extraSpecialArgs = specialArgs;

@@ -2,9 +2,12 @@
   config,
   pkgs,
   unstable,
-  lib,
   ...
 }: {
+  imports = [
+    ./kitty.nix
+  ];
+
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
 
@@ -110,7 +113,7 @@
 
   xdg.configFile = {
     "zsh".source = ../zsh;
-    "kitty".source = ../kitty;
+    # "kitty".source = ../kitty;
     "lazygit".source = ../lazygit;
     "tmux/tmux.extra.conf".source = ../tmux/tmux.extra.conf;
     "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
