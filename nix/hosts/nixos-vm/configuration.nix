@@ -53,7 +53,7 @@
   services.xserver.desktopManager.gnome.enable = true;
 
   xdg.portal.enable = true;
-  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
+  # xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
 
   # Enable hyprland
   programs.hyprland = {
