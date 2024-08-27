@@ -52,6 +52,16 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
+
+  # Enable hyprland
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+  };
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -75,13 +85,6 @@
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     #media-session.enable = true;
-  };
-
-  # Enable hyprland
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
   };
 
   # Enable the Flakes feature and the accompanying new nix command-line tool
