@@ -81,7 +81,7 @@
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
-    package = inputs.hyprland.packages."${pkgs.system}".hyperland;
+    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
   };
 
   # Enable the Flakes feature and the accompanying new nix command-line tool

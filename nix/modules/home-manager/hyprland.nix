@@ -8,6 +8,10 @@
 
     settings = {
       "$mod" = "SUPER";
+      "$menu" = "wofi --show drun";
+
+      "exec-once" = "waybar";
+      "monitor" = ",highres,auto,auto";
     };
   };
 
