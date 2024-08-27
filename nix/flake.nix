@@ -15,7 +15,7 @@
     };
 
     # Hyprland
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
 
     # home-manager, used for managing user configuration -
     home-manager = {

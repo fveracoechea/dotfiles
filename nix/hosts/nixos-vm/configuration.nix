@@ -133,9 +133,6 @@
     inputs.alejandra.defaultPackage.${pkgs.system}
   ];
 
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
-
   environment.pathsToLink = ["/share/zsh"];
 
   environment.shells = with pkgs; [zsh];
