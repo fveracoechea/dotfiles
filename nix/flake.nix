@@ -14,6 +14,9 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    # Hyprland
+    hyprland.url = "github:hyprwm/Hyprland";
+
     # home-manager, used for managing user configuration -
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
@@ -29,14 +32,14 @@
     nixpkgs,
     home-manager,
     nixpkgs-unstable,
-    alejandra,
     ...
-  }: {
+  } @ inputs: {
     # The host with the hostname `nixos-vm` will use this configuration
     nixosConfigurations.nixos-vm = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
 
       specialArgs = {
+        inherit inputs;
         # Configure parameters to use nixpkgs-unstable
         unstable = import nixpkgs-unstable {
           # Refer to the `system` parameter form the outer scope
@@ -63,8 +66,6 @@
 
           # extraSpecialArgs passes arguments to home.nix
           home-manager.extraSpecialArgs = specialArgs;
-
-          environment.systemPackages = [alejandra.defaultPackage.${system}];
         }
       ];
     };

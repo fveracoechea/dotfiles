@@ -2,9 +2,11 @@
   programs.kitty = {
     enable = true;
     theme = "Catppuccin-Mocha";
+    shellIntegration.enableZshIntegration = true;
+
     font = {
       name = "FiraCode Nerd Font";
-      size = "12";
+      size = 12;
     };
 
     settings = {
@@ -16,9 +18,7 @@
 
       window_padding_width = 2;
 
-      background_opacity = 0.95;
+      background_opacity = "0.95";
     };
-
-    shellIntegration.enableZshIntegration = true;
   };
 }

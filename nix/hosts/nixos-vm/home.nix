@@ -5,7 +5,8 @@
   ...
 }: {
   imports = [
-    ./kitty.nix
+    ../../modules/home-manager/kitty.nix
+    ../../modules/home-manager/hyprland.nix
   ];
 
   home.username = "fveracoechea";
@@ -32,8 +33,8 @@
     unstable.neovim
 
     # scripts
-    (writeShellScriptBin "uptime-tmux" (builtins.readFile ../scripts/uptime-tmux.zsh))
-    (writeShellScriptBin "git-tmux" (builtins.readFile ../scripts/git-tmux.zsh))
+    (writeShellScriptBin "uptime-tmux" (builtins.readFile ../../../scripts/uptime-tmux.zsh))
+    (writeShellScriptBin "git-tmux" (builtins.readFile ../../../scripts/git-tmux.zsh))
   ];
 
   programs.git = {
@@ -73,7 +74,7 @@
     };
 
     initExtra = ''
-      source "${../zsh/extra.zsh}"
+      source "${../../../zsh/extra.zsh}"
     '';
   };
 
@@ -103,8 +104,8 @@
     ];
 
     extraConfig = ''
-      ${(builtins.readFile ../tmux/tmux.extra.conf)}
-      ${(builtins.readFile ../tmux/tmux.catppuccin.conf)}
+      ${(builtins.readFile ../../../tmux/tmux.extra.conf)}
+      ${(builtins.readFile ../../../tmux/tmux.catppuccin.conf)}
     '';
   };
 
@@ -112,11 +113,11 @@
   xdg.enable = true;
 
   xdg.configFile = {
-    "zsh".source = ../zsh;
+    "zsh".source = ../../../zsh;
     # "kitty".source = ../kitty;
-    "lazygit".source = ../lazygit;
-    "tmux/tmux.extra.conf".source = ../tmux/tmux.extra.conf;
-    "tmux/tmux.catppuccin.conf".source = ../tmux/tmux.catppuccin.conf;
+    "lazygit".source = ../../../lazygit;
+    "tmux/tmux.extra.conf".source = ../../../tmux/tmux.extra.conf;
+    "tmux/tmux.catppuccin.conf".source = ../../../tmux/tmux.catppuccin.conf;
     "nvim" = {
       source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/nvim";
       recursive = true;
