@@ -10,7 +10,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../../modules/nixos/nix-ld.nix
-    ../../modules/nixos/vm.nix
+    # ../../modules/nixos/vm.nix
   ];
 
   # Bootloader.
@@ -53,7 +53,19 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  xdg.portal.enable = true;
+  # VM only options
+  # virtualisation.qemu.options = [
+  #   "-device virtio-vga-gl"
+  #   "-display sdl,gl=on,show-cursor=off"
+  #   "-audio pa,model=hda"
+  # ];
+  #
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+    NIXOS_OZONE_WL = "1";
+  };
+
+  # xdg.portal.enable = true;
   # xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
 
   # Enable hyprland
@@ -75,6 +87,7 @@
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
+  hardware.opengl.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -94,8 +107,6 @@
   # sets ZSH has default shell
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
-
-  home-manager.backupFileExtension = "backup";
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.fveracoechea = {

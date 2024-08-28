@@ -1,4 +1,4 @@
-{
+{...}: {
   # VM only options
   virtualisation.qemu.options = [
     "-device virtio-vga-gl"
