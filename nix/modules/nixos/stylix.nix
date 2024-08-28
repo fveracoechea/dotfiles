@@ -4,7 +4,7 @@
     name = "Fira Sans";
   };
   firaCode = {
-    package = pkgs.fira-code-nerdfonts;
+    package = pkgs.fira-code-nerdfont;
     name = "Fira Code";
   };
 in {

@@ -14,12 +14,18 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    # Hyprland
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-
     # home-manager, used for managing user configuration -
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Hyprland
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+
+    # Sylix
+    stylix = {
+      url = "github:danth/stylix/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -28,6 +34,7 @@
     nixpkgs,
     home-manager,
     nixpkgs-unstable,
+    stylix,
     ...
   } @ inputs: {
     # The host with the hostname `nixos-vm` will use this configuration
@@ -45,8 +52,9 @@
       };
 
       modules = [
-        # Import previous configuration used,
-        # so the old configuration file still takes effect
+        stylix.nixosModules.stylix
+
+        # NixOS System configurations
         ./hosts/nixos-vm/configuration.nix
 
         # make home-manager as a module of nixos
@@ -59,7 +67,6 @@
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
           home-manager.users.fveracoechea = import ./hosts/nixos-vm/home.nix;
-
           # extraSpecialArgs passes arguments to home.nix
           home-manager.extraSpecialArgs = specialArgs;
         }
