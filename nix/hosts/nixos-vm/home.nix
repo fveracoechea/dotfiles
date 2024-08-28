@@ -7,6 +7,9 @@
   imports = [
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/hyprland.nix
+    ../../modules/home-manager/git.nix
+    ../../modules/home-manager/tmux.nix
+    ../../modules/home-manager/zsh.nix
   ];
 
   home.username = "fveracoechea";
@@ -26,87 +29,19 @@
     python3
     google-chrome
     cmatrix
-
     # unstable packages
-    # unstable.nodejs_22
     unstable.deno
     unstable.neovim
-
     # scripts
     (writeShellScriptBin "uptime-tmux" (builtins.readFile ../../../scripts/uptime-tmux.zsh))
     (writeShellScriptBin "git-tmux" (builtins.readFile ../../../scripts/git-tmux.zsh))
   ];
-
-  programs.git = {
-    enable = true;
-    userEmail = "veracoecheafrancisco@gmail.com";
-    userName = "Francisco Veracoechea";
-    extraConfig = {
-      pull = {
-        rebase = true;
-      };
-    };
-  };
-
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    # dotDir = ".config/zsh";
-
-    syntaxHighlighting.enable = true;
-    autosuggestion.enable = true;
-
-    history = {
-      # append = true;
-      ignoreAllDups = true;
-      ignoreDups = true;
-      ignoreSpace = true;
-      share = true;
-      size = 5000;
-    };
-
-    shellAliases = {
-      ls = "ls -lca";
-      e = "exit";
-      c = "clear";
-      node = "$HOME/.volta/bin/node";
-      npm = "$HOME/.volta/bin/npm";
-    };
-
-    initExtra = ''
-      source "${../../../zsh/extra.zsh}"
-    '';
-  };
 
   programs.fzf = {
     enable = true;
     package = unstable.fzf;
     enableZshIntegration = true;
     tmux.enableShellIntegration = true;
-  };
-
-  programs.tmux = {
-    enable = true;
-    package = unstable.tmux;
-    keyMode = "vi";
-    mouse = true;
-    terminal = "screen-256color";
-    baseIndex = 1;
-
-    plugins = with unstable; [
-      tmuxPlugins.vim-tmux-navigator
-      tmuxPlugins.yank
-      tmuxPlugins.resurrect
-      tmuxPlugins.continuum
-      tmuxPlugins.cpu
-      tmuxPlugins.continuum
-      tmuxPlugins.catppuccin
-    ];
-
-    extraConfig = ''
-      ${(builtins.readFile ../../../tmux/tmux.extra.conf)}
-      ${(builtins.readFile ../../../tmux/tmux.catppuccin.conf)}
-    '';
   };
 
   # Enable management of XDG base directories
