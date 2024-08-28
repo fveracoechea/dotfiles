@@ -30,8 +30,15 @@ in {
     plugins = with unstable; [
       tmuxPlugins.vim-tmux-navigator
       tmuxPlugins.yank
-      tmuxPlugins.cpu
-      tmuxPlugins.weather
+      # tmuxPlugins.cpu
+      # tmuxPlugins.weather
+      # {
+      #   plugin = settings.tmux-clima;
+      #   extraConfig = ''
+      #     set -g @clima_unit imperial
+      #     set -g @clima_use_nerd_font 1
+      #   '';
+      # }
       {
         plugin = tmuxPlugins.catppuccin;
         extraConfig = settings.catppuccin;
@@ -46,13 +53,6 @@ in {
         plugin = tmuxPlugins.continuum;
         extraConfig = ''
           set -g @continuum-save-interval '5'
-        '';
-      }
-      {
-        plugin = settings.tmux-clima;
-        extraConfig = ''
-          set -g @clima_unit imperial
-          set -g @clima_use_nerd_font 1
         '';
       }
     ];
