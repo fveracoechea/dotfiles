@@ -1,5 +1,5 @@
 {
-  # Enable sound with pipewire.
+  # Enable audio with PipeWire
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -11,4 +11,7 @@
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
+
+  # PipeWire requires this to be false
+  hardware.pulseaudio.enable = false;
 }
