@@ -12,7 +12,7 @@
     autosuggestion.enable = true;
 
     history = {
-      append = true;
+      # append = true;
       ignoreAllDups = true;
       ignoreDups = true;
       ignoreSpace = true;
