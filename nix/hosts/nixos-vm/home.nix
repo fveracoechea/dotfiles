@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   unstable,
   ...
@@ -10,6 +9,7 @@
     ../../modules/home-manager/git.nix
     ../../modules/home-manager/tmux.nix
     ../../modules/home-manager/zsh.nix
+    ../../modules/home-manager/xdg.nix
   ];
 
   home.username = "fveracoechea";
@@ -29,6 +29,7 @@
     python3
     google-chrome
     cmatrix
+    nurl
     # unstable packages
     unstable.deno
     unstable.neovim
@@ -42,21 +43,6 @@
     package = unstable.fzf;
     enableZshIntegration = true;
     tmux.enableShellIntegration = true;
-  };
-
-  # Enable management of XDG base directories
-  xdg.enable = true;
-
-  xdg.configFile = {
-    "zsh".source = ../../../zsh;
-    # "kitty".source = ../kitty;
-    "lazygit".source = ../../../lazygit;
-    "tmux/tmux.extra.conf".source = ../../../tmux/tmux.extra.conf;
-    "tmux/tmux.catppuccin.conf".source = ../../../tmux/tmux.catppuccin.conf;
-    "nvim" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/nvim";
-      recursive = true;
-    };
   };
 
   # home.file = {};
