@@ -7,7 +7,7 @@ return {
 
     catppuccin.setup {
       flavour = "mocha",
-      transparent_background = true,
+      transparent_background = false,
       integrations = {
         which_key = true,
         lsp_trouble = true,
