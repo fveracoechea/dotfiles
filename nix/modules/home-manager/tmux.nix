@@ -4,7 +4,7 @@
   ...
 }: let
   settings = {
-    tmux = builtins.readFile ../../../tmux/tmux.catppuccin.conf;
+    tmux = builtins.readFile ../../../tmux/tmux.conf;
     catppuccin = builtins.readFile ../../../tmux/tmux.catppuccin.conf;
     tmux-clima = pkgs.tmuxPlugins.mkTmuxPlugin {
       pluginName = "tmux-clima";
