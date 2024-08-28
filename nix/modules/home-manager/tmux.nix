@@ -31,6 +31,7 @@ in {
       tmuxPlugins.vim-tmux-navigator
       tmuxPlugins.yank
       tmuxPlugins.cpu
+      tmuxPlugins.weather
       {
         plugin = tmuxPlugins.catppuccin;
         extraConfig = settings.catppuccin;
