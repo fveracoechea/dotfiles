@@ -14,18 +14,16 @@ in {
 
     settings = {
       "$mod" = "SUPER";
-      # "$menu" = "wofi --show drun";
+      "$menu" = "rofi --show drun -show-icons";
 
       "exec-once" = ''${pkgs.waybar}/bin/waybar'';
       "monitor" = ",highres,auto,auto";
+
+      bindm = [
+        "$mod, A, exec, rofi --show drun -show-icons"
+      ];
     };
   };
 
-  services.hyprpaper = {
-    enable = true;
-    settings = {
-      preload = [background];
-      wallpaper = [", ${background}"];
-    };
-  };
+  services.hyprpaper.enable = true;
 }
