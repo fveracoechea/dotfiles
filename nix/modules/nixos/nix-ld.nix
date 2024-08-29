@@ -32,6 +32,8 @@
     libxkbcommon
     libxml2
     # mesa
+    rustc
+    cargo
     nspr
     nss
     openssl

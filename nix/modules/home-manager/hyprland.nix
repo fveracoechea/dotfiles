@@ -1,8 +1,13 @@
 {
-  config,
   pkgs,
   ...
 }: {
+  home.packages = with pkgs; [
+    waybar
+    dunst
+    libnotify
+  ];
+
   programs.rofi.enable = true;
 
   programs.waybar.enable = true;

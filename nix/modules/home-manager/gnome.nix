@@ -2,9 +2,25 @@
   gtk.enable = true;
 
   home.packages = with pkgs; [
+    ripgrep
+    eza
+    yazi
+    btop
+    lazygit
+    oh-my-posh
+    volta
+    fira-code-nerdfont
+    neofetch
+    python3
+    cmatrix
+    nurl
     kooha
     slack
     google-chrome
+    # unstable packages
+    unstable.deno
+    unstable.neovim
+    # gnome extensions
     gnomeExtensions.freon
     gnomeExtensions.dash2dock-lite
     gnomeExtensions.blur-my-shell

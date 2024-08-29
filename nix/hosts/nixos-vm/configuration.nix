@@ -7,7 +7,6 @@
   ...
 }: {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../../modules/nixos/nix-ld.nix
     ../../modules/nixos/timezone.nix
@@ -41,6 +40,7 @@
   services.xserver.desktopManager.gnome.enable = true;
 
   environment.sessionVariables = {
+    # Hyprland variables
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
   };
@@ -93,8 +93,7 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
     vim
     wget
@@ -106,9 +105,6 @@
     cmake
     gnumake
     cargo
-    waybar
-    dunst
-    libnotify
     inputs.alejandra.defaultPackage.${pkgs.system}
   ];
 

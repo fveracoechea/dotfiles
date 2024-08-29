@@ -16,24 +16,8 @@
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
 
+  # scripts
   home.packages = with pkgs; [
-    kitty
-    ripgrep
-    eza
-    yazi
-    btop
-    lazygit
-    oh-my-posh
-    volta
-    fira-code-nerdfont
-    neofetch
-    python3
-    cmatrix
-    nurl
-    # unstable packages
-    unstable.deno
-    unstable.neovim
-    # scripts
     (writeShellScriptBin "uptime-tmux" (builtins.readFile ../../../scripts/uptime-tmux.zsh))
     (writeShellScriptBin "git-tmux" (builtins.readFile ../../../scripts/git-tmux.zsh))
   ];
@@ -44,8 +28,6 @@
     enableZshIntegration = true;
     tmux.enableShellIntegration = true;
   };
-
-  # home.file = {};
 
   home.sessionVariables = {
     VOLTA_HOME = "$HOME/.volta";
