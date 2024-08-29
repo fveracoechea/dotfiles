@@ -10,7 +10,6 @@
         "blur-my-shell@aunetx"
         "dash2dock-lite@icedman.github.com"
         "Vitals@CoreCoding.com"
-        "sound-output-device-chooser@kgshank.net"
       ];
     };
   };
@@ -18,7 +17,6 @@
   home.packages = with pkgs; [
     gnomeExtensions.vitals
     gnomeExtensions.dash2dock-lite
-    gnomeExtensions.sound-output-device-chooser
     gnomeExtensions.blur-my-shell
   ];
 }
