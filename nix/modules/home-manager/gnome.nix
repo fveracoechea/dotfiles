@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, unstable, ...}: {
   gtk.enable = true;
 
   home.packages = with pkgs; [
