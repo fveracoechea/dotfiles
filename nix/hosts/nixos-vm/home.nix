@@ -10,6 +10,7 @@
     ../../modules/home-manager/tmux.nix
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/xdg.nix
+    ../../modules/home-manager/gnome.nix
   ];
 
   home.username = "fveracoechea";
