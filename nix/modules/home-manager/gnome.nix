@@ -1,12 +1,13 @@
 {pkgs, ...}: {
   gtk.enable = true;
 
-
   home.packages = with pkgs; [
     gnomeExtensions.freon
     gnomeExtensions.dash2dock-lite
     gnomeExtensions.blur-my-shell
     gnomeExtensions.system-monitor
+    gnomeExtensions.workspace-indicator
+    gnomeExtensions.auto-move-windows
   ];
 
   dconf.settings = {
@@ -19,6 +20,8 @@
         "dash2dock-lite@icedman.github.com"
         "freon@UshakovVasilii_Github.yahoo.com"
         "system-monitor@gnome-shell-extensions.gcampax.github.com"
+        "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
+        "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
       ];
     };
 
@@ -52,7 +55,7 @@
       trash-icon = false;
     };
 
-    "or/gnome/shell/extensions/freon" = {
+    "org/gnome/shell/extensions/freon" = {
       exec-method-freeipmi = "pkexec";
       hot-sensors = ["__average__" "__max__"];
       panel-box-index = 0;
@@ -64,7 +67,7 @@
       use-gpu-nvidia = false;
     };
 
-    "gnome/shell/extensions/system-monitor" = {
+    "org/gnome/shell/extensions/system-monitor" = {
       show-cpu = true;
       show-download = false;
       show-memory = true;
@@ -72,5 +75,4 @@
       show-upload = false;
     };
   };
-
 }
