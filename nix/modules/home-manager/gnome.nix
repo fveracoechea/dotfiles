@@ -2,7 +2,7 @@
   gtk.enable = true;
 
   home.packages = with pkgs; [
-    kooah
+    kooha
     slack
     google-chrome
     gnomeExtensions.freon
