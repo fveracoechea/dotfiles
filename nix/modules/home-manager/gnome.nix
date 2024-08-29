@@ -9,7 +9,6 @@
       enabled-extensions = [
         "blur-my-shell@aunetx"
         "dash2dock-lite@icedman.github.com"
-        "Vitals@CoreCoding.com"
       ];
     };
   };
