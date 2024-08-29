@@ -28,7 +28,6 @@
     fira-code-nerdfont
     neofetch
     python3
-    google-chrome
     cmatrix
     nurl
     # unstable packages
