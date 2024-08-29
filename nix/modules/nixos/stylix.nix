@@ -16,9 +16,8 @@ in {
     polarity = "dark";
 
     cursor = {
-      name = "catppuccin-cursors";
-      package = pkgs.catppuccin-cursors.mochaDark;
-      size = 35;
+      name = "Bibata-Modern-Ice";
+      package = pkgs.bibata-cursors;
     };
 
     fonts = {
