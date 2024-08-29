@@ -17,6 +17,8 @@
       enabled-extensions = [
         "blur-my-shell@aunetx"
         "dash2dock-lite@icedman.github.com"
+        "freon@UshakovVasilii_Github.yahoo.com"
+        "system-monitor@gnome-shell-extensions.gcampax.github.com"
       ];
     };
 
