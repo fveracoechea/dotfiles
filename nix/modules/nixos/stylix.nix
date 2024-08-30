@@ -11,11 +11,15 @@ in {
   stylix = {
     enable = true;
     autoEnable = true;
-    image = ../../../wallpapers/mountains.jpg;
+    image = ../../../wallpapers/evening-sky.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
 
-    targets.gnome.enable = false;
+    cursor = {
+      name = "capitaine-cursors";
+      package = pkgs.capitaine-cursors;
+      size = 32;
+    };
 
     fonts = {
       serif = firaSans;

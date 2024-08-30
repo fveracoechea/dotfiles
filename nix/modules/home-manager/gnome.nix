@@ -14,12 +14,9 @@
     };
     iconTheme = lib.mkForce {
       name = "Collid-dark";
-      package = unstable.colloid-icon-theme;
-    };
-    cursorTheme = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
-      size = 32;
+      package = unstable.colloid-icon-theme.override {
+        schemeVariants = ["catppuccin"];
+      };
     };
   };
 
@@ -69,6 +66,7 @@
         "system-monitor@gnome-shell-extensions.gcampax.github.com"
         "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
         "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
+        "user-theme@gnome-shell-extensions.gcampax.github.com"
       ];
       favorite-apps = [
         "org.gnome.Nautilus.desktop"
