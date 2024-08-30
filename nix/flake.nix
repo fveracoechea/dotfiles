@@ -65,7 +65,6 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "backup";
           home-manager.users.fveracoechea = import ./hosts/nixos-vm/home.nix;
           home-manager.extraSpecialArgs = specialArgs;
         }
