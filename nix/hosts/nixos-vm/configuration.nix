@@ -12,6 +12,7 @@
     ../../modules/nixos/timezone.nix
     ../../modules/nixos/pipewire.nix
     ../../modules/nixos/stylix.nix
+    ../../modules/nixos/gaming.nix
   ];
 
   # Bootloader.

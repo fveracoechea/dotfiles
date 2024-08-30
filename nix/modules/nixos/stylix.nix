@@ -16,9 +16,9 @@ in {
     polarity = "dark";
 
     cursor = {
-      name = "capitaine-cursors";
-      package = pkgs.capitaine-cursors;
-      size = 32;
+      name = "catppuccin-mocha-dark-cursors";
+      package = pkgs.catppuccin-cursors.mochaDark;
+      size = 34;
     };
 
     fonts = {
