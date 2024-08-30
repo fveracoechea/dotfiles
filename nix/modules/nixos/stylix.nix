@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  unstable,
+  ...
+}: let
   firaSans = {
     package = pkgs.fira-sans;
     name = "Fira Sans";
@@ -17,7 +21,7 @@ in {
 
     cursor = {
       name = "capitaine-cursors";
-      package = pkgs.capitaine-cursors;
+      package = unstable.capitaine-cursors;
       size = 32;
     };
 

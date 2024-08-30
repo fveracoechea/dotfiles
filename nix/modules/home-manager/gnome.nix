@@ -15,7 +15,7 @@
     iconTheme = lib.mkForce {
       name = "Collid-dark";
       package = unstable.colloid-icon-theme.override {
-        schemeVariants = ["catppuccin"];
+        schemeVariants = ["all"];
       };
     };
   };
