@@ -1,19 +1,25 @@
 {
   pkgs,
   unstable,
+  lib,
   ...
 }: {
   gtk = {
     enable = true;
-    theme = {
-      name = "Colloid-Dark-hdpi";
+    theme = lib.mkForce {
+      name = "Colloid-Dark-Catppuccin";
       package = unstable.colloid-gtk-theme.override {
         tweaks = ["catppuccin"];
       };
     };
-    iconTheme = {
+    iconTheme = lib.mkForce {
       name = "Collid-dark";
       package = unstable.colloid-icon-theme;
+    };
+    cursorTheme = {
+      name = "Bibata-Modern-Ice";
+      package = pkgs.bibata-cursors;
+      size = 32;
     };
   };
 
@@ -36,6 +42,7 @@
     # unstable packages
     unstable.deno
     unstable.neovim
+    gnome.gnome-tweaks
     # gnome extensions
     gnomeExtensions.freon
     gnomeExtensions.dash2dock-lite

@@ -15,11 +15,7 @@ in {
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
 
-    cursor = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
-      size = 32;
-    };
+    targets.gnome.enable = false;
 
     fonts = {
       serif = firaSans;

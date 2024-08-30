@@ -1,9 +1,0 @@
-[submodule ".config/alacritty/catppuccin"]
-	path = .config/alacritty/catppuccin
-	url = git@github.com:catppuccin/alacritty.git
-[submodule ".config/tmux/plugins/tpm"]
-	path = .config/tmux/plugins/tpm
-	url = git@github.com:tmux-plugins/tpm.git
-[submodule ".config/zsh/zinit"]
-	path = .config/zsh/zinit
-	url = git@github.com:zdharma-continuum/zinit.git
