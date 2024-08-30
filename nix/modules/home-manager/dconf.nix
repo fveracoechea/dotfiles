@@ -6,7 +6,6 @@
       default-folder-viewer = "list-view";
       default-sort-order = "mtime";
     };
-
     "org/gnome/shell" = {
       always-show-log-out = true;
       disable-user-extensions = false;
@@ -40,9 +39,6 @@
     };
 
     "org/gnome/shell/extensions/blur-my-shell" = {
-      pipelines = ''
-        {'pipeline_default': {'name': <'Default'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000000'>, 'params': <{'radius': <30>, 'brightness': <0.59999999999999998>}>}>, <{'type': <'color'>, 'id': <'effect_43629853754165'>, 'params': <{'color': <(0.11764705926179886, 0.11764705926179886, 0.18039216101169586, 0.72666668891906738)>}>}>]>}, 'pipeline_default_rounded': {'name': <'Default rounded'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000001'>, 'params': <{'radius': <30>, 'brightness': <0.59999999999999998>}>}>, <{'type': <'corner'>, 'id': <'effect_000000000002'>, 'params': <{'radius': <24>}>}>]>}}
-      '';
       settings-version = 2;
     };
 
@@ -87,11 +83,11 @@
       apps-icon-front = false;
       autohide-dash = false;
       autohide-speed = 0.5;
-      background-color = lib.mkTuple [
+      background-color = lib.hm.gvariant.mkTuple [
         0.11764705926179886
         0.11764705926179886
         0.18039216101169586
-        0.7166666388511658
+        0.75
       ];
       blur-background = true;
       blur-resolution = 0;
@@ -108,14 +104,14 @@
       icon-shadow = true;
       icon-size = 8.5e-2;
       icon-spacing = 0.45;
-      label-background-color = lib.mkTuple [
+      label-background-color = lib.hm.gvariant.mkTuple [
         0.11764705926179886
         0.11764705926179886
         0.18039216101169586
-        0.800000011920929
+        0.75
       ];
       label-border-radius = 2.25;
-      label-foreground-color = lib.mkTuple [
+      label-foreground-color = lib.hm.gvariant.mkTuple [
         0.8039215803146362
         0.8392156958580017
         0.95686274766922
@@ -153,7 +149,7 @@
       show-swap = true;
       show-upload = false;
     };
-    "org/gnome/shell/extensions/user-theme" = {
+    "org/gnome/shell/extensions/user-theme" = lib.mkForce {
       name = "Colloid-Dark-Catppuccin";
     };
     "world-clocks" = {
