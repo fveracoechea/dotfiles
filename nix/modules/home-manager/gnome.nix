@@ -36,9 +36,9 @@
     dconf2nix
     deno
     neovim
-    # gnome extensions
-    gnome.gnome-tweaks
-    gnome.dconf-editor
+    # gnome apps/extensions
+    gnome-tweaks
+    dconf-editor
     gnomeExtensions.freon
     gnomeExtensions.dash2dock-lite
     gnomeExtensions.blur-my-shell

@@ -1,19 +1,15 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   programs.nix-ld.enable = true;
 
-  environment.variables = with pkgs; {
-    NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
-      stdenv.cc.cc
-      openssl
-      nss
-      gcc
-    ];
-    # NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
-  };
+  # environment.variables = with pkgs; {
+  #   NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
+  #     stdenv.cc.cc
+  #     openssl
+  #     nss
+  #     gcc
+  #   ];
+  #   NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
+  # };
 
   # Add any missing dynamic libraries for unpackaged programs
   # here, NOT in environment.systemPackages
@@ -57,5 +53,6 @@
     systemd
     vulkan-loader
     zlib
+    volta
   ];
 }
