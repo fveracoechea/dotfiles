@@ -1,5 +1,21 @@
-{pkgs, unstable, ...}: {
-  gtk.enable = true;
+{
+  pkgs,
+  unstable,
+  ...
+}: {
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Colloid-Dark-hdpi";
+      package = unstable.colloid-gtk-theme.override {
+        tweaks = ["catppuccin"];
+      };
+    };
+    iconTheme = {
+      name = "Collid-dark";
+      package = unstable.colloid-icon-theme;
+    };
+  };
 
   home.packages = with pkgs; [
     ripgrep
