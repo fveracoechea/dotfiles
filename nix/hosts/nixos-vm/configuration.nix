@@ -45,8 +45,6 @@
     NIXOS_OZONE_WL = "1";
   };
 
-  home-manager.backupFileExtension = "backup";
-
   # Enable hyprland
   programs.hyprland = {
     enable = true;
