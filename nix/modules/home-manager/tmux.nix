@@ -1,8 +1,4 @@
-{
-  unstable,
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   settings = {
     tmux = builtins.readFile ../../../tmux/tmux.conf;
     catppuccin = builtins.readFile ../../../tmux/tmux.catppuccin.conf;
@@ -20,14 +16,13 @@
 in {
   programs.tmux = {
     enable = true;
-    package = unstable.tmux;
     keyMode = "vi";
     mouse = true;
     terminal = "screen-256color";
     baseIndex = 1;
     extraConfig = settings.tmux;
 
-    plugins = with unstable; [
+    plugins = with pkgs; [
       tmuxPlugins.vim-tmux-navigator
       tmuxPlugins.yank
       # tmuxPlugins.cpu

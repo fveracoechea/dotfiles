@@ -1,8 +1,4 @@
-{
-  pkgs,
-  unstable,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/hyprland.nix
@@ -25,7 +21,6 @@
 
   programs.fzf = {
     enable = true;
-    package = unstable.fzf;
     enableZshIntegration = true;
     tmux.enableShellIntegration = true;
   };

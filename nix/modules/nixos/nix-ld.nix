@@ -1,5 +1,19 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   programs.nix-ld.enable = true;
+
+  environment.variables = with pkgs; {
+    NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
+      stdenv.cc.cc
+      openssl
+      nss
+      gcc
+    ];
+    # NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
+  };
 
   # Add any missing dynamic libraries for unpackaged programs
   # here, NOT in environment.systemPackages
@@ -18,7 +32,6 @@
     fuse3
     gdk-pixbuf
     glib
-    gtk3
     icu
     libGL
     libappindicator-gtk3
@@ -31,7 +44,6 @@
     libuuid
     libxkbcommon
     libxml2
-    # mesa
     rustc
     cargo
     nspr
@@ -44,20 +56,6 @@
     libgcc
     systemd
     vulkan-loader
-    xorg.libX11
-    xorg.libXScrnSaver
-    xorg.libXcomposite
-    xorg.libXcursor
-    xorg.libXdamage
-    xorg.libXext
-    xorg.libXfixes
-    xorg.libXi
-    xorg.libXrandr
-    xorg.libXrender
-    xorg.libXtst
-    xorg.libxcb
-    xorg.libxkbfile
-    xorg.libxshmfence
     zlib
   ];
 }

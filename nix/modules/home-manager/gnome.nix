@@ -1,6 +1,5 @@
 {
   pkgs,
-  unstable,
   lib,
   ...
 }: {
@@ -8,13 +7,13 @@
     enable = true;
     theme = lib.mkForce {
       name = "Colloid-Dark-Catppuccin";
-      package = unstable.colloid-gtk-theme.override {
+      package = pkgs.colloid-gtk-theme.override {
         tweaks = ["catppuccin"];
       };
     };
     iconTheme = lib.mkForce {
       name = "Colloid-dark";
-      package = unstable.colloid-icon-theme;
+      package = pkgs.colloid-icon-theme;
     };
   };
 
@@ -35,9 +34,8 @@
     slack
     google-chrome
     dconf2nix
-    # unstable packages
-    unstable.deno
-    unstable.neovim
+    deno
+    neovim
     # gnome extensions
     gnome.gnome-tweaks
     gnome.dconf-editor

@@ -24,8 +24,8 @@
       ls = "ls -lca";
       e = "exit";
       c = "clear";
-      node = "$HOME/.volta/bin/node";
-      npm = "$HOME/.volta/bin/npm";
+      # node = "$HOME/.volta/bin/node";
+      # npm = "$HOME/.volta/bin/npm";
     };
   };
 }
