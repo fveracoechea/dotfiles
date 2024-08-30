@@ -13,10 +13,8 @@
       };
     };
     iconTheme = lib.mkForce {
-      name = "Collid-dark";
-      package = unstable.colloid-icon-theme.override {
-        schemeVariants = ["all"];
-      };
+      name = "Colloid-dark";
+      package = unstable.colloid-icon-theme;
     };
   };
 
@@ -76,6 +74,10 @@
         "slack.desktop"
         "io.github.seadve.Kooha.desktop"
       ];
+    };
+
+    "org/gnome/shell/extensions/user-theme" = {
+      name = "Colloid-Dark-Catppuccin";
     };
 
     "org/gnome/shell/extensions/freon" = {
