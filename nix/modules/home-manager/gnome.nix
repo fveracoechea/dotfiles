@@ -34,11 +34,13 @@
     kooha
     slack
     google-chrome
+    dconf2nix
     # unstable packages
     unstable.deno
     unstable.neovim
-    gnome.gnome-tweaks
     # gnome extensions
+    gnome.gnome-tweaks
+    gnome.dconf-editor
     gnomeExtensions.freon
     gnomeExtensions.dash2dock-lite
     gnomeExtensions.blur-my-shell
@@ -76,7 +78,7 @@
       ];
     };
 
-    "org/gnome/shell/extensions/user-theme" = {
+    "org/gnome/shell/extensions/user-theme" = lib.mkForce {
       name = "Colloid-Dark-Catppuccin";
     };
 
@@ -102,21 +104,21 @@
 
     "org/gnome/shell/extensions/dash2dock-lite" = {
       animation-rise = 0.44;
-      animation-spread = 0.10000000000000001;
+      animation-spread = 0.25;
       apps-icon-front = false;
-      background-color = "(0.0, 0.0, 0.0, 0.37000000476837158)";
+      background-color = "(30, 30, 46, 0.60)";
       blur-background = true;
       blur-resolution = 0;
       calendar-icon = false;
       customize-label = false;
       dock-location = 1;
-      dock-padding = 0.86521739130434783;
+      dock-padding = 0.85;
       downloads-icon = false;
-      edge-distance = 0.47126436781609193;
+      edge-distance = 0.48;
       icon-resolution = 0;
       icon-shadow = true;
-      icon-size = 0.085897435897435898;
-      icon-spacing = 0.44444444444444442;
+      icon-size = 0.085;
+      icon-spacing = 0.45;
       label-border-radius = 0.0;
       mounted-icon = false;
       panel-mode = false;
