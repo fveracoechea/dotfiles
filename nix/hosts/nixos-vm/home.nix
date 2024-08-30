@@ -11,6 +11,7 @@
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/xdg.nix
     ../../modules/home-manager/gnome.nix
+    ../../modules/home-manager/dconf.nix
   ];
 
   home.username = "fveracoechea";
