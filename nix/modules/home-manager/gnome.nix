@@ -46,7 +46,6 @@ in {
     google-chrome
     dconf2nix
     deno
-    neovim
     # gnome apps/extensions
     gnome-tweaks
     dconf-editor

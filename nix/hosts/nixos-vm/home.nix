@@ -5,9 +5,9 @@
     ../../modules/home-manager/git.nix
     ../../modules/home-manager/tmux.nix
     ../../modules/home-manager/zsh.nix
-    ../../modules/home-manager/xdg.nix
     ../../modules/home-manager/gnome.nix
     ../../modules/home-manager/dconf.nix
+    ../../modules/home-manager/neovim.nix
   ];
 
   home.username = "fveracoechea";
