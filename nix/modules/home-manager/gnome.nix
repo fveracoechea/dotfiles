@@ -43,7 +43,6 @@ in {
     cmatrix
     nurl
     kooha
-    slack
     google-chrome
     dconf2nix
     deno

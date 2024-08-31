@@ -106,8 +106,13 @@
     cmake
     gnumake
     cargo
+    slack
     inputs.alejandra.defaultPackage.${pkgs.system}
   ];
+
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+  };
 
   environment.pathsToLink = ["/share/zsh"];
 

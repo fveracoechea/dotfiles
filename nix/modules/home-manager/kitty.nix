@@ -11,6 +11,7 @@
       italic_font = "FiraCode Nerd Font Italic";
       bold_italic_font = "FiraCode Nerd Font Bold Italic";
       window_padding_width = 2;
+      linux_display_server = "x11";
     };
   };
 }

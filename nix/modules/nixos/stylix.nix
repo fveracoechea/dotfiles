@@ -27,5 +27,7 @@ in {
       monospace = firaCode;
       emoji = firaCode;
     };
+
+    targets.chromium.enable = false;
   };
 }
