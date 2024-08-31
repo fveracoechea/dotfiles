@@ -1,21 +1,21 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
-    extraLuaConfig = ''
-      require "setup"
-    '';
-  };
+  # programs.neovim = {
+  #   enable = true;
+  #   defaultEditor = true;
+  #   viAlias = true;
+  #   vimAlias = true;
+  #   vimdiffAlias = true;
+  # };
 
   # Enable management of XDG base directories
   xdg.enable = lib.mkDefault true;
+
+  home.packages = [pkgs.neovim];
 
   xdg.configFile = {
     "lazygit".source = ../../../lazygit;
