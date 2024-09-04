@@ -15,6 +15,9 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    neovim-config.url = "github:fveracoechea/neovim-nix-config";
+
     # alejandra nix formatter
     alejandra = {
       url = "github:kamadorueda/alejandra/3.0.0";
@@ -50,7 +53,7 @@
         # NixOS System configurations
         ./hosts/nixos-vm/configuration.nix
         # make home-manager as a module of nixos
-        # so that home-manager configuration will be deployed automatically
+        # so tat home-manager configuration will be deployed automatically
         # when executing `nixos-rebuild switch`
         home-manager.nixosModules.home-manager
         {

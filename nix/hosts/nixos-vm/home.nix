@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/hyprland.nix
@@ -7,7 +11,8 @@
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/gnome.nix
     ../../modules/home-manager/dconf.nix
-    ../../modules/home-manager/neovim.nix
+    # ../../modules/home-manager/neovim.nix
+    inputs.neovim-config.homeManagerModules.neovim
   ];
 
   home.username = "fveracoechea";
