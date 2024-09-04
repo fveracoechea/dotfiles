@@ -2,7 +2,7 @@
   pkgs,
   inputs,
   ...
-}: {
+} @ args: {
   imports = [
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/hyprland.nix
@@ -12,7 +12,7 @@
     ../../modules/home-manager/gnome.nix
     ../../modules/home-manager/dconf.nix
     # ../../modules/home-manager/neovim.nix
-    inputs.neovim-config.homeManagerModules.neovim
+    (inputs.neovim-config.homeManagerModules.neovim args)
   ];
 
   home.username = "fveracoechea";
