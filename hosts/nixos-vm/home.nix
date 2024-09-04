@@ -1,4 +1,9 @@
-{inputs, ...} @ args: {
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/git.nix
@@ -7,7 +12,10 @@
     ../../modules/home-manager/gnome.nix
     ../../modules/home-manager/dconf.nix
     # ../../modules/home-manager/hyprland.nix
-    (inputs.neovim-config.homeManagerModules.neovim args)
+    (inputs.neovim-config.homeManagerModules.neovim {
+      inherit pkgs;
+      inherit lib;
+    })
   ];
 
   home.username = "fveracoechea";

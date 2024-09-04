@@ -4,14 +4,14 @@
   ...
 }: let
   settings = {
-    tmux = lib.fileCotents ../../config/tmux/tmux.conf;
-    catppuccin = lib.fileCotents ../../config/tmux/tmux.catppuccin.conf;
+    tmux = lib.fileContents ../../config/tmux/tmux.conf;
+    catppuccin = lib.fileContents ../../config/tmux/tmux.catppuccin.conf;
   };
 in {
   # scripts
   home.packages = with pkgs; [
-    (writeShellScriptBin "uptime-tmux" (lib.fileCotents ../../config/scripts/uptime-tmux.zsh))
-    (writeShellScriptBin "git-tmux" (lib.fileCotents ../../config/scripts/git-tmux.zsh))
+    (writeShellScriptBin "uptime-tmux" (lib.fileContents ../../config/scripts/uptime-tmux.zsh))
+    (writeShellScriptBin "git-tmux" (lib.fileContents ../../config/scripts/git-tmux.zsh))
   ];
 
   programs.tmux = {
