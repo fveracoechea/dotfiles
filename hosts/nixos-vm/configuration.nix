@@ -47,11 +47,11 @@
   };
 
   # Enable hyprland
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
-  };
+  # programs.hyprland = {
+  #   enable = true;
+  #   xwayland.enable = true;
+  #   package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+  # };
 
   # Configure keymap in X11
   services.xserver.xkb = {

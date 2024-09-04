@@ -1,39 +1,22 @@
-{
-  pkgs,
-  inputs,
-  ...
-} @ args: {
+{inputs, ...} @ args: {
   imports = [
     ../../modules/home-manager/kitty.nix
-    ../../modules/home-manager/hyprland.nix
     ../../modules/home-manager/git.nix
     ../../modules/home-manager/tmux.nix
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/gnome.nix
     ../../modules/home-manager/dconf.nix
-    # ../../modules/home-manager/neovim.nix
+    # ../../modules/home-manager/hyprland.nix
     (inputs.neovim-config.homeManagerModules.neovim args)
   ];
 
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
 
-  # scripts
-  home.packages = with pkgs; [
-    (writeShellScriptBin "uptime-tmux" (builtins.readFile ../../../scripts/uptime-tmux.zsh))
-    (writeShellScriptBin "git-tmux" (builtins.readFile ../../../scripts/git-tmux.zsh))
-  ];
-
-  programs.fzf = {
-    enable = true;
-    enableZshIntegration = true;
-    tmux.enableShellIntegration = true;
-  };
-
+  # TODO: are these needed?
   home.sessionVariables = {
     VOLTA_HOME = "$HOME/.volta";
   };
-
   home.sessionPath = [
     "$HOME/.volta/bin"
   ];

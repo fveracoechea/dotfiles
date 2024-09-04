@@ -360,11 +360,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1725445409,
-        "narHash": "sha256-nz9F3o9vTS7LSEbLoa0De0Tbv0/fJjiv1qihlXnD3co=",
+        "lastModified": 1725465540,
+        "narHash": "sha256-9OhDjPMwomJbGuIv5mFAvu/AV6ETTVHz08wVP1goNkY=",
         "ref": "refs/heads/main",
-        "rev": "ea10592ad3c861ff2ce73ad7785bcb5a45a9e400",
-        "revCount": 5183,
+        "rev": "027140b7315efe3cd2e7b78fa608bd36da839894",
+        "revCount": 5184,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
@@ -481,7 +481,7 @@
         "type": "github"
       }
     },
-    "import-cost-nvim": {
+    "import_cost-nvim": {
       "flake": false,
       "locked": {
         "lastModified": 1714772241,
@@ -531,17 +531,17 @@
     },
     "neovim-config": {
       "inputs": {
-        "import-cost-nvim": "import-cost-nvim",
+        "import_cost-nvim": "import_cost-nvim",
         "lazydev-nvim": "lazydev-nvim",
         "lsp-file-operations-nvim": "lsp-file-operations-nvim",
         "tree-sitter-nginx": "tree-sitter-nginx"
       },
       "locked": {
-        "lastModified": 1725457846,
-        "narHash": "sha256-EzmVM3bKA/Qdxyg5OdBEjv2WTt3ocVwq9SYTobwZekM=",
+        "lastModified": 1725468461,
+        "narHash": "sha256-7WSnCLKsZPGozMK1ZnUWPJ8RmvfuvpxHJR4FLfJFK20=",
         "owner": "fveracoechea",
         "repo": "neovim-nix-config",
-        "rev": "74c22d35d29de1a2e7609dc11ea0c348e0ce5100",
+        "rev": "ddac8255c52b6bb6bef6a96751a845f61104b5aa",
         "type": "github"
       },
       "original": {
