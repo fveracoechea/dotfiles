@@ -46,6 +46,7 @@ in {
     google-chrome
     dconf2nix
     deno
+    watchman
     # gnome apps/extensions
     gnome-tweaks
     dconf-editor
