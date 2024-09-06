@@ -50,7 +50,7 @@ in {
     gnome-tweaks
     dconf-editor
     gnomeExtensions.freon
-    gnomeExtensions.dash2dock-lite
+    gnomeExtensions.dash-to-dock
     gnomeExtensions.blur-my-shell
     gnomeExtensions.system-monitor
     gnomeExtensions.workspace-indicator

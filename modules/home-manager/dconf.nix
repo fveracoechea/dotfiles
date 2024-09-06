@@ -11,8 +11,8 @@
       disable-user-extensions = false;
       enabled-extensions = [
         "blur-my-shell@aunetx"
-        "dash2dock-lite@icedman.github.com"
         "freon@UshakovVasilii_Github.yahoo.com"
+        "dash-to-dock@micxgx.gmail.com"
         "system-monitor@gnome-shell-extensions.gcampax.github.com"
         "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
         "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
@@ -49,6 +49,10 @@
     "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
       blur = true;
       pipeline = "pipeline_default_rounded";
+      override-background = true;
+      static-blur = true;
+      style-dash-to-dock = 0;
+      unblur-in-overview = false;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/hidetopbar" = {
@@ -69,68 +73,47 @@
       blur = true;
       force-light-text = true;
       pipeline = "pipeline_default";
+      override-background = true;
+      override-background-dynamically = false;
+      static-blur = true;
+      style-panel = 0;
+      unblur-in-overview = false;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/screenshot" = {
       pipeline = "pipeline_default";
     };
 
-    "org/gnome/shell/extensions/dash2dock-lite" = {
-      animation-bounce = 0.75;
-      animation-magnify = 0.3;
-      animation-rise = 0.44;
-      animation-spread = 0.25;
-      apps-icon-front = false;
-      autohide-dash = false;
-      autohide-speed = 0.5;
-      background-color = lib.hm.gvariant.mkTuple [
-        0.11764705926179886
-        0.11764705926179886
-        0.18039216101169586
-        0.83666664361953735
-      ];
-      blur-background = true;
-      blur-resolution = 0;
-      border-radius = 3.0;
-      border-thickness = 0;
-      calendar-icon = false;
-      customize-label = true;
-      customize-topbar = false;
-      dock-location = 1;
-      dock-padding = 0.85;
-      downloads-icon = false;
-      edge-distance = 0.48;
-      icon-resolution = 0;
-      icon-shadow = true;
-      icon-size = 8.5e-2;
-      icon-spacing = 0.45;
-      label-background-color = lib.hm.gvariant.mkTuple [
-        0.11764705926179886
-        0.11764705926179886
-        0.18039216101169586
-        0.83666664361953735
-      ];
-      label-border-radius = 2.25;
-      label-foreground-color = lib.hm.gvariant.mkTuple [
-        0.8039215803146362
-        0.8392156958580017
-        0.95686274766922
-        1.0
-      ];
-      mounted-icon = false;
-      msg-to-ext = "";
-      open-app-animation = true;
-      panel-mode = false;
-      preferred-monitor = 0;
-      pressure-sense = false;
-      pressure-sense-sensitivity = 0.4;
-      running-indicator-size = 2;
-      running-indicator-style = 1;
-      scroll-sensitivity = 0.4;
-      shrink-icons = false;
-      topbar-border-thickness = 0;
-      trash-icon = true;
+    "org/gnome/extensions/dash-to-dock" = {
+      always-center-icons = false;
+      animation-time = 0.20000000000000001;
+      apply-custom-theme = true;
+      autohide = true;
+      autohide-in-fullscreen = false;
+      background-opacity = 0.80000000000000004;
+      custom-background-color = false;
+      custom-theme-shrink = true;
+      dash-max-icon-size = 46;
+      disable-overview-on-startup = false;
+      dock-fixed = false;
+      dock-position = "LEFT";
+      extend-height = false;
+      height-fraction = 1.0;
+      hide-delay = 0.20000000000000001;
+      intellihide = true;
+      intellihide-mode = "FOCUS_APPLICATION_WINDOWS";
+      preferred-monitor = -2;
+      preferred-monitor-by-connector = "Virtual-1";
+      pressure-threshold = 100.0;
+      preview-size-scale = 0.80000000000000004;
+      require-pressure-to-show = true;
+      running-indicator-style = "DOTS";
+      scroll-action = "do-nothing";
+      show-delay = 0.25;
+      show-dock-urgent-notify = true;
+      show-favorites = true;
     };
+
     "org/gnome/shell/extensions/freon" = {
       exec-method-freeipmi = "pkexec";
       hot-sensors = ["__average__" "__max__"];
