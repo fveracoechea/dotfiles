@@ -5,8 +5,17 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    initExtra = builtins.readFile ../../config/zsh/extra.zsh;
-    # dotDir = ".config/zsh";
+    dotDir = ".config/zsh";
+    initExtra =
+      /*
+      sh
+      */
+      ''
+        ${builtins.readFile ../../config/zsh/extra.zsh}
+
+        # Source secrets
+        . ~/.config/zsh/secrets.zsh
+      '';
 
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;

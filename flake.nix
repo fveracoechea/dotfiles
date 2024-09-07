@@ -5,24 +5,34 @@
     # NixOS official package sources
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/release-24.05";
-    # home-manager, used for managing user configuration -
+
+    # home-manager, used for managing user configuration
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     # Sylix - system wide styles
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Neovim config flake
     neovim-config.url = "github:fveracoechea/neovim-nix-config";
+
+    # tmux weather plugin
+    tmux-clima = {
+      url = "github:vascomfnunes/tmux-clima";
+      flake = false;
+    };
 
     # alejandra nix formatter
     alejandra = {
       url = "github:kamadorueda/alejandra/3.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     # Hyprland
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
   };

@@ -40,14 +40,10 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  environment.variables = {
+  environment.sessionVariables = {
+    # NIXOS_OZONE_WL = "1";
     # Hyprland variables
     WLR_NO_HARDWARE_CURSORS = "1";
-    NIXOS_OZONE_WL = "1";
-  };
-
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
   };
 
   # Enable hyprland

@@ -51,6 +51,7 @@ in {
     gnome-tweaks
     dconf-editor
     gnomeExtensions.freon
+    gnomeExtensions.tiling-shell
     gnomeExtensions.dash-to-dock
     gnomeExtensions.blur-my-shell
     gnomeExtensions.system-monitor
