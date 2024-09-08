@@ -44,8 +44,8 @@
     home-manager,
     ...
   } @ inputs: {
-    # The host with the hostname `nixos-vm` will use this configuration
-    nixosConfigurations.nixos-vm = nixpkgs.lib.nixosSystem rec {
+    # The host with the hostname `nixos-desktop` will use this configuration
+    nixosConfigurations.nixos-desktop = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
 
       specialArgs = {
@@ -61,7 +61,7 @@
       modules = [
         stylix.nixosModules.stylix
         # NixOS System configurations
-        ./hosts/nixos-vm/configuration.nix
+        ./hosts/nixos-desktop/configuration.nix
         # make home-manager as a module of nixos
         # so tat home-manager configuration will be deployed automatically
         # when executing `nixos-rebuild switch`
@@ -70,7 +70,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "hm-backup";
-          home-manager.users.fveracoechea = import ./hosts/nixos-vm/home.nix;
+          home-manager.users.fveracoechea = import ./hosts/nixos-desktop/home.nix;
           home-manager.extraSpecialArgs = specialArgs;
         }
       ];
