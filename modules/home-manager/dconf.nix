@@ -35,8 +35,6 @@
         "apps-menu@gnome-shell-extensions.gcampax.github.com"
         "light-style@gnome-shell-extensions.gcampax.github.com"
       ];
-      last-selected-power-profile = "power-saver";
-      welcome-dialog-last-shown-version = "46.2";
     };
 
     "org/gnome/shell/extensions/blur-my-shell" = {
