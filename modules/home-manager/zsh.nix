@@ -30,7 +30,7 @@
     };
 
     shellAliases = {
-      ls = "ls -lca";
+      ls = "ls -ca";
       e = "exit";
       c = "clear";
     };

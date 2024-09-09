@@ -11,7 +11,7 @@
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/gnome.nix
     ../../modules/home-manager/dconf.nix
-    # ../../modules/home-manager/hyprland.nix
+    ../../modules/home-manager/volta.nix
     (inputs.neovim-config.homeManagerModules.neovim {
       inherit pkgs;
       inherit lib;
