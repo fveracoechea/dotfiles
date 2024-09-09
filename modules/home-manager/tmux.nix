@@ -1,19 +1,11 @@
 {
   pkgs,
   lib,
-  inputs,
   ...
 }: let
   settings = {
     tmux = lib.fileContents ../../config/tmux/tmux.conf;
     catppuccin = lib.fileContents ../../config/tmux/tmux.catppuccin.conf;
-  };
-  plugins = {
-    tmux-clima = pkgs.tmuxPlugins.mkTmuxPlugin {
-      pluginName = "tmux-clima";
-      version = "unstable-2024-09-06";
-      src = inputs.tmux-clima;
-    };
   };
 in {
   # scripts
@@ -33,14 +25,6 @@ in {
     plugins = with pkgs; [
       tmuxPlugins.vim-tmux-navigator
       tmuxPlugins.yank
-      tmuxPlugins.cpu
-      {
-        plugin = plugins.tmux-clima;
-        extraConfig = ''
-          set -g @clima_unit imperial
-          set -g @clima_use_nerd_font 1
-        '';
-      }
       {
         plugin = tmuxPlugins.catppuccin;
         extraConfig = settings.catppuccin;
