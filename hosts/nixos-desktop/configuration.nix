@@ -41,8 +41,9 @@
 
   environment.sessionVariables = {
     # NIXOS_OZONE_WL = "1";
-    # Hyprland variables
     WLR_NO_HARDWARE_CURSORS = "1";
+    VOLTA_HOME = "$HOME/.volta";
+    MANGOHUD = "1";
   };
 
   # Enable hyprland

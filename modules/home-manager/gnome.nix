@@ -10,6 +10,11 @@
 in {
   xdg.enable = lib.mkDefault true;
 
+  programs.mangohud = {
+    enable = true;
+    enableSessionWide = true;
+  };
+
   xdg.configFile."gtk-4.0/gtk.css".source = lib.mkForce "${themePackage}${path}/gtk.css";
   xdg.configFile."gtk-4.0/gtk-dark.css".source = lib.mkForce "${themePackage}${path}/gtk-dark.css";
   xdg.configFile."gtk-4.0/assets" = {
@@ -36,7 +41,6 @@ in {
     btop
     lazygit
     oh-my-posh
-    volta
     fira-code-nerdfont
     neofetch
     python3
@@ -47,6 +51,7 @@ in {
     dconf2nix
     deno
     watchman
+    volta
     # gnome apps/extensions
     gnome-tweaks
     dconf-editor

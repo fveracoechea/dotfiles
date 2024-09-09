@@ -21,10 +21,6 @@
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
 
-  # TODO: are these needed?
-  home.sessionVariables = {
-    VOLTA_HOME = "$HOME/.volta";
-  };
   home.sessionPath = [
     "$HOME/.volta/bin"
   ];

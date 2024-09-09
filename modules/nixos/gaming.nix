@@ -15,7 +15,6 @@
   hardware.cpu.amd.updateMicrocode = true;
 
   environment.systemPackages = with pkgs; [
-    mangohud
     protonup
     lutris
     amdgpu_top
