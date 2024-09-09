@@ -51,7 +51,6 @@ in {
     dconf2nix
     deno
     watchman
-    volta
     # gnome apps/extensions
     gnome-tweaks
     dconf-editor
