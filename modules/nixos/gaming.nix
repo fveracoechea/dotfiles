@@ -4,17 +4,21 @@
     enable32Bit = true;
   };
 
-  services.xserver.videoDrivers = ["admgpu"];
+  services.xserver.videoDrivers = ["modesetting"];
+  hardware.amdgpu.initrd.enable = true;
 
   programs.steam.enable = true;
   programs.steam.gamescopeSession.enable = true;
 
   programs.gamemode.enable = true;
 
+  hardware.cpu.amd.updateMicrocode = true;
+
   environment.systemPackages = with pkgs; [
     mangohud
     protonup
     lutris
+    amdgpu_top
   ];
 
   environment.sessionVariables = {
