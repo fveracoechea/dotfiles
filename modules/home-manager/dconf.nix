@@ -64,7 +64,7 @@
 
     "org/gnome/shell/extensions/blur-my-shell/overview" = {
       blur = true;
-      pipeline = "pipeline_default";
+      pipeline = "prpeline_default";
       style-components = 2;
     };
 
@@ -83,7 +83,7 @@
       pipeline = "pipeline_default";
     };
 
-    "org/gnome/extensions/dash-to-dock" = {
+    "org/gnome/shell/extensions/dash-to-dock" = {
       always-center-icons = false;
       animation-time = 0.20000000000000001;
       apply-custom-theme = true;
@@ -139,12 +139,8 @@
     };
 
     "org/gnome/shell/extensions/tilingshell" = {
-      last-version-name-installed = "11.1";
       inner-gaps = "uint32 16";
       outer-gaps = "uint32 16";
-      selected-layouts = ["Layout 3"];
-      layouts-json = ''[{"id":"Layout 3","tiles":[{"x":0,"y":0,"width":0.33,"height":1,"groups":[1]},{"x":0.33,"y":0,"width":0.67,"height":1,"groups":[1]}]},{"id":"Layout 4","tiles":[{"x":0,"y":0,"width":0.67,"height":1,"groups":[1]},{"x":0.67,"y":0,"width":0.33,"height":1,"groups":[1]}]},{"id":"30346594","tiles":[{"x":0,"y":0,"width":0.5,"height":1,"groups":[1]},{"x":0.5,"y":0,"width":0.4999999999999997,"height":1,"groups":[1]}]}]'';
-      overridden-settings = ''{\"org.gnome.mutter.keybindings\":{\"toggle-tiled-right\":\"['<Super>Right']\",\"toggle-tiled-left\":\"['<Super>Left']\"},\"org.gnome.desktop.wm.keybindings\":{\"maximize\":\"['<Super>Up']\",\"unmaximize\":\"['<Super>Down', '<Alt>F5']\"},\"org.gnome.mutter\":{\"edge-tiling\":\"false\"}}'';
     };
   };
 }
