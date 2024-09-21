@@ -76,7 +76,7 @@
   users.users.fveracoechea = {
     isNormalUser = true;
     description = "fveracoechea";
-    extraGroups = ["networkmanager" "wheel"];
+    extraGroups = ["networkmanager" "wheel" "audio"];
   };
 
   # Enable automatic login for the user.
