@@ -18,6 +18,7 @@
     protonup
     lutris
     amdgpu_top
+    discord
   ];
 
   environment.sessionVariables = {

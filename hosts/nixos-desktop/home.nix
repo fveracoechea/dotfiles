@@ -12,6 +12,7 @@
     ../../modules/home-manager/gnome.nix
     ../../modules/home-manager/dconf.nix
     ../../modules/home-manager/volta.nix
+    ../../modules/home-manager/pro-audio.nix
     (inputs.neovim-config.homeManagerModules.neovim {
       inherit pkgs;
       inherit lib;
