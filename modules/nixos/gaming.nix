@@ -5,6 +5,11 @@
   };
 
   services.xserver.videoDrivers = ["modesetting"];
+
+  services.xserver.deviceSection = ''
+    Option "VariableRefresh" "true"
+  '';
+
   hardware.amdgpu.initrd.enable = true;
 
   programs.steam.enable = true;
@@ -16,9 +21,17 @@
 
   environment.systemPackages = with pkgs; [
     protonup
-    lutris
     amdgpu_top
     discord
+    lact
+    gamemode
+    gnomeExtensions.gamemode-shell-extension
+    (lutris.override {
+      extraPkgs = pkgs: [
+        wineWowPackages.waylandFull
+        winetricks
+      ];
+    })
   ];
 
   environment.sessionVariables = {
