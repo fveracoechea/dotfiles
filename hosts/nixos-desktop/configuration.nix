@@ -39,19 +39,6 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  environment.sessionVariables = {
-    # NIXOS_OZONE_WL = "1";
-    WLR_NO_HARDWARE_CURSORS = "1";
-    MANGOHUD = "1";
-  };
-
-  # Enable hyprland
-  # programs.hyprland = {
-  #   enable = true;
-  #   xwayland.enable = true;
-  #   package = inputs.hyprland.packages."${pkgs.system}".hyprland;
-  # };
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";

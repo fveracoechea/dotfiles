@@ -34,7 +34,6 @@
       disabled-extensions = [
         "launch-new-instance@gnome-shell-extensions.gcampax.github.com"
         "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com"
-        "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
         "native-window-placement@gnome-shell-extensions.gcampax.github.com"
         "apps-menu@gnome-shell-extensions.gcampax.github.com"
         "light-style@gnome-shell-extensions.gcampax.github.com"
@@ -128,6 +127,7 @@
       use-gpu-bumblebeenvidia = true;
       use-gpu-nvidia = false;
     };
+
     "org/gnome/shell/extensions/system-monitor" = {
       show-cpu = true;
       show-download = false;
@@ -135,9 +135,11 @@
       show-swap = true;
       show-upload = false;
     };
-    "org/gnome/shell/extensions/user-theme" = lib.mkForce {
-      name = "Colloid-Dark-Catppuccin";
-    };
+
+    # "org/gnome/shell/extensions/user-theme" = lib.mkForce {
+    #   name = "Colloid-Dark-Catppuccin";
+    # };
+
     "world-clocks" = {
       locations = [];
     };

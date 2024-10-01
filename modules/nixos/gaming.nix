@@ -10,38 +10,36 @@
     Option "VariableRefresh" "true"
   '';
 
+  hardware.cpu.amd.updateMicrocode = true;
   hardware.amdgpu.initrd.enable = true;
 
   programs.steam.enable = true;
   programs.steam.gamescopeSession.enable = true;
-
   programs.gamemode.enable = true;
-
-  hardware.cpu.amd.updateMicrocode = true;
 
   environment.systemPackages = with pkgs; [
     protonup
     amdgpu_top
     discord
     lact
-    gamemode
-    gnomeExtensions.gamemode-shell-extension
     (lutris.override {
       extraPkgs = pkgs: [
         wineWowPackages.waylandFull
         winetricks
+        gamemode
       ];
+      extraLibraries = pkgs: [gamemode];
     })
   ];
 
   systemd.services.lact = {
+    enable = true;
     description = "AMDGPU Control Daemon";
     after = ["multi-user.target"];
     wantedBy = ["multi-user.target"];
     serviceConfig = {
       ExecStart = "${pkgs.lact}/bin/lact daemon";
     };
-    enable = true;
   };
 
   environment.sessionVariables = {
