@@ -28,10 +28,10 @@ in {
     #   name = "Colloid-Dark-Catppuccin";
     #   package = themePackage;
     # };
-    # iconTheme = lib.mkForce {
-    #   name = "Colloid-dark";
-    #   package = pkgs.colloid-icon-theme;
-    # };
+    iconTheme = lib.mkForce {
+      name = "Colloid-dark";
+      package = pkgs.colloid-icon-theme;
+    };
   };
 
   home.packages = with pkgs; [
