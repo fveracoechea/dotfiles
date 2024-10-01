@@ -1,18 +1,15 @@
 {
   inputs,
   pkgs,
-  lib,
   ...
-}: let
-  super = "SUPER";
-in {
+}: {
   home.packages = with pkgs; [
     dunst
     libnotify
     hyprdim
   ];
 
-  programs.rofi = {
+  programs.wofi = {
     enable = true;
   };
 
@@ -23,10 +20,12 @@ in {
     systemd.enable = true;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
-    settings = {
-      "$mod" = super;
-      "$menu" = "rofi --show drun -show-icons";
-
+    settings = let
+      super = "SUPER";
+      menu = "wofi --show drun";
+      terminal = "kitty";
+      browser = "chrome";
+    in {
       "exec-once" = [
         "${pkgs.waybar}/bin/waybar"
         "hyprdim --no-dim-when-only --persist --ignore-leaving-special --dialog-dim"
@@ -37,8 +36,10 @@ in {
       bind =
         [
           "${super}, F, exec, firefox"
-          "${super} A, exec, rofi --show drun -show-icons"
-          "${super}_ALT, L, exec, hyprlock"
+          "${super}, B, exec, ${browser}"
+          "${super}, K, exec, ${terminal}"
+          "${super}, A, exec, ${menu}"
+          "${super} SHIFT, L, exec, hyprlock"
           ", Print, exec, grimblast copy area"
         ]
         ++ (
@@ -55,8 +56,6 @@ in {
         );
     };
   };
-
-  services.hyprpaper.enable = lib.mkForce false;
 
   services.hypridle = {
     enable = true;
@@ -94,24 +93,24 @@ in {
   programs.hyprlock = {
     enable = true;
 
-    settings = {
-      general = {
-        hide_cursor = true;
-        grace = 2;
-      };
-
-      label = {
-        text = "$USER";
-        text_align = "center";
-        font_size = 50;
-        halign = "center";
-        valign = "center";
-      };
-
-      input-field = {
-        size = "50, 50";
-        placeholder_text = "<i>Input Password...</i> ";
-      };
-    };
+    # settings = {
+    #   general = {
+    #     hide_cursor = true;
+    #     grace = 2;
+    #   };
+    #
+    #   label = {
+    #     text = "$USER";
+    #     text_align = "center";
+    #     font_size = 50;
+    #     halign = "center";
+    #     valign = "center";
+    #   };
+    #
+    #   input-field = {
+    #     size = "50, 50";
+    #     placeholder_text = "<i>Input Password...</i> ";
+    #   };
+    # };
   };
 }
