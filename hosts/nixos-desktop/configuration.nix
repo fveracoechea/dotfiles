@@ -13,6 +13,7 @@
     ../../modules/nixos/pipewire.nix
     ../../modules/nixos/stylix.nix
     ../../modules/nixos/gaming.nix
+    ../../modules/nixos/hyprland.nix
   ];
 
   # Bootloader.
