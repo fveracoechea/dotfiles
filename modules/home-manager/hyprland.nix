@@ -1,6 +1,6 @@
 {
   pkgs,
-  inputs,
+  lib,
   ...
 }: let
   super = "SUPER";
@@ -20,7 +20,6 @@ in {
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
-    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
     settings = {
       "$mod" = super;
@@ -54,6 +53,8 @@ in {
         );
     };
   };
+
+  services.hyprpaper.enable = lib.mkForce false;
 
   services.hypridle = {
     enable = true;
