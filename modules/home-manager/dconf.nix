@@ -1,6 +1,10 @@
 {lib, ...}: {
   # Generated with dconf2nix
   dconf.settings = {
+    "org/gnome/mutter" = {
+      experimental-features = ["variable-refresh-rate"];
+    };
+
     "org/gnome/nautilus/preferences" = {
       search-filter-time-type = "last_modified";
       default-folder-viewer = "list-view";
