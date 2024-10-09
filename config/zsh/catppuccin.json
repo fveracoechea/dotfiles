@@ -94,11 +94,8 @@
       "segments": [
         {
           "type": "executiontime",
-          "style": "diamond",
-          "powerline_symbol": "\ue0b4",
-          "leading_diamond": "\ue0b6",
-          "foreground": "p:crust",
-          "background": "p:rosewater",
+          "style": "plain",
+          "foreground": "p:rosewater",
           "template": " {{ .FormattedMs }} ",
           "properties": {
             "threshold": 200,

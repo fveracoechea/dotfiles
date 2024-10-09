@@ -147,6 +147,15 @@
     "org/gnome/shell/extensions/tilingshell" = {
       inner-gaps = "uint32 16";
       outer-gaps = "uint32 16";
+      enable-blur-selected-tilepreview = true;
+      enable-blur-snap-assistant = true;
+      layouts-json = ''
+        [{"id":"Layout 2","tiles":[{"x":0,"y":0,"width":0.22,"height":1,"groups":[1]},{"x":0.22,"y":0,"width":0.56,"height":1,"groups":[1,2]},{"x":0.78,"y":0,"width":0.22,"height":1,"groups":[2]}]},{"id":"Layout 3","tiles":[{"x":0,"y":0,"width":0.33,"height":1,"groups":[1]},{"x":0.33,"y":0,"width":0.67,"height":1,"groups":[1]}]},{"id":"Layout 4","tiles":[{"x":0,"y":0,"width":0.67,"height":1,"groups":[1]},{"x":0.67,"y":0,"width":0.33,"height":1,"groups":[1]}]},{"id":"705927","tiles":[{"x":0,"y":0,"width":0.5,"height":1,"groups":[1]},{"x":0.5,"y":0,"width":0.4999999999999999,"height":1,"groups":[1]}]},{"id":"45125883","tiles":[{"x":0,"y":0,"width":0.378515625,"height":1,"groups":[1]},{"x":0.378515625,"y":0,"width":0.3916015625,"height":1,"groups":[2,1]},{"x":0.7701171875,"y":0,"width":0.22988281250000003,"height":1,"groups":[2]}]}]
+      '';
+      overridden-settings = ''
+        "{\"org.gnome.mutter.keybindings\":{\"toggle-tiled-right\":\"['<Super>Right']\",\"toggle-tiled-left\":\"['<Super>Left']\"},\"org.gnome.desktop.wm.keybindings\":{\"maximize\":\"['<Super>Up']\",\"unmaximize\":\"['<Super>Down', '<Alt>F5']\"},\"org.gnome.mutter\":{\"edge-tiling\":\"false\"}}"
+      '';
+      selected-layouts = "['45125883']";
     };
   };
 }

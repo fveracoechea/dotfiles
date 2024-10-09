@@ -31,7 +31,7 @@
         "hyprdim --no-dim-when-only --persist --ignore-leaving-special --dialog-dim"
       ];
 
-      "monitor" = ",highres,auto,auto";
+      "monitor" = "DP-1,preferred,auto,auto";
 
       bind =
         [
@@ -39,7 +39,7 @@
           "${super}, B, exec, ${browser}"
           "${super}, K, exec, ${terminal}"
           "${super}, A, exec, ${menu}"
-          "${super} SHIFT, L, exec, hyprlock"
+          "${super}_ALT, L, exec, hyprlock"
           ", Print, exec, grimblast copy area"
         ]
         ++ (

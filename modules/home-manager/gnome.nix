@@ -28,7 +28,7 @@ in {
     #   name = "Colloid-Dark-Catppuccin";
     #   package = themePackage;
     # };
-    iconTheme = lib.mkForce {
+    iconTheme = {
       name = "Colloid-dark";
       package = pkgs.colloid-icon-theme;
     };
