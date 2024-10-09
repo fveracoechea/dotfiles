@@ -3,10 +3,6 @@
   lib,
   ...
 }: let
-  path = "/share/themes/Colloid-Dark-Catppuccin/gtk-4.0";
-  themePackage = pkgs.colloid-gtk-theme.override {
-    tweaks = ["catppuccin"];
-  };
 in {
   xdg.enable = lib.mkDefault true;
 
@@ -15,22 +11,13 @@ in {
     enableSessionWide = true;
   };
 
-  # xdg.configFile."gtk-4.0/gtk.css".source = lib.mkForce "${themePackage}${path}/gtk.css";
-  # xdg.configFile."gtk-4.0/gtk-dark.css".source = lib.mkForce "${themePackage}${path}/gtk-dark.css";
-  # xdg.configFile."gtk-4.0/assets" = {
-  #   source = lib.mkForce "${themePackage}${path}/assets";
-  #   recursive = true;
-  # };
-
   gtk = {
     enable = true;
-    # theme = lib.mkForce {
-    #   name = "Colloid-Dark-Catppuccin";
-    #   package = themePackage;
-    # };
-    iconTheme = {
-      name = "Colloid-dark";
-      package = pkgs.colloid-icon-theme;
+    iconTheme = lib.mkForce {
+      name = "Colloid-Catppuccin-Dark";
+      package = pkgs.colloid-icon-theme.override {
+        schemeVariants = ["catppuccin"];
+      };
     };
   };
 
