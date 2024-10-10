@@ -14,12 +14,17 @@
 
     # Sylix - system wide styles
     stylix = {
-      url = "github:danth/stylix";
+      # url = "github:danth/stylix";
+      # Temporal fix
+      url = "github:trueNAHO/stylix/stylix-downgrade-and-lock-tinted-kitty-input";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Neovim config flake
-    neovim-config.url = "github:fveracoechea/neovim-nix-config";
+    neovim-config = {
+      url = "github:fveracoechea/neovim-nix-config";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # tmux weather plugin
     tmux-clima = {
@@ -34,7 +39,10 @@
     };
 
     # Hyprland
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    hyprland = {
+      url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {

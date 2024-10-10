@@ -3,7 +3,7 @@
 
   programs.kitty = {
     enable = true;
-    theme = "Catppuccin-Mocha";
+    themeFile = "Catppuccin-Mocha";
     shellIntegration.enableZshIntegration = true;
 
     settings = {
@@ -18,8 +18,6 @@
       enabled_layouts = "fat, tall, vertical";
 
       dynamic_background_opacity = true;
-
-      # linux_display_server = "x11";
     };
   };
 }

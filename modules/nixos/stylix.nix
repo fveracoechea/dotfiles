@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   firaSans = {
     package = pkgs.fira-sans;
     name = "Fira Sans";
@@ -23,7 +27,7 @@ in {
     cursor = {
       name = "catppuccin-mocha-dark-cursors";
       package = pkgs.catppuccin-cursors.mochaDark;
-      size = 34;
+      size = 35;
     };
 
     fonts = {
@@ -33,6 +37,8 @@ in {
       emoji = firaCode;
     };
 
-    targets.chromium.enable = false;
+    targets.chromium.enable = lib.mkForce false;
+    targets.nixvim.enable = lib.mkForce false;
+    # targets.vim.enable = lib.mkForce false;
   };
 }
