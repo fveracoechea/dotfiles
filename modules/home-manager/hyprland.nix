@@ -1,16 +1,19 @@
 {
   inputs,
   pkgs,
+  lib,
   ...
 }: {
   home.packages = with pkgs; [
     dunst
     libnotify
     hyprdim
+    wl-clipboard
   ];
 
   programs.wofi = {
     enable = true;
+    style = lib.fileContents ../../config/wofi/catppuccin.css;
   };
 
   wayland.windowManager.hyprland = {
@@ -26,6 +29,7 @@
     in {
       env = [
         "BROWSER,${browser}"
+        "XDG_CURRENT_DESKTOP,Hyprland"
       ];
 
       misc = {

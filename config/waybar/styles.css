@@ -1,44 +1,42 @@
-@import "mocha.css";
+/* @import "catppuccin.css"; */
 
-* {
-  font-family: FantasqueSansMono Nerd Font;
-  font-size: 19px;
-  min-height: 0;
-}
+/* * { */
+/*   font-family: Nerd Font; */
+/*   font-size: 17px; */
+/*   min-height: 0; */
+/* } */
 
-window#waybar {
+#waybar {
   background: transparent;
+  color: @text;
+  margin: 5px 5px;
 }
 
 #workspaces {
   border-radius: 1rem;
+  margin: 5px;
   background-color: @surface0;
-  margin-top: 1rem;
-  margin: 7px 3px 0px 7px;
+  margin-left: 1rem;
 }
 
 #workspaces button {
-  color: @pink;
+  color: @lavender;
   border-radius: 1rem;
-  padding-left: 6px;
-  margin: 5px 0;
-  box-shadow: inset 0 -3px transparent;
-  transition: all 0.5s cubic-bezier(.55, -0.68, .48, 1.68);
-  background-color: transparent;
+  padding: 0.4rem;
 }
 
 #workspaces button.active {
-  color: @flamingo;
+  color: @sky;
   border-radius: 1rem;
 }
 
 #workspaces button:hover {
-  color: @rosewater;
+  color: @sapphire;
   border-radius: 1rem;
 }
 
+#custom-music,
 #tray,
-#network,
 #backlight,
 #clock,
 #battery,
@@ -46,13 +44,14 @@ window#waybar {
 #custom-lock,
 #custom-power {
   background-color: @surface0;
-  margin: 7px 3px 0px 7px;
-  padding: 10px 5px 10px 5px;
-  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  margin: 5px 0;
 }
 
 #clock {
-  color: @lavender;
+  color: @blue;
+  border-radius: 0px 1rem 1rem 0px;
+  margin-right: 1rem;
 }
 
 #battery {
@@ -67,37 +66,38 @@ window#waybar {
   color: @red;
 }
 
-#network {
-  color: @flamingo;
-}
-
 #backlight {
   color: @yellow;
 }
 
-#pulseaudio {
-  color: @pink;
+#backlight,
+#battery {
+  border-radius: 0;
 }
 
-#pulseaudio.muted {
-  color: @red;
+#pulseaudio {
+  color: @maroon;
+  border-radius: 1rem 0px 0px 1rem;
+  margin-left: 1rem;
+}
+
+#custom-music {
+  color: @mauve;
+  border-radius: 1rem;
+}
+
+#custom-lock {
+  border-radius: 1rem 0px 0px 1rem;
+  color: @lavender;
 }
 
 #custom-power {
-  border-radius: 1rem;
+  margin-right: 1rem;
+  border-radius: 0px 1rem 1rem 0px;
   color: @red;
-  margin-bottom: 1rem;
 }
 
 #tray {
+  margin-right: 1rem;
   border-radius: 1rem;
-}
-
-tooltip {
-  background: @base;
-  border: 1px solid @pink;
-}
-
-tooltip label {
-  color: @text;
 }
