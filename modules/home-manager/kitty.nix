@@ -3,7 +3,6 @@
 
   programs.kitty = {
     enable = true;
-    themeFile = "Catppuccin-Mocha";
     shellIntegration.enableZshIntegration = true;
 
     settings = {

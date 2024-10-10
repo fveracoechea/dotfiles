@@ -38,7 +38,5 @@ in {
     };
 
     targets.chromium.enable = lib.mkForce false;
-    targets.nixvim.enable = lib.mkForce false;
-    # targets.vim.enable = lib.mkForce false;
   };
 }

@@ -20,6 +20,8 @@
     })
   ];
 
+  stylix.targets.neovim.enable = lib.mkForce false;
+
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
 

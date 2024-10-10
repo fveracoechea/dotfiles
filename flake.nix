@@ -23,7 +23,6 @@
     # Neovim config flake
     neovim-config = {
       url = "github:fveracoechea/neovim-nix-config";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # tmux weather plugin
