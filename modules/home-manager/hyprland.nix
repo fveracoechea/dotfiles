@@ -24,35 +24,89 @@
       super = "SUPER";
       menu = "wofi --show drun";
       terminal = "kitty";
-      browser = "chrome";
+      browser = "google-chrome-stable";
+      gap = 16;
     in {
-      "exec-once" = [
+      env = [
+        "BROWSER,${browser}"
+      ];
+
+      misc = {
+        vrr = 2;
+        animate_manual_resizes = true;
+        animate_mouse_windowdragging = true;
+      };
+
+      exec-once = [
         "${pkgs.waybar}/bin/waybar"
         "hyprdim --no-dim-when-only --persist --ignore-leaving-special --dialog-dim"
       ];
 
-      "monitor" = "DP-1,preferred,auto,auto";
+      monitor = ["DP-1,preferred,auto,auto"];
+
+      general = {
+        border_size = 2;
+        gaps_in = gap;
+        gaps_out = gap;
+      };
+
+      decoration = {
+        rounding = 4;
+        drop_shadow = true;
+        blur.enabled = true;
+      };
+
+      master = {
+        allow_small_split = true;
+        mfact = 0.32;
+        new_on_top = false;
+      };
+
+      binds = {
+        allow_workspace_cycles = true;
+      };
+
+      layerrule = [
+        "blur,waybar"
+        "blur,wofi"
+        "blur,notifications"
+      ];
+
+      bindm = [
+        "SHIFT_ALT, mouse:272, movewindow"
+        "SHIFT_ALT, mouse:273, resizewindow"
+      ];
 
       bind =
         [
           "${super}, F, exec, firefox"
           "${super}, B, exec, ${browser}"
-          "${super}, K, exec, ${terminal}"
+          "${super}, T, exec, ${terminal}"
           "${super}, A, exec, ${menu}"
           "${super}_ALT, L, exec, hyprlock"
+          "${super}_ALT, W, killactive"
+          "${super}_ALT, Q, exit"
+
           ", Print, exec, grimblast copy area"
+
+          "${super}, H, movefocus, L"
+          "${super}, L, movefocus, R"
+          "${super}, K, movefocus, U"
+          "${super}, J, movefocus, D"
         ]
         ++ (
-          # Workspaces: binds SUPER + [shift +] {1..9} to [move to] workspace {1..9}
+          # Workspaces:
+          # binds SUPER + {1..5} to workspace {1..5}
+          # binds SUPER + ATL + {1..5} to move workspace {1..5}
           builtins.concatLists (builtins.genList (
               i: let
                 ws = i + 1;
               in [
-                "${super}, code:1${toString i}, workspace, ${toString ws}"
-                "${super} SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
+                "${super}, ${toString ws}, workspace, ${toString ws}"
+                "${super}_ALT, ${toString ws}, movetoworkspace, ${toString ws}"
               ]
             )
-            9)
+            5)
         );
     };
   };
@@ -62,29 +116,20 @@
 
     settings = {
       general = {
-        lock_cmd = "pidof hyprlock || hyprlock";
-        before_sleep_cmd = "loginctl lock-session";
         after_sleep_cmd = "hyprctl dispatch dpms on";
+        ignore_dbus_inhibit = false;
+        lock_cmd = "hyprlock";
       };
 
       listener = [
         {
-          timeout = 150;
-          on-timeout = "brightnessctl set 0 --save && brightnessctl --device=tpacpi::kbd_backlight set 0 --save";
-          on-resume = "brightnessctl --restore && brightnessctl --device=tpacpi::kbd_backlight --restore";
+          timeout = 900;
+          on-timeout = "hyprlock";
         }
         {
-          timeout = 300;
-          on-timeout = "loginctl lock-session";
-        }
-        {
-          timeout = 380;
+          timeout = 1200;
           on-timeout = "hyprctl dispatch dpms off";
           on-resume = "hyprctl dispatch dpms on";
-        }
-        {
-          timeout = 1800;
-          on-timeout = "systemctl suspend";
         }
       ];
     };
@@ -93,24 +138,33 @@
   programs.hyprlock = {
     enable = true;
 
-    # settings = {
-    #   general = {
-    #     hide_cursor = true;
-    #     grace = 2;
-    #   };
-    #
-    #   label = {
-    #     text = "$USER";
-    #     text_align = "center";
-    #     font_size = 50;
-    #     halign = "center";
-    #     valign = "center";
-    #   };
-    #
-    #   input-field = {
-    #     size = "50, 50";
-    #     placeholder_text = "<i>Input Password...</i> ";
-    #   };
-    # };
+    settings = {
+      disable_loading_bar = true;
+      grace = 300;
+
+      background = [
+        {
+          path = "screenshot";
+          blur_passes = 3;
+          blur_size = 8;
+        }
+      ];
+
+      input-field = [
+        {
+          size = "200, 50";
+          position = "0, -80";
+          monitor = "";
+          dots_center = true;
+          fade_on_empty = false;
+          font_color = "rgb(202, 211, 245)";
+          inner_color = "rgb(91, 96, 120)";
+          outer_color = "rgb(24, 25, 38)";
+          outline_thickness = 5;
+          placeholder_text = ''<span foreground="##cad3f5">Password...</span>'';
+          shadow_passes = 2;
+        }
+      ];
+    };
   };
 }
