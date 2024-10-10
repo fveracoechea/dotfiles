@@ -14,6 +14,7 @@
     ../../modules/home-manager/volta.nix
     ../../modules/home-manager/pro-audio.nix
     ../../modules/home-manager/hyprland.nix
+    ../../modules/home-manager/waybar.nix
     (inputs.neovim-config.homeManagerModules.neovim {
       inherit pkgs;
       inherit lib;

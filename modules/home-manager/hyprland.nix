@@ -13,8 +13,6 @@
     enable = true;
   };
 
-  programs.waybar.enable = true;
-
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
@@ -25,7 +23,6 @@
       menu = "wofi --show drun";
       terminal = "kitty";
       browser = "google-chrome-stable";
-      gap = 16;
     in {
       env = [
         "BROWSER,${browser}"
@@ -46,8 +43,8 @@
 
       general = {
         border_size = 2;
-        gaps_in = gap;
-        gaps_out = gap;
+        gaps_in = 8;
+        gaps_out = 16;
       };
 
       decoration = {
@@ -89,10 +86,10 @@
 
           ", Print, exec, grimblast copy area"
 
-          "${super}, H, movefocus, L"
-          "${super}, L, movefocus, R"
-          "${super}, K, movefocus, U"
-          "${super}, J, movefocus, D"
+          "${super}, H, movefocus, l"
+          "${super}, L, movefocus, r"
+          "${super}, K, movefocus, u"
+          "${super}, J, movefocus, d"
         ]
         ++ (
           # Workspaces:

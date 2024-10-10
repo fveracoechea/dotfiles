@@ -7,9 +7,7 @@
     enableCompletion = true;
     dotDir = ".config/zsh";
     initExtra =
-      /*
-      sh
-      */
+      # sh
       ''
         ${builtins.readFile ../../config/zsh/extra.zsh}
 

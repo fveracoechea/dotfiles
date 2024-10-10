@@ -31,15 +31,19 @@ in {
       }
       {
         plugin = tmuxPlugins.resurrect;
-        extraConfig = ''
-          set -g @resurrect-strategy-nvim 'session'
-        '';
+        extraConfig =
+          # tmux
+          ''
+            set -g @resurrect-strategy-nvim 'session'
+          '';
       }
       {
         plugin = tmuxPlugins.continuum;
-        extraConfig = ''
-          set -g @continuum-save-interval '5'
-        '';
+        extraConfig =
+          # tmux
+          ''
+            set -g @continuum-save-interval '5'
+          '';
       }
     ];
   };
