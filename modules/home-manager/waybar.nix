@@ -3,6 +3,7 @@
     enable = true;
 
     style =
+      lib.mkForce
       # css
       ''
         ${lib.fileContents ../../config/waybar/catppuccin.css}

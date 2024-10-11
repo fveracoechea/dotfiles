@@ -1,10 +1,10 @@
 /* @import "catppuccin.css"; */
 
-/* * { */
-/*   font-family: Nerd Font; */
-/*   font-size: 17px; */
-/*   min-height: 0; */
-/* } */
+* {
+  font-family: FiraCode Nerd Font;
+  font-size: 14px;
+  min-height: 0;
+}
 
 #waybar {
   background: transparent;

@@ -13,7 +13,7 @@
 
   programs.wofi = {
     enable = true;
-    style = lib.fileContents ../../config/wofi/catppuccin.css;
+    style = lib.mkForce (lib.fileContents ../../config/wofi/catppuccin.css);
   };
 
   wayland.windowManager.hyprland = {
