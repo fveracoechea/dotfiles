@@ -15,6 +15,7 @@
     ../../modules/home-manager/pro-audio.nix
     ../../modules/home-manager/hyprland.nix
     ../../modules/home-manager/waybar.nix
+    ../../modules/home-manager/wofi.nix
     (inputs.neovim-config.homeManagerModules.neovim {
       inherit pkgs;
       inherit lib;

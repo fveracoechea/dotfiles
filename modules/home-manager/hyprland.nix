@@ -1,7 +1,6 @@
 {
   inputs,
   pkgs,
-  lib,
   ...
 }: {
   home.packages = with pkgs; [
@@ -10,15 +9,6 @@
     hyprdim
     wl-clipboard
   ];
-
-  programs.wofi = {
-    enable = true;
-    settings = {
-      width = 600;
-      no_actions = true;
-    };
-    style = lib.mkForce (lib.fileContents ../../config/wofi/catppuccin.css);
-  };
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -56,7 +46,7 @@
       };
 
       decoration = {
-        rounding = 4;
+        rounding = 5;
         drop_shadow = true;
         blur.enabled = true;
       };

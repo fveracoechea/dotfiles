@@ -6,8 +6,10 @@
       mainBar = {
         layer = "top";
         position = "top";
-        modules-left = ["wlr/workspaces"];
-        modules-center = [];
+        spacing = 8;
+        modules-left = ["clock"];
+        modules-right = ["network" "cpu" "memory"];
+        modules-center = ["clock"];
       };
     };
 
@@ -16,4 +18,6 @@
       ${lib.fileContents ../../config/waybar/styles.css}
     '';
   };
+
+  stylix.targets.waybar.enable = false;
 }
