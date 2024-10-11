@@ -62,8 +62,8 @@
       };
 
       layerrule = [
-        "blur,waybar"
-        "blur,wofi"
+        # "blur,waybar"
+        # "blur,wofi"
         "blur,notifications"
       ];
 

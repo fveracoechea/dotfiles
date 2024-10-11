@@ -52,7 +52,7 @@
 @define-color	crust-rgb rgb(17, 17, 27);
 
 * {
-  font-family: FiraCode Nerd Font, monospace;
+  font-family: "Fira Sans", sans-serif;
   font-size: 14px;
   border-radius: 5px;
 }

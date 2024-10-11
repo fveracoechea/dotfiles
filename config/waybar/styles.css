@@ -1,27 +1,25 @@
 /* @import "catppuccin.css"; */
 
 * {
-  font-family: FiraCode Nerd Font;
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 500;
   border-radius: 5px;
   font-size: 14px;
   min-height: 0;
+  color: @text;
 }
 
 window#waybar {
-  background: transparent;
-  color: @text;
-  margin: 5px 5px;
+  background-color: transparent;
 }
 
 #workspaces {
-  margin: 5px;
-  background-color: @surface0;
-  margin-left: 1rem;
+  background-color: @base;
+  padding: 12px 8px;
 }
 
 #workspaces button {
   color: @lavender;
-  padding: 0.4rem;
 }
 
 #workspaces button.active {
@@ -40,53 +38,6 @@ window#waybar {
 #pulseaudio,
 #custom-lock,
 #custom-power {
-  background-color: @surface0;
-  padding: 0.5rem 1rem;
-  margin: 5px 0;
-}
-
-#clock {
-  color: @blue;
-  margin-right: 1rem;
-}
-
-#battery {
-  color: @green;
-}
-
-#battery.charging {
-  color: @green;
-}
-
-#battery.warning:not(.charging) {
-  color: @red;
-}
-
-#backlight {
-  color: @yellow;
-}
-
-#backlight,
-#battery {}
-
-#pulseaudio {
-  color: @maroon;
-  margin-left: 1rem;
-}
-
-#custom-music {
-  color: @mauve;
-}
-
-#custom-lock {
-  color: @lavender;
-}
-
-#custom-power {
-  margin-right: 1rem;
-  color: @red;
-}
-
-#tray {
-  margin-right: 1rem;
+  background-color: @base;
+  padding: 8px 12px;
 }
