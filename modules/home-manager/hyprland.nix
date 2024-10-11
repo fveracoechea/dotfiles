@@ -13,6 +13,10 @@
 
   programs.wofi = {
     enable = true;
+    settings = {
+      width = 600;
+      no_actions = true;
+    };
     style = lib.mkForce (lib.fileContents ../../config/wofi/catppuccin.css);
   };
 
@@ -23,7 +27,7 @@
 
     settings = let
       super = "SUPER";
-      menu = "wofi --show drun";
+      menu = "wofi --show drun --allow-images";
       terminal = "kitty";
       browser = "google-chrome-stable";
     in {

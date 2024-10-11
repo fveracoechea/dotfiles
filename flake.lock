@@ -529,11 +529,11 @@
         "tree-sitter-nginx": "tree-sitter-nginx"
       },
       "locked": {
-        "lastModified": 1728659111,
-        "narHash": "sha256-BxpPvDHwm59U7M5e7fnC8td4ROIIOICGvSw2w5jpJ7M=",
+        "lastModified": 1728659636,
+        "narHash": "sha256-bNBxCvXMzdE4EvxDVTWlGFisZKw+9aYXwoTpF71wjXg=",
         "owner": "fveracoechea",
         "repo": "neovim-nix-config",
-        "rev": "9522ae9bfddd7dbca6a2b6d660a759f19b761b62",
+        "rev": "06e1746e4bc17bae365b67c3294452c6eb27aa1c",
         "type": "github"
       },
       "original": {
@@ -662,16 +662,15 @@
         "tinted-tmux": "tinted-tmux"
       },
       "locked": {
-        "lastModified": 1728508267,
+        "lastModified": 1728640680,
         "narHash": "sha256-JH2+RXJNooFtZIN6ZhaGZWn2KChMrso4H7Fkp1Ujrdo=",
-        "owner": "trueNAHO",
+        "owner": "danth",
         "repo": "stylix",
-        "rev": "ed91a20c84a80a525780dcb5ea3387dddf6cd2de",
+        "rev": "f95022bb6e74f726a87975aec982a5aa9fad8691",
         "type": "github"
       },
       "original": {
-        "owner": "trueNAHO",
-        "ref": "stylix-downgrade-and-lock-tinted-kitty-input",
+        "owner": "danth",
         "repo": "stylix",
         "type": "github"
       }

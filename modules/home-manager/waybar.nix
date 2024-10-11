@@ -2,13 +2,18 @@
   programs.waybar = {
     enable = true;
 
-    style =
-      lib.mkForce
-      # css
-      ''
-        ${lib.fileContents ../../config/waybar/catppuccin.css}
+    settings = {
+      mainBar = {
+        layer = "top";
+        position = "top";
+        modules-left = ["wlr/workspaces"];
+        modules-center = [];
+      };
+    };
 
-        ${lib.fileContents ../../config/waybar/styles.css}
-      '';
+    style = ''
+      ${lib.fileContents ../../config/waybar/catppuccin.css}
+      ${lib.fileContents ../../config/waybar/styles.css}
+    '';
   };
 }

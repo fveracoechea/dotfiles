@@ -52,77 +52,49 @@
 @define-color	crust-rgb rgb(17, 17, 27);
 
 * {
-  font-family: 'FiraCode Nerd Font', monospace;
+  font-family: FiraCode Nerd Font, monospace;
   font-size: 14px;
-  border-radius: 4px;
+  border-radius: 5px;
 }
+
 
 /* Window */
 window {
-  margin: 0px;
-  padding: 10px;
-  border: 0.16em solid @lavender;
-  border-radius: 4px;
   background-color: @base;
-  animation: slideIn 0.4s ease-in-out both;
-}
-
-/* Slide In */
-@keyframes slideIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-/* Inner Box */
-#inner-box {
-  margin: 5px;
-  padding: 10px;
-  border: none;
-  background-color: @base;
-  animation: fadeIn 0.5s ease-in-out both;
-}
-
-/* Fade In */
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
 }
 
 /* Outer Box */
 #outer-box {
-  margin: 5px;
-  padding: 10px;
-  border: none;
-  background-color: @base;
+  padding: 24px;
+  border: 2px solid @blue;
 }
 
 /* Scroll */
 #scroll {
-  margin: 0px;
-  padding: 10px;
-  border: none;
-  background-color: @base;
+  border-radius: 5px;
+  background-color: @mantle;
+  border: 2px solid @surface0;
+  margin-top: 12px;
 }
+
+/* Inner Box */
+#inner-box {
+  padding: 12px;
+}
+
 
 /* Input */
 #input {
-  margin: 5px 20px;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
+  box-shadow: none;
+  padding: 6px 12px;
+  border-radius: 5px;
   color: @text;
-  background-color: @base;
-  animation: fadeIn 0.5s ease-in-out both;
+  background-color: @mantle;
+  border: 2px solid @surface0;
+}
+
+#input:focus {
+  border: 2px solid @surface2;
 }
 
 #input image {
@@ -130,36 +102,29 @@ window {
   color: @red;
 }
 
-#input * {
-  outline: 4px solid @red !important;
-}
 
 /* Text */
 #text {
   margin: 5px;
   border: none;
   color: @text;
-  animation: fadeIn 0.5s ease-in-out both;
 }
 
 #entry {
-  background-color: @base;
-}
-
-#entry arrow {
+  transition: background-color 300ms ease, color 300ms ease;
+  border-radius: 5px;
+  background-color: unset;
   border: none;
-  color: @lavender;
+  margin-bottom: 6px;
+  padding: 6px;
 }
 
 /* Selected Entry */
 #entry:selected {
-  border: 0.11em solid @lavender;
+  outline: none;
+  background-color: @surface0;
 }
 
 #entry:selected #text {
-  color: @mauve;
-}
-
-#entry:drop(active) {
-  background-color: @lavender !important;
+  color: white;
 }
