@@ -14,9 +14,7 @@
 
     # Sylix - system wide styles
     stylix = {
-      # url = "github:danth/stylix";
-      # Temporal fix
-      url = "github:trueNAHO/stylix/stylix-downgrade-and-lock-tinted-kitty-input";
+      url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
