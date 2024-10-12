@@ -2,8 +2,7 @@
   pkgs,
   lib,
   ...
-}: let
-in {
+}: {
   xdg.enable = lib.mkDefault true;
 
   programs.mangohud = {
@@ -14,9 +13,10 @@ in {
   gtk = {
     enable = true;
     iconTheme = lib.mkForce {
-      name = "Colloid-Catppuccin-Dark";
-      package = pkgs.colloid-icon-theme.override {
-        schemeVariants = ["catppuccin"];
+      name = "Papirus-Dark";
+      package = pkgs.catppuccin-papirus-folders.override {
+        flavor = "mocha";
+        accent = "blue";
       };
     };
   };

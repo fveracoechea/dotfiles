@@ -78,9 +78,9 @@
           "${super}, B, exec, ${browser}"
           "${super}, T, exec, ${terminal}"
           "${super}, A, exec, ${menu}"
-          "${super}_ALT, L, exec, hyprlock"
-          "${super}_ALT, W, killactive"
+          "${super}, Q, killactive"
           "${super}_ALT, Q, exit"
+          "${super}_ALT, L, exec, hyprlock"
 
           ", Print, exec, grimblast copy area"
 

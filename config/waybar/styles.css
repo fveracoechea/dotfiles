@@ -3,31 +3,27 @@
 * {
   font-family: "Fira Sans", sans-serif;
   font-weight: 500;
-  border-radius: 5px;
   font-size: 14px;
-  min-height: 0;
-  color: @text;
+  border: none;
+  border-radius: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 window#waybar {
-  background-color: transparent;
+  /* background-color: rgba(108, 112, 134, 0.6); */
+  /* background-color: rgba(147, 153, 178, 0.6); */
+  background-color: rgba(30, 30, 46, 0.2);
+  /* background-image: linear-gradient(to right, rgba(30, 30, 46, 0.2), rgba(30, 30, 46, 0.2), rgba(30, 30, 46, 0.2)); */
 }
 
-#workspaces {
-  background-color: @base;
-  padding: 12px 8px;
-}
-
-#workspaces button {
-  color: @lavender;
-}
-
-#workspaces button.active {
-  color: @sky;
-}
-
-#workspaces button:hover {
-  color: @sapphire;
+tooltip {
+  border-radius: 5px;
+  background-color: @mantle;
+  opacity: 0.85;
+  padding: 0px 12px;
+  margin: 0px;
+  color: @text;
 }
 
 #custom-music,
@@ -37,7 +33,73 @@ window#waybar {
 #battery,
 #pulseaudio,
 #custom-lock,
+#workspaces,
 #custom-power {
+  margin: 6px;
+  border-radius: 1em;
+  transition: background-color 300ms ease, color 300ms ease;
   background-color: @base;
-  padding: 8px 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+  color: @text;
+}
+
+#window {
+  background-color: transparent;
+  color: @text;
+}
+
+#custom-apps {
+  margin: 6px;
+  margin-left: 16px;
+  border-radius: 1em;
+  padding-left: 5px;
+  padding-right: 10px;
+  font-size: 26px;
+  color: @blue;
+  background-color: @base;
+}
+
+#quick-links {
+  margin: 6px;
+  background-color: transparent;
+}
+
+#custom-nautilus,
+#custom-chrome {
+  transition: background-color 300ms ease, color 300ms ease;
+  color: @subtext0;
+  font-size: 26px;
+  margin-right: 16px;
+}
+
+
+#custom-apps:hover,
+#custom-nautilus:hover,
+#custom-chrome:hover {
+  color: @text;
+}
+
+#workspaces button {
+  border-radius: 1em;
+  transition: all 300ms ease;
+  padding: 0;
+  margin: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+  color: @text;
+}
+
+#workspaces button:hover {
+  color: white;
+  background-color: @surface1;
+}
+
+#workspaces button.active {
+  padding-left: 8px;
+  background-color: @blue;
+  color: @mantle;
+  padding-right: 8px;
 }
