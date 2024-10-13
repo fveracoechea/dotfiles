@@ -13,8 +13,7 @@
 window#waybar {
   /* background-color: rgba(108, 112, 134, 0.6); */
   /* background-color: rgba(147, 153, 178, 0.6); */
-  background-color: rgba(30, 30, 46, 0.2);
-  /* background-image: linear-gradient(to right, rgba(30, 30, 46, 0.2), rgba(30, 30, 46, 0.2), rgba(30, 30, 46, 0.2)); */
+  background-color: rgba(30, 30, 46, 0.6);
 }
 
 tooltip {
@@ -66,9 +65,10 @@ tooltip {
 }
 
 #custom-nautilus,
+#custom-settings,
 #custom-chrome {
   transition: background-color 300ms ease, color 300ms ease;
-  color: @subtext0;
+  color: @text;
   font-size: 26px;
   margin-right: 16px;
 }
@@ -76,8 +76,9 @@ tooltip {
 
 #custom-apps:hover,
 #custom-nautilus:hover,
+#custom-settings:hover,
 #custom-chrome:hover {
-  color: @text;
+  color: white;
 }
 
 #workspaces button {

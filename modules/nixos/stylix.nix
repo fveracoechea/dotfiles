@@ -22,6 +22,8 @@ in {
     opacity = {
       terminal = 0.9;
       desktop = 0.9;
+      popups = 1.0;
+      applications = 0.9;
     };
 
     cursor = {
@@ -37,6 +39,6 @@ in {
       emoji = firaCode;
     };
 
-    targets.chromium.enable = lib.mkForce false;
+    # targets.chromium.enable = lib.mkForce false;
   };
 }

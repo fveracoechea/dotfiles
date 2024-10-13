@@ -3,12 +3,14 @@
   pkgs,
   ...
 }: {
-  home.packages = with pkgs; [
-    dunst
-    libnotify
-    hyprdim
-    wl-clipboard
-  ];
+  xdg.desktopEntries."org.gnome.Settings" = {
+    name = "Settings";
+    comment = "Gnome Control Center";
+    icon = "org.gnome.Settings";
+    exec = "env XDG_CURRENT_DESKTOP=gnome ${pkgs.gnome.gnome-control-center}/bin/gnome-control-center";
+    categories = ["X-Preferences"];
+    terminal = false;
+  };
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -62,9 +64,18 @@
       };
 
       layerrule = [
-        # "blur,waybar"
-        # "blur,wofi"
         "blur,notifications"
+      ];
+
+      windowrule = let
+        f = regex: "float, ^(${regex})$";
+      in [
+        (f "org.gnome.Calculator")
+        (f "pavucontrol")
+        (f "nm-connection-editor")
+        (f "org.gnome.Settings")
+        (f "xdg-desktop-portal")
+        (f "xdg-desktop-portal-gnome")
       ];
 
       bindm = [
