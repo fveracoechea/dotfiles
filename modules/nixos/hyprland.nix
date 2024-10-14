@@ -21,8 +21,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    dunst
-    libnotify
     hyprdim
     wl-clipboard
     pavucontrol

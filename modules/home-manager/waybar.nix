@@ -60,9 +60,15 @@
         };
 
         "custom/spotify" = {
-          format = "";
+          format = "󰓇";
           on-click = "spotify";
           tooltip-format = "Spotify";
+        };
+
+        "custom/discord" = {
+          format = "";
+          on-click = "vesktop";
+          tooltip-format = "Discord";
         };
 
         "group/quick-links" = {
@@ -72,6 +78,7 @@
             "custom/nautilus"
             "custom/chrome"
             "custom/spotify"
+            "custom/discord"
           ];
         };
 

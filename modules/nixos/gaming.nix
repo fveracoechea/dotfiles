@@ -14,7 +14,6 @@
   environment.systemPackages = with pkgs; [
     protonup
     amdgpu_top
-    discord
     lact
     (lutris.override {
       extraPkgs = pkgs: [

@@ -69,6 +69,7 @@ tooltip {
 #custom-nautilus,
 #custom-settings,
 #custom-spotify,
+#custom-discord,
 #custom-chrome {
   transition: background-color 300ms ease, color 300ms ease;
   color: @text;
@@ -80,6 +81,8 @@ tooltip {
 #custom-apps:hover,
 #custom-nautilus:hover,
 #custom-settings:hover,
+#custom-spotify:hover,
+#custom-discord:hover,
 #custom-chrome:hover {
   color: white;
 }
