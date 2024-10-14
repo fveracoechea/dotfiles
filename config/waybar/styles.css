@@ -68,6 +68,7 @@ tooltip {
 
 #custom-nautilus,
 #custom-settings,
+#custom-spotify,
 #custom-chrome {
   transition: background-color 300ms ease, color 300ms ease;
   color: @text;

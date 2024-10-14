@@ -35,7 +35,6 @@
     nurl
     kooha
     google-chrome
-    spotify
     dconf2nix
     deno
     watchman

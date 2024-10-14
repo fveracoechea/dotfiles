@@ -89,7 +89,7 @@
         bindExec = key: arg: "SUPER, ${key}, exec, ${arg}";
         mvfocus = binding "SUPER" "movefocus";
         resizeactive = binding "SUPER CTRL" "resizeactive";
-        mvactive = binding "SUPER ALT" "moveactive";
+        mvwindow = binding "SUPER ALT" "movewindow";
         ws = binding "SUPER" "workspace";
         mvtows = binding "SUPER ALT" "movetoworkspace";
         workspaces = [1 2 3 4 5];
@@ -109,16 +109,16 @@
           (mvfocus "J" "d")
           (mvfocus "L" "r")
           (mvfocus "H" "l")
-          # resize active window
-          (resizeactive "K" "0 -20")
-          (resizeactive "J" "0 20")
-          (resizeactive "L" "20 0")
-          (resizeactive "H" "-20 0")
           # move active window
-          (mvactive "K" "0 -20")
-          (mvactive "J" "0 20")
-          (mvactive "L" "20 0")
-          (mvactive "H" "-20 0")
+          (mvwindow "K" "u")
+          (mvwindow "J" "d")
+          (mvwindow "L" "r")
+          (mvwindow "H" "l")
+          # resize active window
+          (resizeactive "K" "0 -50")
+          (resizeactive "J" "0 50")
+          (resizeactive "L" "50 0")
+          (resizeactive "H" "-50 0")
         ]
         ++ (map (i: ws (toString i) (toString i)) workspaces)
         ++ (map (i: mvtows (toString i) (toString i)) workspaces);

@@ -13,10 +13,6 @@
       mainBar = {
         layer = "top";
         position = "top";
-        # margin-left = 16;
-        # margin-top = 16;
-        # margin-right = 16;
-        # margin-bottom = 0;
         spacing = 16;
 
         modules-left = [
@@ -149,6 +145,12 @@
             "urgent" = "";
             "active" = "";
             "default" = "";
+          };
+
+          tray = {
+            icon-size = 24;
+            spacing = 10;
+            show-passive-items = true;
           };
 
           persistent-workspaces = {
