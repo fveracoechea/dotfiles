@@ -6,7 +6,10 @@
   programs.waybar = {
     enable = true;
 
-    settings = {
+    settings = let
+      largeIcon = icon: ''<span size="x-large">${icon}</span>'';
+      format = icon: label: ''${largeIcon icon}    ${label}'';
+    in {
       mainBar = {
         layer = "top";
         position = "top";
@@ -27,11 +30,11 @@
         ];
 
         modules-right = [
+          "clock"
+          "tray"
           "network"
           "pulseaudio"
-          "tray"
-          "bluetooth"
-          "clock"
+          # "bluetooth"
         ];
 
         "custom/apps" = {
@@ -41,7 +44,7 @@
         };
 
         "custom/settings" = let
-          settings = pkgs.gnome.gnome-control-center;
+          settings = pkgs.gnome-control-center;
         in {
           format = "󰒓";
           on-click = "env XDG_CURRENT_DESKTOP=gnome ${settings}/bin/gnome-control-center";
@@ -60,7 +63,11 @@
           tooltip-format = "Google Chrome";
         };
 
-        "custom/pipewire" = {};
+        "custom/spotify" = {
+          format = "";
+          on-click = "spotify";
+          tooltip-format = "Spotify";
+        };
 
         "group/quick-links" = {
           orientation = "horizontal";
@@ -68,42 +75,58 @@
             "custom/settings"
             "custom/nautilus"
             "custom/chrome"
+            "custom/spotify"
           ];
         };
 
         pulseaudio = {
-          format = "{volume}% {icon}";
-          format-bluetooth = "{volume}% {icon}";
-          format-muted = "";
+          scroll-step = 2;
+          on-click = "pavucontrol";
+          format = format "{icon}" "{volume}%";
+          format-bluetooth = format "{icon}" "{volume}";
+          format-muted = largeIcon "";
           format-icons = {
             "alsa_output.pci-0000_00_1f.3.analog-stereo" = "";
             "alsa_output.pci-0000_00_1f.3.analog-stereo-muted" = "";
             headphone = "";
-            hands-free = "";
-            headset = "";
+            headset = "󰋎";
             phone = "";
             phone-muted = "";
             portable = "";
             car = "";
             default = [
+              ""
               ""
               ""
             ];
           };
-          scroll-step = 1;
-          on-click = "pavucontrol";
-          ignored-sinks = [
-            "Easy Effects Sink"
-          ];
+        };
+
+        bluetooth = {
+          format = format "" "{status}";
+          format-connected = format "" "{num_connections} connected";
+          format-disabled = largeIcon "󰂲";
+          format-off = largeIcon "󰂲";
+          tooltip-format = "{controller_alias}\t{controller_address}";
+          tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
+          tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+          on-click = "blueman-manager";
         };
 
         network = {
-          format-disconnected = "󰖪  0%";
-          format-ethernet = "󰈀 100%";
+          format-disconnected = format "󰖪" "0%";
+          format-ethernet = format "" "100%";
           format-linked = "{ifname} (No IP)";
-          format-wifi = "   {signalStrength}%";
+          format-wifi = format " " "{signalStrength}%";
           tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
-          on-click = "env XDG_CURRENT_DESKTOP=gnome nm-applet";
+          on-click = "nm-connection-editor";
+        };
+
+        clock = {
+          format = "{:%H:%M %a}";
+          on-click = "gnome-calendar";
+          tooltip-format = "{:%Y-%m-%d}";
+          tooltip = true;
         };
 
         "hyprland/window" = {

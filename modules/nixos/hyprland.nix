@@ -3,6 +3,10 @@
   pkgs,
   ...
 }: {
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  services.blueman.enable = true;
+
   programs.hyprland = {
     enable = true;
     package = inputs.hyprland.packages."${pkgs.system}".hyprland;
@@ -26,9 +30,9 @@
     nautilus
     gnome-system-monitor
     gnome-calculator
-    gnome.gnome-control-center
-    gnome.gnome-weather
-    gnome.gnome-clocks
+    gnome-control-center
+    gnome-weather
+    gnome-clocks
   ];
 
   # Optional, hint Electron apps to use Wayland:

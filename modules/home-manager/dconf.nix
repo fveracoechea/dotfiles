@@ -11,6 +11,7 @@ with lib.hm.gvariant; {
       default-folder-viewer = "list-view";
       default-sort-order = "mtime";
     };
+
     "org/gnome/shell" = {
       always-show-log-out = true;
       disable-user-extensions = false;

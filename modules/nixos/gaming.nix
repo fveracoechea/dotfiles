@@ -4,12 +4,6 @@
     enable32Bit = true;
   };
 
-  services.xserver.videoDrivers = ["modesetting"];
-
-  services.xserver.deviceSection = ''
-    Option "VariableRefresh" "true"
-  '';
-
   hardware.cpu.amd.updateMicrocode = true;
   hardware.amdgpu.initrd.enable = true;
 

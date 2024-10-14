@@ -30,6 +30,7 @@ tooltip {
 #backlight,
 #clock,
 #battery,
+#bluetooth,
 #pulseaudio,
 #custom-lock,
 #workspaces,
@@ -47,6 +48,7 @@ tooltip {
   background-color: transparent;
   color: @text;
 }
+
 
 #custom-apps {
   margin: 6px;

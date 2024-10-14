@@ -30,20 +30,34 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
   # Enable flatpak
   services.flatpak.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.xserver = {
+    # Enable the X11 windowing system.
+    enable = true;
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
+    # Configure keymap in X11
+    xkb = {
+      layout = "us";
+      variant = "";
+    };
+
+    # GPU drivers
+    videoDrivers = ["modesetting"];
+
+    # Enable the GNOME Desktop Environment.
+    displayManager.gdm.enable = true;
+    desktopManager = {
+      gnome = {
+        enable = true;
+        extraGSettingsOverridePackages = [pkgs.mutter];
+        extraGSettingsOverrides = ''
+          [org.gnome.mutter]
+          experimental-features=['variable-refresh-rate', 'scale-monitor-framebuffer']
+        '';
+      };
+    };
   };
 
   programs.dconf.enable = true;

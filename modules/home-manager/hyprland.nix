@@ -18,8 +18,7 @@
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
     settings = let
-      super = "SUPER";
-      menu = "wofi --show drun --allow-images";
+      apps = "wofi --show drun --allow-images";
       terminal = "kitty";
       browser = "google-chrome-stable";
     in {
@@ -37,9 +36,10 @@
       exec-once = [
         "${pkgs.waybar}/bin/waybar"
         "hyprdim --no-dim-when-only --persist --ignore-leaving-special --dialog-dim"
+        "blueman-manager"
       ];
 
-      monitor = ["DP-1,preferred,auto,auto"];
+      monitor = "DP-1,highrr,auto,auto";
 
       general = {
         border_size = 2;
@@ -63,19 +63,20 @@
         allow_workspace_cycles = true;
       };
 
-      layerrule = [
-        "blur,notifications"
-      ];
-
       windowrule = let
-        f = regex: "float, ^(${regex})$";
+        float = regex: "float, ^(${regex})$";
+        floatTitle = regex: "float, title:^(${regex})$";
       in [
-        (f "org.gnome.Calculator")
-        (f "pavucontrol")
-        (f "nm-connection-editor")
-        (f "org.gnome.Settings")
-        (f "xdg-desktop-portal")
-        (f "xdg-desktop-portal-gnome")
+        (float "org.gnome.Calculator")
+        (float "org.gnome.Calendar")
+        (float "nm-connection-editor")
+        (float "org.gnome.Settings")
+
+        (float "xdg-desktop-portal")
+        (float "xdg-desktop-portal-gnome")
+
+        (floatTitle "Volume Control")
+        (floatTitle "Bluetooth Devices")
       ];
 
       bindm = [
@@ -83,37 +84,44 @@
         "SHIFT_ALT, mouse:273, resizewindow"
       ];
 
-      bind =
+      bind = let
+        binding = mod: cmd: key: arg: "${mod}, ${key}, ${cmd}, ${arg}";
+        bindExec = key: arg: "SUPER, ${key}, exec, ${arg}";
+        mvfocus = binding "SUPER" "movefocus";
+        resizeactive = binding "SUPER CTRL" "resizeactive";
+        mvactive = binding "SUPER ALT" "moveactive";
+        ws = binding "SUPER" "workspace";
+        mvtows = binding "SUPER ALT" "movetoworkspace";
+        workspaces = [1 2 3 4 5];
+      in
         [
-          "${super}, F, exec, firefox"
-          "${super}, B, exec, ${browser}"
-          "${super}, T, exec, ${terminal}"
-          "${super}, A, exec, ${menu}"
-          "${super}, Q, killactive"
-          "${super}_ALT, Q, exit"
-          "${super}_ALT, L, exec, hyprlock"
+          (bindExec "B" browser)
+          (bindExec "T" terminal)
+          (bindExec "A" apps)
 
-          ", Print, exec, grimblast copy area"
+          "SUPER, Q, killactive"
+          "SUPER CTRL, Q, exit"
 
-          "${super}, H, movefocus, l"
-          "${super}, L, movefocus, r"
-          "${super}, K, movefocus, u"
-          "${super}, J, movefocus, d"
+          # ", Print, exec, grimblast copy area"
+
+          # move window focus
+          (mvfocus "K" "u")
+          (mvfocus "J" "d")
+          (mvfocus "L" "r")
+          (mvfocus "H" "l")
+          # resize active window
+          (resizeactive "K" "0 -20")
+          (resizeactive "J" "0 20")
+          (resizeactive "L" "20 0")
+          (resizeactive "H" "-20 0")
+          # move active window
+          (mvactive "K" "0 -20")
+          (mvactive "J" "0 20")
+          (mvactive "L" "20 0")
+          (mvactive "H" "-20 0")
         ]
-        ++ (
-          # Workspaces:
-          # binds SUPER + {1..5} to workspace {1..5}
-          # binds SUPER + ATL + {1..5} to move workspace {1..5}
-          builtins.concatLists (builtins.genList (
-              i: let
-                ws = i + 1;
-              in [
-                "${super}, ${toString ws}, workspace, ${toString ws}"
-                "${super}_ALT, ${toString ws}, movetoworkspace, ${toString ws}"
-              ]
-            )
-            5)
-        );
+        ++ (map (i: ws (toString i) (toString i)) workspaces)
+        ++ (map (i: mvtows (toString i) (toString i)) workspaces);
     };
   };
 
