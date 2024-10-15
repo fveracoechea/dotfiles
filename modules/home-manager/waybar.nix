@@ -7,7 +7,7 @@
     enable = true;
 
     settings = let
-      largeIcon = icon: ''<span size="x-large">${icon}</span>'';
+      largeIcon = icon: ''<span size="large">${icon}</span>'';
       format = icon: label: ''${largeIcon icon}    ${label}'';
     in {
       mainBar = {
@@ -87,7 +87,6 @@
           orientation = "horizontal";
           modules = [
             "cpu"
-            "load"
             "temperature"
             "memory"
             "disk"
