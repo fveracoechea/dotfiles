@@ -30,7 +30,8 @@
           "tray"
           "network"
           "pulseaudio"
-          # "bluetooth"
+          "gamemode"
+          "group/stats"
         ];
 
         "custom/apps" = {
@@ -82,6 +83,17 @@
           ];
         };
 
+        "group/stats" = {
+          orientation = "horizontal";
+          modules = [
+            "cpu"
+            "load"
+            "temperature"
+            "memory"
+            "disk"
+          ];
+        };
+
         pulseaudio = {
           scroll-step = 2;
           on-click = "pavucontrol";
@@ -126,7 +138,7 @@
         };
 
         clock = {
-          format = "{:%H:%M %a}";
+          format = format "󰥔" "{:%H:%M %a}";
           on-click = "gnome-calendar";
           tooltip-format = "{:%Y-%m-%d}";
           tooltip = true;

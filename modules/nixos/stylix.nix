@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: let
+{pkgs, ...}: let
   firaSans = {
     package = pkgs.fira-sans;
     name = "Fira Sans";
@@ -38,7 +34,5 @@ in {
       monospace = firaCode;
       emoji = firaCode;
     };
-
-    # targets.chromium.enable = lib.mkForce false;
   };
 }

@@ -12,9 +12,14 @@
     terminal = false;
   };
 
+  programs.mpv.enable = true;
+
   services.mako = {
     enable = true;
     anchor = "bottom-right";
+    margin = "12";
+    padding = "6";
+    defaultTimeout = 5000;
     borderRadius = 5;
     borderSize = 2;
   };
@@ -43,7 +48,7 @@
       exec-once = [
         "${pkgs.waybar}/bin/waybar"
         "hyprdim --no-dim-when-only --persist --ignore-leaving-special --dialog-dim"
-        "blueman-manager"
+        "blueman-applet"
       ];
 
       monitor = "DP-1,highrr,auto,auto";
@@ -107,6 +112,7 @@
           (bindExec "A" apps)
 
           "SUPER, F, togglefloating"
+          "SUPER ALT, F, fullscreen"
           "SUPER, Q, killactive"
           "SUPER CTRL, Q, exit"
 
