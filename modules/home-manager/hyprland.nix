@@ -17,8 +17,8 @@
   services.mako = {
     enable = true;
     anchor = "bottom-right";
-    margin = "12";
-    padding = "6";
+    margin = "24 12";
+    padding = "24";
     defaultTimeout = 5000;
     borderRadius = 5;
     borderSize = 2;

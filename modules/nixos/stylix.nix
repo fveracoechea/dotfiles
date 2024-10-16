@@ -11,7 +11,7 @@ in {
   stylix = {
     enable = true;
     autoEnable = true;
-    image = ../../config/wallpapers/islands.png;
+    image = ../../config/wallpapers/city-ultra-wide.jpg;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
 

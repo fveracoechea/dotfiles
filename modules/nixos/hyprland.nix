@@ -25,6 +25,7 @@
   environment.systemPackages = with pkgs; [
     hyprdim
     wl-clipboard
+    libnotify
     pavucontrol
     networkmanagerapplet
     nautilus
