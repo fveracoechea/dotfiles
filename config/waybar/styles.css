@@ -13,7 +13,8 @@
 window#waybar {
   /* background-color: rgba(108, 112, 134, 0.6); */
   /* background-color: rgba(147, 153, 178, 0.6); */
-  background-color: rgba(30, 30, 46, 0.6);
+  /* background-color: rgba(30, 30, 46, 0.6); */
+  background-color: transparent;
 }
 
 tooltip {
@@ -38,8 +39,8 @@ tooltip {
 #network,
 #gamemode,
 #stats,
+#window,
 #custom-power {
-  margin: 6px;
   border-radius: 1em;
   transition: background-color 300ms ease, color 300ms ease;
   background-color: @base;
@@ -48,25 +49,16 @@ tooltip {
   color: @text;
 }
 
-#window {
-  background-color: transparent;
-  color: @text;
-}
-
 
 #custom-apps {
-  margin: 6px;
-  margin-left: 16px;
   border-radius: 1em;
-  padding-left: 5px;
-  padding-right: 10px;
-  font-size: 26px;
-  color: @blue;
+  color: @text;
   background-color: @base;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 #quick-links {
-  margin: 6px;
   background-color: transparent;
 }
 
@@ -76,8 +68,7 @@ tooltip {
 #custom-discord,
 #custom-chrome {
   transition: background-color 300ms ease, color 300ms ease;
-  color: @text;
-  font-size: 26px;
+  color: @subtext0;
   margin-right: 16px;
 }
 
@@ -88,7 +79,7 @@ tooltip {
 #custom-spotify:hover,
 #custom-discord:hover,
 #custom-chrome:hover {
-  color: white;
+  color: @text;
 }
 
 #workspaces button {

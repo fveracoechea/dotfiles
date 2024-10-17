@@ -7,22 +7,28 @@
     enable = true;
 
     settings = let
-      largeIcon = icon: ''<span size="large">${icon}</span>'';
+      icon = size: icon: ''<span size="${size}">${icon}</span>'';
+      largeIcon = icon "large";
+      xlargeIcon = icon "x-large";
       format = icon: label: ''${largeIcon icon}    ${label}'';
+      xformat = icon: label: ''${xlargeIcon icon}    ${label}'';
     in {
       mainBar = {
         layer = "top";
         position = "top";
-        spacing = 16;
+        spacing = 8;
+        margin-top = 10;
+        margin-left = 16;
+        margin-right = 16;
 
         modules-left = [
           "custom/apps"
           "group/quick-links"
-          "hyprland/workspaces"
+          "hyprland/window"
         ];
 
         modules-center = [
-          "hyprland/window"
+          "hyprland/workspaces"
         ];
 
         modules-right = [
@@ -35,7 +41,7 @@
         ];
 
         "custom/apps" = {
-          format = "󱄅";
+          format = xformat "󱄅" "Apps";
           on-click = "wofi --show drun --allow-images";
           tooltip-format = "App Launcher";
         };
@@ -43,31 +49,31 @@
         "custom/settings" = let
           settings = pkgs.gnome-control-center;
         in {
-          format = "󰒓";
+          format = xlargeIcon "";
           on-click = "env XDG_CURRENT_DESKTOP=gnome ${settings}/bin/gnome-control-center";
           tooltip-format = "System Settings";
         };
 
         "custom/nautilus" = {
-          format = "󰉋";
+          format = xlargeIcon "";
           on-click = "nautilus";
           tooltip-format = "Open File Manager";
         };
 
         "custom/chrome" = {
-          format = "";
+          format = xlargeIcon "";
           on-click = "google-chrome-stable";
           tooltip-format = "Google Chrome";
         };
 
         "custom/spotify" = {
-          format = "󰓇";
+          format = xlargeIcon "";
           on-click = "spotify";
           tooltip-format = "Spotify";
         };
 
         "custom/discord" = {
-          format = "";
+          format = xlargeIcon "";
           on-click = "vesktop";
           tooltip-format = "Discord";
         };
@@ -144,9 +150,6 @@
         };
 
         "hyprland/window" = {
-          icon = true;
-          icon-size = 22;
-          separate-outputs = true;
           rewrite = {
             "(.*) - Google Chrome" = "$1";
           };

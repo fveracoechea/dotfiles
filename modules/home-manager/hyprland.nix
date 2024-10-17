@@ -39,8 +39,12 @@
         "XDG_CURRENT_DESKTOP,Hyprland"
       ];
 
+      cursor = {
+        enable_hyprcursor = false;
+      };
+
       misc = {
-        vrr = 2;
+        vrr = 1;
         animate_manual_resizes = true;
         animate_mouse_windowdragging = true;
       };
@@ -89,6 +93,13 @@
 
         (floatTitle "Volume Control")
         (floatTitle "Bluetooth Devices")
+      ];
+
+      windowrulev2 = [
+        "bordersize 0, fullscreen:1"
+        "minsize 900 650, floating:1"
+        "opacity 0.88 0.88 1.0, title:(.*)$"
+        "opacity 1.0, class:(google-chrome)"
       ];
 
       bindm = [

@@ -11,16 +11,9 @@ in {
   stylix = {
     enable = true;
     autoEnable = true;
-    image = ../../config/wallpapers/city-ultra-wide.jpg;
+    image = ../../config/wallpapers/city-ultrawide.jpg;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
-
-    opacity = {
-      terminal = 0.9;
-      desktop = 0.9;
-      popups = 1.0;
-      applications = 0.9;
-    };
 
     cursor = {
       name = "catppuccin-mocha-dark-cursors";
