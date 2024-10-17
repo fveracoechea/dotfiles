@@ -11,37 +11,18 @@
       largeIcon = icon "large";
       xlargeIcon = icon "x-large";
       format = icon: label: ''${largeIcon icon}    ${label}'';
-      xformat = icon: label: ''${xlargeIcon icon}    ${label}'';
+      gFormat = icon: label: ''${largeIcon icon} ${label}'';
     in {
       mainBar = {
         layer = "top";
         position = "top";
         spacing = 8;
-        margin-top = 10;
-        margin-left = 16;
-        margin-right = 16;
-
-        modules-left = [
-          "custom/apps"
-          "group/quick-links"
-          "hyprland/window"
-        ];
-
-        modules-center = [
-          "hyprland/workspaces"
-        ];
-
-        modules-right = [
-          "clock"
-          "tray"
-          "network"
-          "pulseaudio"
-          "gamemode"
-          "group/stats"
-        ];
+        margin-top = 12;
+        margin-left = 12;
+        margin-right = 12;
 
         "custom/apps" = {
-          format = xformat "󱄅" "Apps";
+          format = ''${largeIcon "󱄅"}  Apps'';
           on-click = "wofi --show drun --allow-images";
           tooltip-format = "App Launcher";
         };
@@ -87,6 +68,22 @@
             "custom/spotify"
             "custom/discord"
           ];
+        };
+
+        cpu = {
+          format = gFormat " " "{usage}%";
+        };
+
+        temperature = {
+          format = gFormat "" "{temperatureC}󰔄";
+        };
+
+        memory = {
+          format = gFormat " " "{used:0.1f}G/{total:0.1f}G";
+        };
+
+        disk = {
+          format = gFormat " " "{percentage_free}%";
         };
 
         "group/stats" = {
@@ -137,16 +134,21 @@
           format-disconnected = format "󰖪" "0%";
           format-ethernet = format "" "100%";
           format-linked = "{ifname} (No IP)";
-          format-wifi = format " " "{signalStrength}%";
+          format-wifi = format "" "{signalStrength}%";
           tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
           on-click = "nm-connection-editor";
         };
 
-        clock = {
-          format = format "󰥔" "{:%H:%M %a}";
+        "clock#time" = {
+          format = format "󰥔" "{:%I:%M %p}";
           on-click = "gnome-calendar";
-          tooltip-format = "{:%Y-%m-%d}";
-          tooltip = true;
+          tooltip = false;
+        };
+
+        "clock#date" = {
+          format = format "" "{:%A %b %m}";
+          on-click = "gnome-calendar";
+          tooltip = false;
         };
 
         "hyprland/window" = {
@@ -170,7 +172,7 @@
 
           tray = {
             icon-size = 24;
-            spacing = 10;
+            spacing = 8;
             show-passive-items = true;
           };
 
@@ -179,9 +181,25 @@
           };
         };
 
-        "custom/empty" = {
-          format = "";
-        };
+        modules-left = [
+          "custom/apps"
+          "hyprland/window"
+        ];
+
+        modules-center = [
+          "clock#time"
+          "clock#date"
+          "network"
+          "pulseaudio"
+          "hyprland/workspaces"
+          "group/stats"
+          "tray"
+          "gamemode"
+        ];
+
+        modules-right = [
+          "group/quick-links"
+        ];
       };
     };
 

@@ -60,7 +60,7 @@
       general = {
         border_size = 2;
         gaps_in = 8;
-        gaps_out = 16;
+        gaps_out = "10 16 16 16";
       };
 
       decoration = {
@@ -97,7 +97,7 @@
 
       windowrulev2 = [
         "bordersize 0, fullscreen:1"
-        "minsize 900 650, floating:1"
+        "minsize 1000 650, floating:1"
         "opacity 0.88 0.88 1.0, title:(.*)$"
         "opacity 1.0, class:(google-chrome)"
       ];
