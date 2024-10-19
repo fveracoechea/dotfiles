@@ -52,7 +52,7 @@
       exec-once = [
         "${pkgs.waybar}/bin/waybar"
         "hyprdim --no-dim-when-only --persist --ignore-leaving-special --dialog-dim"
-        "blueman-applet"
+        "blueman-try"
       ];
 
       monitor = "DP-1,highrr,auto,auto";
@@ -60,7 +60,7 @@
       general = {
         border_size = 2;
         gaps_in = 8;
-        gaps_out = "10 16 16 16";
+        gaps_out = "14 20 20 20";
       };
 
       decoration = {

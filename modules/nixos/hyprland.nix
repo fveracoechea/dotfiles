@@ -24,6 +24,8 @@
 
   environment.systemPackages = with pkgs; [
     hyprdim
+    hyprshot
+    hyprpicker
     wl-clipboard
     libnotify
     pavucontrol
