@@ -36,7 +36,6 @@
     kooha
     google-chrome
     dconf2nix
-    deno
     watchman
     vesktop
     # gnome apps/extensions

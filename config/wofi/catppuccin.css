@@ -54,47 +54,48 @@
 * {
   font-family: "Fira Sans", sans-serif;
   font-size: 14px;
-  border-radius: 5px;
+  padding: 0px;
+  margin: 0px;
 }
 
 
 /* Window */
 window {
-  background-color: @base;
+  background-color: transparent;
 }
 
 /* Outer Box */
 #outer-box {
-  padding: 24px;
+  padding: 16px;
+  border-radius: 1.2em;
+  background-color: @base;
   border: 2px solid @blue;
+  width: 350px;
 }
 
 /* Scroll */
 #scroll {
-  border-radius: 5px;
-  background-color: @mantle;
-  border: 2px solid @surface0;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 /* Inner Box */
-#inner-box {
-  padding: 12px;
-}
+/* #inner-box { */
+/* padding: 12px; */
+/* } */
 
 
 /* Input */
 #input {
   box-shadow: none;
-  padding: 6px 12px;
-  border-radius: 5px;
+  padding: 4px 8px;
+  border-radius: 1.2em;
   color: @text;
   background-color: @mantle;
-  border: 2px solid @surface0;
+  border: 2px solid @surface1;
 }
 
 #input:focus {
-  border: 2px solid @surface2;
+  border: 2px solid @overlay1;
 }
 
 #input image {
@@ -111,12 +112,13 @@ window {
 }
 
 #entry {
-  transition: background-color 300ms ease, color 300ms ease;
-  border-radius: 5px;
+  transition: background-color 302ms ease, color 300ms ease;
+  border-radius: 1.2em;
   background-color: unset;
   border: none;
   margin-bottom: 6px;
-  padding: 6px;
+  padding: 4px 8px;
+  border: 2px solid transparent;
 }
 
 /* Selected Entry */
@@ -126,5 +128,5 @@ window {
 }
 
 #entry:selected #text {
-  color: white;
+  color: @rosewater;
 }

@@ -20,7 +20,7 @@
     margin = "24 12";
     padding = "24";
     defaultTimeout = 5000;
-    borderRadius = 5;
+    borderRadius = 8;
     borderSize = 2;
   };
 
@@ -37,6 +37,8 @@
       env = [
         "BROWSER,${browser}"
         "XDG_CURRENT_DESKTOP,Hyprland"
+        "HYPRCURSOR_THEME,catppuccin-mocha-dark-cursors"
+        "HYPRCURSOR_SIZE,38"
       ];
 
       cursor = {
@@ -64,8 +66,8 @@
       };
 
       decoration = {
-        rounding = 5;
-        drop_shadow = true;
+        rounding = 8;
+        drop_shadow = false;
         blur.enabled = true;
       };
 

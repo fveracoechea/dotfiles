@@ -26,6 +26,7 @@
     hyprdim
     hyprshot
     hyprpicker
+    hyprcursor
     wl-clipboard
     libnotify
     pavucontrol

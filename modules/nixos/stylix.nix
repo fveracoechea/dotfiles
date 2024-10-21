@@ -18,7 +18,7 @@ in {
     cursor = {
       name = "catppuccin-mocha-dark-cursors";
       package = pkgs.catppuccin-cursors.mochaDark;
-      size = 38;
+      size = 50;
     };
 
     fonts = {

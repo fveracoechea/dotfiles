@@ -108,6 +108,7 @@
     gnumake
     cargo
     slack
+    deno
     inputs.alejandra.defaultPackage.${pkgs.system}
   ];
 
