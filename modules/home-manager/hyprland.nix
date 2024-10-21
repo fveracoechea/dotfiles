@@ -54,7 +54,7 @@
       exec-once = [
         "${pkgs.waybar}/bin/waybar"
         "hyprdim --no-dim-when-only --persist --ignore-leaving-special --dialog-dim"
-        "blueman-try"
+        "blueman-tray"
       ];
 
       monitor = "DP-1,highrr,auto,auto";
