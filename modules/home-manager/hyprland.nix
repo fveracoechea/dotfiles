@@ -37,11 +37,11 @@
       env = [
         "BROWSER,${browser}"
         "XDG_CURRENT_DESKTOP,Hyprland"
-        "HYPRCURSOR_THEME,Capitaine Cursors (Palenight)"
+        "HYPRCURSOR_THEME,capitaine-cursors"
         "HYPRCURSOR_SIZE,38"
-        "XCURSOR_THEME,Capitaine Cursors (Palenight)"
+        "XCURSOR_THEME,capitaine-cursors"
         "XCURSOR_SIZE,38"
-        "QT_CURSOR_THEME,Capitaine Cursors (Palenight)"
+        "QT_CURSOR_THEME,capitaine-cursors"
         "QT_CURSOR_SIZE,38"
       ];
 
