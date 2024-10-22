@@ -38,9 +38,8 @@
     dconf2nix
     watchman
     vesktop
-    # gnome apps/extensions
-    gnome-tweaks
     dconf-editor
+    gnome-tweaks
     gnomeExtensions.freon
     gnomeExtensions.gamemode-shell-extension
     gnomeExtensions.tiling-shell

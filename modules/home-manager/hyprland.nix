@@ -37,8 +37,12 @@
       env = [
         "BROWSER,${browser}"
         "XDG_CURRENT_DESKTOP,Hyprland"
-        "HYPRCURSOR_THEME,catppuccin-mocha-dark-cursors"
+        "HYPRCURSOR_THEME,Capitaine Cursors (Palenight)"
         "HYPRCURSOR_SIZE,38"
+        "XCURSOR_THEME,Capitaine Cursors (Palenight)"
+        "XCURSOR_SIZE,38"
+        "QT_CURSOR_THEME,Capitaine Cursors (Palenight)"
+        "QT_CURSOR_SIZE,38"
       ];
 
       cursor = {

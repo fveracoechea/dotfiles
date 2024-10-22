@@ -16,9 +16,9 @@ in {
     polarity = "dark";
 
     cursor = {
-      name = "catppuccin-mocha-dark-cursors";
-      package = pkgs.catppuccin-cursors.mochaDark;
-      size = 50;
+      name = "capitaine-cursors";
+      package = pkgs.capitaine-cursors;
+      size = 38;
     };
 
     fonts = {
@@ -27,5 +27,8 @@ in {
       monospace = firaCode;
       emoji = firaCode;
     };
+
+    targets.grub.enable = true;
+    targets.grub.useImage = true;
   };
 }
