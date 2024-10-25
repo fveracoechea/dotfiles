@@ -1,6 +1,5 @@
 {
   inputs,
-  pkgs,
   lib,
   ...
 }: {
@@ -17,10 +16,7 @@
     ../../modules/home-manager/hyprland.nix
     ../../modules/home-manager/waybar.nix
     ../../modules/home-manager/wofi.nix
-    (inputs.neovim-config.homeManagerModules.neovim {
-      inherit pkgs;
-      inherit lib;
-    })
+    inputs.neovim-config.homeManagerModules.default
   ];
 
   stylix.targets.neovim.enable = lib.mkForce false;

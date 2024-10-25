@@ -524,11 +524,11 @@
     "lsp-file-operations-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1718462620,
-        "narHash": "sha256-FeqmybXQeZUHv/td2QTLxUZeWSblRhDqwDx9ih0A5DM=",
+        "lastModified": 1729769589,
+        "narHash": "sha256-c56N0E6NA3g58IRgnTtvGmpJ+uZemdmoIsQmPcvbrHY=",
         "owner": "antosha417",
         "repo": "nvim-lsp-file-operations",
-        "rev": "92a673de7ecaa157dd230d0128def10beb56d103",
+        "rev": "9744b738183a5adca0f916527922078a965515ed",
         "type": "github"
       },
       "original": {
@@ -542,14 +542,17 @@
         "import_cost-nvim": "import_cost-nvim",
         "lazydev-nvim": "lazydev-nvim",
         "lsp-file-operations-nvim": "lsp-file-operations-nvim",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "tree-sitter-nginx": "tree-sitter-nginx"
       },
       "locked": {
-        "lastModified": 1728659636,
-        "narHash": "sha256-bNBxCvXMzdE4EvxDVTWlGFisZKw+9aYXwoTpF71wjXg=",
+        "lastModified": 1729887977,
+        "narHash": "sha256-dCzX05XfjoxDDAI9D5oCztllqQSqzpKyvl0B+yOzke8=",
         "owner": "fveracoechea",
         "repo": "neovim-nix-config",
-        "rev": "06e1746e4bc17bae365b67c3294452c6eb27aa1c",
+        "rev": "b7d64c7a7219dd15c5353627b4511ff4942ca746",
         "type": "github"
       },
       "original": {
@@ -811,11 +814,11 @@
     "tree-sitter-nginx": {
       "flake": false,
       "locked": {
-        "lastModified": 1712439197,
-        "narHash": "sha256-Sa7audtwH8EgrHJ5XIUKTdveZU2pDPoUq70InQ6qcKA=",
+        "lastModified": 1729018975,
+        "narHash": "sha256-ofFBxW4p7rZFZm9w5cyA0semYLJWFu9emv8bfTfAFok=",
         "owner": "joncoole",
         "repo": "tree-sitter-nginx",
-        "rev": "b4b61db443602b69410ab469c122c01b1e685aa0",
+        "rev": "f6d13cf6281b25f2ce342a49a41a10a0381e00f0",
         "type": "gitlab"
       },
       "original": {
