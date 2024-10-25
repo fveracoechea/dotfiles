@@ -7,6 +7,7 @@
     enable = true;
 
     settings = let
+      # catppuccin colors
       rosewater = "#f5e0dc";
       flamingo = "#f2cdcd";
       pink = "#f5c2e7";
