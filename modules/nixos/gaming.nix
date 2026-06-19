@@ -31,7 +31,7 @@
 
     gamemode.enable = true;
     gamescope.enable = true;
-    gamescope.capSysNice = true;
+    gamescope.capSysNice = false;
   };
 
   environment = {

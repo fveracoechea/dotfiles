@@ -123,11 +123,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781189114,
-        "narHash": "sha256-5inaamLgUMWy+MOBE9ChF9QAF1o/74LFuHkI0W/9rqc=",
+        "lastModified": 1781365335,
+        "narHash": "sha256-zqDBhXMzfbdlO7F2bGHe7MOtB3xngd/+4ieMHDC+ZXo=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "486595d2cf49cfcd649b58a284fa11ac0e34da22",
+        "rev": "5b6f5733726a1b2ccafb5dec6ac4ca7299fad66c",
         "type": "github"
       },
       "original": {
@@ -458,26 +458,6 @@
         "type": "github"
       }
     },
-    "mcp-servers-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1781193142,
-        "narHash": "sha256-/uL1aNJcTCWXOTIwy7QzGsj6fgcVamMR4hyYpGz1Fvc=",
-        "owner": "natsukium",
-        "repo": "mcp-servers-nix",
-        "rev": "b19cc1389e21a2aa26bfb75148f7d68c8fb82c8c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "natsukium",
-        "repo": "mcp-servers-nix",
-        "type": "github"
-      }
-    },
     "musnix": {
       "inputs": {
         "nixpkgs": [
@@ -525,11 +505,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780942996,
-        "narHash": "sha256-tK+yLuHKDyvWg+FdIHQN9kcmwFga69Qdq4luyTQnf+8=",
+        "lastModified": 1781279130,
+        "narHash": "sha256-W2O06nzczYyNjDXjEiYfoaVeaKuNo4AVeNVWBLr8v2Q=",
         "owner": "stepbrobd",
         "repo": "nix-darwin",
-        "rev": "d93e95598764674be14ba5134d5d7781e5bd5e58",
+        "rev": "0efc19ae0a4e4fc17b821d19868e5dae69916a90",
         "type": "github"
       },
       "original": {
@@ -582,7 +562,6 @@
       "inputs": {
         "home-manager": "home-manager",
         "hyprland": "hyprland",
-        "mcp-servers-nix": "mcp-servers-nix",
         "musnix": "musnix",
         "neovim-config": "neovim-config",
         "nix-darwin": "nix-darwin",
