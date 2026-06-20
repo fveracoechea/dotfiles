@@ -5,6 +5,12 @@ in {
     ../../modules/darwin/default.nix
   ];
 
+  dotfiles = {
+    homebrew.enable = true;
+    system-defaults.enable = true;
+    zsh-shell.enable = true;
+  };
+
   system.primaryUser = username;
 
   # Used for backwards compatibility.
