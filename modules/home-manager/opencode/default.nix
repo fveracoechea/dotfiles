@@ -1,5 +1,8 @@
 {pkgs, ...}: {
-  home.packages = [pkgs.lsof];
+  home.packages = [
+    pkgs.lsof
+    pkgs.opencode-desktop
+  ];
 
   home.sessionVariables = {
     OPENCODE_ENABLE_EXA = "true";
