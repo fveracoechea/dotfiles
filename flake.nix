@@ -92,6 +92,9 @@
     };
     darwinModules = {
       default = ./modules/darwin/default.nix;
+      homebrew = ./modules/darwin/homebrew.nix;
+      system-defaults = ./modules/darwin/system-defaults.nix;
+      zsh-shell = ./modules/darwin/zsh-shell.nix;
     };
   in {
     inherit homeManagerModules nixosModules darwinModules;
