@@ -2,9 +2,7 @@
   username = "franciscoveracoechea";
 in {
   imports = [
-    ../../modules/darwin/system-defaults.nix
-    ../../modules/darwin/homebrew.nix
-    ../../modules/darwin/zsh-shell.nix
+    ../../modules/darwin/default.nix
   ];
 
   system.primaryUser = username;

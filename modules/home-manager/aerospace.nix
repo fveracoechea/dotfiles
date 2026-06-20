@@ -1,7 +1,12 @@
-{...}: {
-  xdg.enable = true;
+{
+  lib,
+  pkgs,
+  ...
+}: {
+  config = lib.mkIf pkgs.stdenv.isDarwin {
+    xdg.enable = true;
 
-  programs.aerospace = {
+    programs.aerospace = {
     enable = true;
 
     launchd.enable = true;
@@ -83,5 +88,6 @@
         }
       ];
     };
+  };
   };
 }

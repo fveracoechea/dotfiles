@@ -5,24 +5,7 @@
   ...
 }: {
   imports = [
-    ../../modules/home-manager/git.nix
-    ../../modules/home-manager/tmux
-    ../../modules/home-manager/zsh.nix
-    ../../modules/home-manager/bat.nix
-    ../../modules/home-manager/btop.nix
-    ../../modules/home-manager/yazi.nix
-    ../../modules/home-manager/oh-my-posh.nix
-    ../../modules/home-manager/gtk.nix
-    ../../modules/home-manager/volta.nix
-    ../../modules/home-manager/pro-audio.nix
-    ../../modules/home-manager/fuzzel.nix
-    ../../modules/home-manager/ghostty.nix
-    ../../modules/home-manager/hyprland
-    ../../modules/home-manager/sunshine.nix
-    ../../modules/home-manager/opencode
-    ../../modules/home-manager/desktop-entries
-    ../../modules/home-manager/fonts.nix
-    ../../modules/home-manager/spotify.nix
+    ../../modules/home-manager/default.nix
     inputs.neovim-config.homeManagerModules.default
   ];
 

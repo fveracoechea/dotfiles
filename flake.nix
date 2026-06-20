@@ -2,42 +2,32 @@
   description = "My fist NixOS Flake";
 
   inputs = {
-    # NixOS official package sources
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # home-manager, used for managing user configuration
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Musnix - Real-time audio
     musnix.url = "github:musnix/musnix";
     musnix.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Neovim config flake
     neovim-config.url = "github:fveracoechea/neovim-nix-config";
     neovim-config.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Hyprland
     hyprland.url = "github:hyprwm/Hyprland?ref=refs/tags/v0.55.4";
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Spotify theme
     spicetify-nix.url = "github:Gerg-L/spicetify-nix";
     spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Nix Darwin
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Shell utilities
     ultrashell.url = "github:fveracoechea/ultrashell";
     ultrashell.inputs.nixpkgs.follows = "nixpkgs";
 
-    # MCP Servers
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
     mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Tmux Powerkit
     tmux-powerkit.url = "github:fabioluciano/tmux-powerkit";
     tmux-powerkit.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -48,21 +38,47 @@
     nix-darwin,
     ...
   } @ inputs: let
+    supportedSystems = ["x86_64-linux" "aarch64-darwin"];
+
     customUtils = import ./utils;
-    customPkgsFor = system: (import ./packages nixpkgs.legacyPackages.${system});
+    customPkgsFor = system: (import ./packages {
+      inherit inputs system;
+      pkgs = nixpkgs.legacyPackages.${system};
+    });
+    dotfilesPkgsFor = system: (import ./packages {
+      inherit inputs system;
+      pkgs = nixpkgs.legacyPackages.${system};
+    });
+
+    homeManagerModules = {
+      default = ./modules/home-manager/default.nix;
+    };
+    nixosModules = {
+      default = ./modules/nixos/default.nix;
+    };
+    darwinModules = {
+      default = ./modules/darwin/default.nix;
+    };
   in {
-    # `macbook-pro` configuration
+    inherit homeManagerModules nixosModules darwinModules;
+
+    dotfilesPkgs = builtins.listToAttrs (map (system: {
+      name = system;
+      value = dotfilesPkgsFor system;
+    })
+    supportedSystems);
+
     darwinConfigurations."macbook-pro" = nix-darwin.lib.darwinSystem rec {
       system = "aarch64-darwin";
 
       specialArgs = {
-        inherit system;
-        inherit inputs;
-        inherit customUtils;
+        inherit system inputs customUtils;
         customPkgs = customPkgsFor system;
+        dotfilesPkgs = dotfilesPkgsFor system;
       };
 
       modules = [
+        darwinModules.default
         ./hosts/macbook-pro/configuration.nix
         home-manager.darwinModules.home-manager
         {
@@ -75,18 +91,17 @@
       ];
     };
 
-    # `nixos-desktop` configuration
     nixosConfigurations.nixos-desktop = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
 
       specialArgs = {
-        inherit system;
-        inherit inputs;
-        inherit customUtils;
+        inherit system inputs customUtils;
         customPkgs = customPkgsFor system;
+        dotfilesPkgs = dotfilesPkgsFor system;
       };
 
       modules = [
+        nixosModules.default
         ./hosts/nixos-desktop/configuration.nix
         home-manager.nixosModules.home-manager
         {
