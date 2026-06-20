@@ -1,9 +1,13 @@
 {
+  lib,
+  pkgs,
+  ...
+}: {
   programs.git = {
     enable = true;
     signing.format = "openpgp";
+
     settings = {
-      credential.helper = "osxkeychain";
       user = {
         email = "veracoecheafrancisco@gmail.com";
         name = "Francisco Veracoechea";
@@ -18,6 +22,22 @@
       rebase = {
         autosquash = true;
       };
+      credential = lib.mkIf pkgs.stdenv.isDarwin {
+        helper = "osxkeychain";
+      };
+      pagers = {
+        pager = "delta --dark --paging=never";
+      };
     };
+  };
+
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+  };
+
+  programs.lazygit = {
+    enable = true;
+    enableZshIntegration = true;
   };
 }

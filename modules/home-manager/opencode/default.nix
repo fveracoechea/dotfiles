@@ -1,6 +1,11 @@
 {pkgs, ...}: {
   home.packages = [pkgs.lsof];
 
+  home.sessionVariables = {
+    OPENCODE_ENABLE_EXA = "true";
+    OPENCODE_EXPERIMENTAL_LSP_TOOL = "true";
+  };
+
   programs.opencode = {
     enable = true;
 
@@ -14,6 +19,7 @@
 
     settings = {
       autoupdate = false;
+
       mcp = {
         grep = {
           enabled = true;
