@@ -9,6 +9,8 @@
     inputs.neovim-config.homeManagerModules.default
   ];
 
+  dotfiles.bat.enable = true;
+
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
 

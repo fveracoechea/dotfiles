@@ -8,6 +8,8 @@
     inputs.neovim-config.homeManagerModules.default
   ];
 
+  dotfiles.bat.enable = true;
+
   home.packages = with pkgs; [
     watchman
     ripgrep

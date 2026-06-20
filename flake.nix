@@ -52,6 +52,7 @@
 
     homeManagerModules = {
       default = ./modules/home-manager/default.nix;
+      bat = ./modules/home-manager/bat.nix;
     };
     nixosModules = {
       default = ./modules/nixos/default.nix;
