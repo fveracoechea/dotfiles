@@ -5,7 +5,17 @@
   ];
 
   dotfiles = {
+    bootloader.enable = true;
+    display-manager.enable = true;
+    misc.enable = true;
+    zsh-shell.enable = true;
+    nix-ld.enable = true;
+    timezone.enable = true;
+    pipewire.enable = true;
+    gaming.enable = true;
     hyprland.enable = true;
+    networking.enable = true;
+    # ollama.enable = true;
   };
 
   nix = {

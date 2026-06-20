@@ -78,7 +78,17 @@
     };
     nixosModules = {
       default = ./modules/nixos/default.nix;
+      bootloader = ./modules/nixos/bootloader.nix;
+      display-manager = ./modules/nixos/display-manager.nix;
+      gaming = ./modules/nixos/gaming.nix;
       hyprland = ./modules/nixos/hyprland.nix;
+      misc = ./modules/nixos/misc.nix;
+      networking = ./modules/nixos/networking.nix;
+      nix-ld = ./modules/nixos/nix-ld.nix;
+      ollama = ./modules/nixos/ollama.nix;
+      pipewire = ./modules/nixos/pipewire.nix;
+      timezone = ./modules/nixos/timezone.nix;
+      zsh-shell = ./modules/nixos/zsh-shell.nix;
     };
     darwinModules = {
       default = ./modules/darwin/default.nix;

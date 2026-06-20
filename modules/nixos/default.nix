@@ -1,10 +1,13 @@
 {...}: {
   imports = [
+    ../core/palette.nix
+    ../core/monitors.nix
+
     ./bootloader.nix
-    ./displayManager.nix
+    ./display-manager.nix
     ./gaming.nix
     ./hyprland.nix
-    ./miscellaneous.nix
+    ./misc.nix
     ./networking.nix
     ./nix-ld.nix
     ./ollama.nix
