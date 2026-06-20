@@ -1,5 +1,13 @@
-{customUtils, ...}: {
-  programs.oh-my-posh = {
+{
+  lib,
+  config,
+  customUtils,
+  ...
+}: {
+  options.dotfiles.oh-my-posh.enable = lib.mkEnableOption "oh-my-posh (shell prompt)";
+
+  config = lib.mkIf config.dotfiles.oh-my-posh.enable {
+    programs.oh-my-posh = {
     enable = true;
     enableZshIntegration = true;
     settings = {
@@ -89,4 +97,5 @@
       ];
     };
   };
+};
 }

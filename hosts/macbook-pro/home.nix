@@ -9,9 +9,7 @@
   ];
 
   dotfiles = {
-    bat.enable = true;
-    btop.enable = true;
-    yazi.enable = true;
+    shell.enable = true;
     volta.enable = true;
     ghostty.enable = true;
     fonts.enable = true;
@@ -25,7 +23,6 @@
     watchman
     ripgrep
     wget
-    lazydocker
     just
     wireguard-tools
     agent-browser

@@ -10,9 +10,7 @@
   ];
 
   dotfiles = {
-    bat.enable = true;
-    btop.enable = true;
-    yazi.enable = true;
+    shell.enable = true;
     gtk.enable = true;
     volta.enable = true;
     ghostty.enable = true;

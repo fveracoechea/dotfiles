@@ -14,9 +14,12 @@
     ./gtk.nix
     ./hyprland
     ./karabiner.nix
+    ./lazygit.nix
+    ./lazydocker.nix
     ./oh-my-posh.nix
     ./opencode
     ./pro-audio.nix
+    ./shell.nix
     ./spotify.nix
     ./ssh.nix
     ./sunshine.nix

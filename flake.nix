@@ -58,15 +58,22 @@
       desktop-entries = ./modules/home-manager/desktop-entries/default.nix;
       fonts = ./modules/home-manager/fonts.nix;
       ghostty = ./modules/home-manager/ghostty.nix;
+      git = ./modules/home-manager/git.nix;
       gtk = ./modules/home-manager/gtk.nix;
       karabiner = ./modules/home-manager/karabiner.nix;
+      lazygit = ./modules/home-manager/lazygit.nix;
+      lazydocker = ./modules/home-manager/lazydocker.nix;
+      oh-my-posh = ./modules/home-manager/oh-my-posh.nix;
       opencode = ./modules/home-manager/opencode/default.nix;
       pro-audio = ./modules/home-manager/pro-audio.nix;
       spotify = ./modules/home-manager/spotify.nix;
       ssh = ./modules/home-manager/ssh.nix;
       sunshine = ./modules/home-manager/sunshine.nix;
+      shell = ./modules/home-manager/shell.nix;
+      tmux = ./modules/home-manager/tmux/default.nix;
       volta = ./modules/home-manager/volta.nix;
       yazi = ./modules/home-manager/yazi.nix;
+      zsh = ./modules/home-manager/zsh.nix;
     };
     nixosModules = {
       default = ./modules/nixos/default.nix;

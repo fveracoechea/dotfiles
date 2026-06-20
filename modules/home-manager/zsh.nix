@@ -1,11 +1,15 @@
 {
-  pkgs,
+  lib,
   config,
+  pkgs,
   ...
 }: {
-  home.packages = with pkgs; [
-    fastfetch
-  ];
+  options.dotfiles.zsh.enable = lib.mkEnableOption "zsh shell";
+
+  config = lib.mkIf config.dotfiles.zsh.enable {
+    home.packages = with pkgs; [
+      fastfetch
+    ];
 
   programs.fzf = {
     enable = true;
@@ -96,4 +100,5 @@
         clear
       '';
   };
+};
 }
