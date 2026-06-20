@@ -1,4 +1,5 @@
 export default {
+	sourceBranch: "configs-arch",
 	maxIterations: 20, // Maximum loop iterations (default: 10)
 	worktreesDir: ".agent-loop/worktrees",
 	implementer: {
