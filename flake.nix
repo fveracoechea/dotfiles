@@ -52,7 +52,21 @@
 
     homeManagerModules = {
       default = ./modules/home-manager/default.nix;
+      aerospace = ./modules/home-manager/aerospace.nix;
       bat = ./modules/home-manager/bat.nix;
+      btop = ./modules/home-manager/btop.nix;
+      desktop-entries = ./modules/home-manager/desktop-entries/default.nix;
+      fonts = ./modules/home-manager/fonts.nix;
+      ghostty = ./modules/home-manager/ghostty.nix;
+      gtk = ./modules/home-manager/gtk.nix;
+      karabiner = ./modules/home-manager/karabiner.nix;
+      opencode = ./modules/home-manager/opencode/default.nix;
+      pro-audio = ./modules/home-manager/pro-audio.nix;
+      spotify = ./modules/home-manager/spotify.nix;
+      ssh = ./modules/home-manager/ssh.nix;
+      sunshine = ./modules/home-manager/sunshine.nix;
+      volta = ./modules/home-manager/volta.nix;
+      yazi = ./modules/home-manager/yazi.nix;
     };
     nixosModules = {
       default = ./modules/nixos/default.nix;

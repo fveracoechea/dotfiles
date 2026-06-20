@@ -1,33 +1,37 @@
-{pkgs, ...}: {
-  home.packages = [
-    pkgs.lsof
-    pkgs.opencode-desktop
-  ];
+{lib, config, pkgs, ...}: {
+  options.dotfiles.opencode.enable = lib.mkEnableOption "opencode desktop CLI";
 
-  home.sessionVariables = {
-    OPENCODE_ENABLE_EXA = "true";
-    OPENCODE_EXPERIMENTAL_LSP_TOOL = "true";
-  };
+  config = lib.mkIf config.dotfiles.opencode.enable {
+    home.packages = [
+      pkgs.lsof
+      pkgs.opencode-desktop
+    ];
 
-  programs.opencode = {
-    enable = true;
-
-    commands = {
-      create-pr = ./command/create-pr.md;
+    home.sessionVariables = {
+      OPENCODE_ENABLE_EXA = "true";
+      OPENCODE_EXPERIMENTAL_LSP_TOOL = "true";
     };
 
-    tui = {
-      theme = "system";
-    };
+    programs.opencode = {
+      enable = true;
 
-    settings = {
-      autoupdate = false;
+      commands = {
+        create-pr = ./command/create-pr.md;
+      };
 
-      mcp = {
-        grep = {
-          enabled = true;
-          type = "remote";
-          url = "https://mcp.grep.app";
+      tui = {
+        theme = "system";
+      };
+
+      settings = {
+        autoupdate = false;
+
+        mcp = {
+          grep = {
+            enabled = true;
+            type = "remote";
+            url = "https://mcp.grep.app";
+          };
         };
       };
     };

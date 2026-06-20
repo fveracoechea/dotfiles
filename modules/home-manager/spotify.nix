@@ -1,4 +1,6 @@
 {
+  lib,
+  config,
   inputs,
   pkgs,
   ...
@@ -14,18 +16,22 @@ in {
     inputs.spicetify-nix.homeManagerModules.default
   ];
 
-  programs.cava.enable = true;
+  options.dotfiles.spotify.enable = lib.mkEnableOption "Spotify with spicetify-nix";
 
-  programs.spicetify = {
-    enable = true;
-    colorScheme = "mocha";
-    theme = {
-      name = "catppuccin";
-      src = "${themeRepo}/catppuccin";
-      injectCss = true;
-      injectThemeJs = true;
-      replaceColors = true;
-      overwriteAssets = true;
+  config = lib.mkIf config.dotfiles.spotify.enable {
+    programs.cava.enable = true;
+
+    programs.spicetify = {
+      enable = true;
+      colorScheme = "mocha";
+      theme = {
+        name = "catppuccin";
+        src = "${themeRepo}/catppuccin";
+        injectCss = true;
+        injectThemeJs = true;
+        replaceColors = true;
+        overwriteAssets = true;
+      };
     };
   };
 }

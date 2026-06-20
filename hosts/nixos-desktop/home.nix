@@ -9,7 +9,20 @@
     inputs.neovim-config.homeManagerModules.default
   ];
 
-  dotfiles.bat.enable = true;
+  dotfiles = {
+    bat.enable = true;
+    btop.enable = true;
+    yazi.enable = true;
+    gtk.enable = true;
+    volta.enable = true;
+    ghostty.enable = true;
+    sunshine.enable = true;
+    fonts.enable = true;
+    spotify.enable = true;
+    opencode.enable = true;
+    desktop-entries.enable = true;
+    pro-audio.enable = true;
+  };
 
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
@@ -48,7 +61,7 @@
   # incompatible changes.
   #
   # You can update home Manager without changing this value. See
-  # the home Manager release notes for a list of state version
+  # the home Manager release notes for a list of release
   # changes in each release.
   home.stateVersion = "24.05";
 

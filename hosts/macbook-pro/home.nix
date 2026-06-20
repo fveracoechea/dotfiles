@@ -8,7 +8,18 @@
     inputs.neovim-config.homeManagerModules.default
   ];
 
-  dotfiles.bat.enable = true;
+  dotfiles = {
+    bat.enable = true;
+    btop.enable = true;
+    yazi.enable = true;
+    volta.enable = true;
+    ghostty.enable = true;
+    fonts.enable = true;
+    karabiner.enable = true;
+    ssh.enable = true;
+    aerospace.enable = true;
+    opencode.enable = true;
+  };
 
   home.packages = with pkgs; [
     watchman
@@ -32,7 +43,7 @@
   # incompatible changes.
   #
   # You can update home Manager without changing this value. See
-  # the home Manager release notes for a list of state version
+  # the home Manager release notes for a list of release
   # changes in each release.
   home.stateVersion = "24.05";
 

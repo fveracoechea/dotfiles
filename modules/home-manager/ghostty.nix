@@ -1,28 +1,32 @@
-{pkgs, ...}: {
-  programs.ghostty = {
-    enable = true;
-    enableZshIntegration = true;
-    package =
-      if pkgs.stdenv.isDarwin
-      then pkgs.ghostty-bin
-      else pkgs.ghostty;
+{lib, config, pkgs, ...}: {
+  options.dotfiles.ghostty.enable = lib.mkEnableOption "Ghostty terminal emulator";
 
-    settings = {
-      theme = "Catppuccin Mocha";
-      shell-integration = "zsh";
+  config = lib.mkIf config.dotfiles.ghostty.enable {
+    programs.ghostty = {
+      enable = true;
+      enableZshIntegration = true;
+      package =
+        if pkgs.stdenv.isDarwin
+        then pkgs.ghostty-bin
+        else pkgs.ghostty;
 
-      background-opacity = 0.9;
-      background-blur = true;
+      settings = {
+        theme = "Catppuccin Mocha";
+        shell-integration = "zsh";
 
-      window-padding-color = "background";
-      window-padding-x = 6;
-      window-padding-y = 6;
-      window-decoration = "auto";
+        background-opacity = 0.9;
+        background-blur = true;
 
-      font-size = 13;
-      font-family-bold = "JetBrainsMono Nerd Font Bold";
-      font-family-italic = "JetBrainsMono Nerd Font Italic";
-      font-family-bold-italic = "JetBrainsMono Nerd Font Italic Bold";
+        window-padding-color = "background";
+        window-padding-x = 6;
+        window-padding-y = 6;
+        window-decoration = "auto";
+
+        font-size = 13;
+        font-family-bold = "JetBrainsMono Nerd Font Bold";
+        font-family-italic = "JetBrainsMono Nerd Font Italic";
+        font-family-bold-italic = "JetBrainsMono Nerd Font Italic Bold";
+      };
     };
   };
 }

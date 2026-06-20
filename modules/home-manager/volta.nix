@@ -1,17 +1,22 @@
 {
-  pkgs,
+  lib,
   config,
+  pkgs,
   ...
 }: {
-  home.packages = [
-    pkgs.volta
-  ];
+  options.dotfiles.volta.enable = lib.mkEnableOption "Volta JS toolchain manager";
 
-  home.sessionVariables = {
-    VOLTA_HOME = "${config.home.homeDirectory}/.volta";
+  config = lib.mkIf config.dotfiles.volta.enable {
+    home.packages = [
+      pkgs.volta
+    ];
+
+    home.sessionVariables = {
+      VOLTA_HOME = "${config.home.homeDirectory}/.volta";
+    };
+
+    home.sessionPath = [
+      "$VOLTA_HOME/bin"
+    ];
   };
-
-  home.sessionPath = [
-    "$VOLTA_HOME/bin"
-  ];
 }
