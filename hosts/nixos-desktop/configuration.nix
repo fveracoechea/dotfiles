@@ -4,6 +4,10 @@
     ../../modules/nixos/default.nix
   ];
 
+  dotfiles = {
+    hyprland.enable = true;
+  };
+
   nix = {
     optimise.automatic = true;
     settings.experimental-features = ["nix-command" "flakes" "impure-derivations" "ca-derivations"];

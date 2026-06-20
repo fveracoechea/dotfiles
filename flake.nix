@@ -60,6 +60,7 @@
       ghostty = ./modules/home-manager/ghostty.nix;
       git = ./modules/home-manager/git.nix;
       gtk = ./modules/home-manager/gtk.nix;
+      hyprland = ./modules/home-manager/hyprland/default.nix;
       karabiner = ./modules/home-manager/karabiner.nix;
       lazygit = ./modules/home-manager/lazygit.nix;
       lazydocker = ./modules/home-manager/lazydocker.nix;
@@ -77,6 +78,7 @@
     };
     nixosModules = {
       default = ./modules/nixos/default.nix;
+      hyprland = ./modules/nixos/hyprland.nix;
     };
     darwinModules = {
       default = ./modules/darwin/default.nix;
