@@ -40,11 +40,6 @@
   } @ inputs: let
     supportedSystems = ["x86_64-linux" "aarch64-darwin"];
 
-    customUtils = import ./utils;
-    customPkgsFor = system: (import ./packages {
-      inherit inputs system;
-      pkgs = nixpkgs.legacyPackages.${system};
-    });
     dotfilesPkgsFor = system: (import ./packages {
       inherit inputs system;
       pkgs = nixpkgs.legacyPackages.${system};
@@ -109,8 +104,7 @@
       system = "aarch64-darwin";
 
       specialArgs = {
-        inherit system inputs customUtils;
-        customPkgs = customPkgsFor system;
+        inherit inputs;
         dotfilesPkgs = dotfilesPkgsFor system;
       };
 
@@ -132,8 +126,7 @@
       system = "x86_64-linux";
 
       specialArgs = {
-        inherit system inputs customUtils;
-        customPkgs = customPkgsFor system;
+        inherit inputs;
         dotfilesPkgs = dotfilesPkgsFor system;
       };
 

@@ -1,7 +1,7 @@
 {
   inputs,
   pkgs,
-  customPkgs,
+  dotfilesPkgs,
   ...
 }: {
   imports = [
@@ -48,8 +48,8 @@
     wireguard-tools
     lutgen
     beekeeper-studio
-    customPkgs.dev-manager-desktop
-    customPkgs.railway
+    dotfilesPkgs.dev-manager-desktop
+    dotfilesPkgs.railway
     openlinkhub
     docker-compose
     zettlr

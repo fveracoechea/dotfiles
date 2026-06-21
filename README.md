@@ -9,6 +9,7 @@ development environment across macOS and Linux using Nix flakes.
 - **Minimal Distractions**: Clean, focused interface design
 - **Configuration as Code**: Everything managed through Nix flakes
 - **Modular Configuration**: Enable apps and services via `dotfiles.<name>.enable` switches under a unified namespace
+- **Highly Customizable**: Groupings (`dotfiles.shell`, `dotfiles.gaming`) compose atomic modules with `mkDefault` opt-out
 - **Reproducible**: Identical environments across multiple machines
 - **Cross-Platform**: Supports both NixOS and macOS (nix-darwin)
 - **Reusable**: Flake exports `homeManagerModules`, `nixosModules`, and `darwinModules` for external consumers
@@ -155,17 +156,15 @@ External consumer example:
 
 ```
 ├── hosts/                    # Host-specific configurations
-│   ├── nixos-desktop/       # NixOS desktop (configuration.nix, home.nix, hardware-configuration.nix)
-│   └── macbook-pro/         # macOS (configuration.nix, home.nix)
+│   ├── nixos-desktop/       # NixOS desktop configuration
+│   └── macbook-pro/         # macOS configuration
 ├── modules/                  # Reusable configuration modules
-│   ├── core/                # Cross-cutting options (dotfiles.palette, dotfiles.monitors)
-│   ├── nixos/               # NixOS-specific modules + default.nix aggregate
-│   ├── darwin/              # macOS-specific modules + default.nix aggregate
-│   └── home-manager/        # User environment modules + default.nix aggregate
-├── packages/                # Custom packages (locally-built + wrapped from flake inputs)
-├── docs/                    # ADRs, agent docs, refactor handoff
-├── assets/                  # Wallpapers, face icon
-└── flake.nix                # Main flake configuration
+│   ├── core/                # Cross-cutting options (palette, monitors)
+│   ├── nixos/               # NixOS-specific modules
+│   ├── darwin/              # macOS-specific modules
+│   └── home-manager/        # User environment modules
+├── packages/                # Custom packages (locally-built + wrapped from inputs)
+└── flake.nix               # Main flake configuration
 ```
 
 ## Documentation

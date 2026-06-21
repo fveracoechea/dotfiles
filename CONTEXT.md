@@ -43,7 +43,7 @@ A module under `modules/home-manager/` that configures a user-level concern. The
 A module under `modules/nixos/` or `modules/darwin/` that configures an OS-level concern specific to one platform. NixOS modules configure bootloader, services, networking, and hardware. Darwin modules configure macOS system defaults, Homebrew, and shell integration.
 
 **Dotfiles Option**:
-A boolean enable switch under the `dotfiles.*` namespace that activates a personal configuration for an app, service, or grouping of them. Hosts activate modules by setting `dotfiles.<name>.enable = true`. An option may cover a single app (e.g. `dotfiles.neovim`) or a grouping of several apps under one concern (e.g. `dotfiles.shell` = zsh + tmux + oh-my-posh + bat + btop + yazi + git + lazygit + lazydocker). Groupings cascade to their members via `mkDefault`, so a host can opt out of any member by setting it to `false` explicitly. Groupings are distinguished from atomics by name only, not by a marker.
+A boolean enable switch under the `dotfiles.*` namespace that activates a personal configuration for an app, service, or grouping of them. Hosts activate modules by setting `dotfiles.<name>.enable = true`. An option may cover a single app (e.g. `dotfiles.ghostty`) or a grouping of several apps under one concern (e.g. `dotfiles.shell` = zsh + tmux + oh-my-posh + bat + btop + yazi + git + lazygit + lazydocker). Groupings cascade to their members via `mkDefault`, so a host can opt out of any member by setting it to `false` explicitly. Groupings are distinguished from atomics by name only, not by a marker.
 _Avoid_: bundle, configuration, profile
 
 **Grouping**:

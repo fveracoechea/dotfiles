@@ -2,8 +2,7 @@
   lib,
   config,
   pkgs,
-  inputs,
-  system,
+  dotfilesPkgs,
   ...
 }: {
   options.dotfiles.tmux.enable = lib.mkEnableOption "tmux terminal multiplexer";
@@ -22,7 +21,7 @@
       plugins = with pkgs; [
         tmuxPlugins.vim-tmux-navigator
         {
-          plugin = inputs.tmux-powerkit.packages.${system}.default;
+          plugin = dotfilesPkgs.tmux-powerkit;
           extraConfig = lib.fileContents ./tmux.powerkit.conf;
         }
       ];
