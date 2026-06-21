@@ -110,6 +110,7 @@ require("snacks").setup {
   animate = { enabled = true },
   bufdelete = { enabled = true },
   debug = { enabled = true },
+  gh = { enabled = true },
   git = { enabled = true },
   gitbrowse = { enabled = true },
   keymap = { enabled = true },

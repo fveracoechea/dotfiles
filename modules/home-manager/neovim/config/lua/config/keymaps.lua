@@ -101,6 +101,24 @@ map("n", "<leader>gl", function()
   Snacks.lazygit.log()
 end, { desc = "Lazygit Log (cwd)" })
 
+-- GitHub issues and pull requests (requires gh CLI)
+
+map("n", "<leader>gi", function()
+  Snacks.picker.gh_issue()
+end, { desc = "GitHub Issues (open)" })
+
+map("n", "<leader>gI", function()
+  Snacks.picker.gh_issue { state = "all" }
+end, { desc = "GitHub Issues (all)" })
+
+map("n", "<leader>gp", function()
+  Snacks.picker.gh_pr()
+end, { desc = "GitHub Pull Requests (open)" })
+
+map("n", "<leader>gP", function()
+  Snacks.picker.gh_pr { state = "all" }
+end, { desc = "GitHub Pull Requests (all)" })
+
 -- Notifications
 
 map("n", "<leader>nh", function()
