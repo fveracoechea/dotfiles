@@ -15,7 +15,6 @@
     gaming.enable = true;
     hyprland.enable = true;
     networking.enable = true;
-    # ollama.enable = true;
   };
 
   nix = {
