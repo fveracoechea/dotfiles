@@ -11,6 +11,7 @@
 
   dotfiles = {
     shell.enable = true;
+    neovim.enable = false;
     gtk.enable = true;
     volta.enable = true;
     ghostty.enable = true;
