@@ -1,17 +1,16 @@
 {...}: {
   imports = [
     ../core/palette.nix
-    ../core/monitors.nix
 
     ./bootloader.nix
     ./display-manager.nix
+    ./docker.nix
     ./gaming.nix
     ./hyprland.nix
-    ./misc.nix
     ./networking.nix
     ./nix-ld.nix
     ./pipewire.nix
     ./timezone.nix
-    ./zsh-shell.nix
+    ./system-shell.nix
   ];
 }

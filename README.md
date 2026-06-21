@@ -72,8 +72,8 @@ dotfiles.fuzzel.enable = true;
 Grouping modules compose several atomic modules under one switch. Members cascade via `mkDefault`, so a host can opt out of any member by setting it to `false`:
 
 ```nix
-dotfiles.shell.enable = true;        # enables zsh, tmux, oh-my-posh, bat, btop, yazi, git, lazygit, lazydocker
-dotfiles.lazydocker.enable = false;  # opt out of one member
+dotfiles.shell.enable = true;  # enables zsh, tmux, oh-my-posh, bat, btop, yazi, git 
+dotfiles.git.enable = false;  # opt out of one member
 ```
 
 ### Cross-Layer
@@ -86,16 +86,16 @@ dotfiles.hyprland.enable = true;
 
 # home.nix (Home Manager)
 dotfiles.hyprland.enable = true;
-dotfiles.monitors = [ "DP-1, 5120x1440@119.98Hz, auto, auto, bitdepth, 8, cm, auto" ];
+dotfiles.hyprland.monitors = [ "DP-1, 5120x1440@119.98Hz, auto, auto, bitdepth, 8, cm, auto" ];
 ```
 
 ### Flake Exports
 
-The flake exports module attrsets for external consumers:
+The flake exports default module aggregations for external consumers. Each `default` imports all atomic modules in its layer, so consumers only need `default` and then enable what they want via `dotfiles.<name>.enable`:
 
-- `homeManagerModules.default` / `homeManagerModules.<name>` — aggregate or per-name
-- `nixosModules.default` / `nixosModules.<name>`
-- `darwinModules.default` / `darwinModules.<name>`
+- `homeManagerModules.default` — all home-manager modules
+- `nixosModules.default` — all NixOS modules
+- `darwinModules.default` — all darwin modules
 - `dotfilesPkgs.<system>` — packages this flake provides (locally-built + wrapped from inputs)
 
 External consumer example:
@@ -159,7 +159,7 @@ External consumer example:
 │   ├── nixos-desktop/       # NixOS desktop configuration
 │   └── macbook-pro/         # macOS configuration
 ├── modules/                  # Reusable configuration modules
-│   ├── core/                # Cross-cutting options (palette, monitors)
+│   ├── core/                # Cross-cutting options (palette)
 │   ├── nixos/               # NixOS-specific modules
 │   ├── darwin/              # macOS-specific modules
 │   └── home-manager/        # User environment modules
@@ -170,7 +170,6 @@ External consumer example:
 ## Documentation
 
 - **[Architecture Decision Records](docs/adr/)** — decisions on module structure, theming, macOS package split, and the `dotfiles.*` enable namespace.
-- **[Refactor Handoff](docs/refactor-handoff.md)** — full plan for the `dotfiles.*` enable-namespace refactor (decisions, target structure, deferred work).
 - **[CONTEXT.md](CONTEXT.md)** — domain glossary for the repository.
 
 ## License

@@ -14,7 +14,7 @@ in {
       portalPackage = null;
 
       settings = {
-        monitor = config.dotfiles.monitors;
+        monitor = config.dotfiles.hyprland.monitors;
 
         cursor = {
           enable_hyprcursor = false;

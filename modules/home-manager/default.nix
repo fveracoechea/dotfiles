@@ -1,7 +1,6 @@
 {...}: {
   imports = [
     ../core/palette.nix
-    ../core/monitors.nix
 
     ./aerospace.nix
     ./bat.nix
@@ -14,7 +13,6 @@
     ./gtk.nix
     ./hyprland
     ./karabiner.nix
-    ./lazydocker.nix
     ./oh-my-posh.nix
     ./opencode
     ./pro-audio.nix

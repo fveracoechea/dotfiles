@@ -7,8 +7,8 @@
   dotfiles = {
     bootloader.enable = true;
     display-manager.enable = true;
-    misc.enable = true;
-    zsh-shell.enable = true;
+    docker.enable = true;
+    system-shell.enable = true;
     nix-ld.enable = true;
     timezone.enable = true;
     pipewire.enable = true;
@@ -20,7 +20,7 @@
 
   nix = {
     optimise.automatic = true;
-    settings.experimental-features = ["nix-command" "flakes" "impure-derivations" "ca-derivations"];
+    settings.experimental-features = ["nix-command" "flakes"];
     gc.automatic = true;
     gc.options = "--delete-older-than 30d";
   };
@@ -47,7 +47,22 @@
     extraGroups = ["networkmanager" "wheel" "audio" "docker" "dialout" "plugdev"];
   };
 
-  virtualisation.docker.enable = true;
+  # Firmware updates
+  services.fwupd.enable = true;
+
+  # Browser
+  programs.firefox.enable = true;
+
+  # Printing
+  services.printing.enable = true;
+
+  # Virtual file system support (e.g., Trash can)
+  services.gvfs.enable = true;
+
+  # udev rule for Kinesis Advantage360 Pro serial access (idVendor 29ea)
+  services.udev.extraRules = ''
+    ATTRS{idVendor}=="29ea", MODE="0660", GROUP="plugdev", TAG+="uaccess"
+  '';
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [
@@ -68,14 +83,8 @@
     gnumake
     cargo
     openssl
-    lazydocker
   ];
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
+  # DO NOT CHANGE
+  system.stateVersion = "24.05";
 }

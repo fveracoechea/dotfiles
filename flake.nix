@@ -48,51 +48,9 @@
       pkgs = nixpkgs.legacyPackages.${system};
     });
 
-    homeManagerModules = {
-      default = ./modules/home-manager/default.nix;
-      aerospace = ./modules/home-manager/aerospace.nix;
-      bat = ./modules/home-manager/bat.nix;
-      btop = ./modules/home-manager/btop.nix;
-      desktop-entries = ./modules/home-manager/desktop-entries/default.nix;
-      fonts = ./modules/home-manager/fonts.nix;
-      ghostty = ./modules/home-manager/ghostty.nix;
-      git = ./modules/home-manager/git.nix;
-      gtk = ./modules/home-manager/gtk.nix;
-      hyprland = ./modules/home-manager/hyprland/default.nix;
-      karabiner = ./modules/home-manager/karabiner.nix;
-      lazydocker = ./modules/home-manager/lazydocker.nix;
-      oh-my-posh = ./modules/home-manager/oh-my-posh.nix;
-      opencode = ./modules/home-manager/opencode/default.nix;
-      pro-audio = ./modules/home-manager/pro-audio.nix;
-      spotify = ./modules/home-manager/spotify.nix;
-      ssh = ./modules/home-manager/ssh.nix;
-      sunshine = ./modules/home-manager/sunshine.nix;
-      shell = ./modules/home-manager/shell.nix;
-      tmux = ./modules/home-manager/tmux/default.nix;
-      volta = ./modules/home-manager/volta.nix;
-      yazi = ./modules/home-manager/yazi.nix;
-      zsh = ./modules/home-manager/zsh.nix;
-    };
-    nixosModules = {
-      default = ./modules/nixos/default.nix;
-      bootloader = ./modules/nixos/bootloader.nix;
-      display-manager = ./modules/nixos/display-manager.nix;
-      gaming = ./modules/nixos/gaming.nix;
-      hyprland = ./modules/nixos/hyprland.nix;
-      misc = ./modules/nixos/misc.nix;
-      networking = ./modules/nixos/networking.nix;
-      nix-ld = ./modules/nixos/nix-ld.nix;
-      ollama = ./modules/nixos/ollama.nix;
-      pipewire = ./modules/nixos/pipewire.nix;
-      timezone = ./modules/nixos/timezone.nix;
-      zsh-shell = ./modules/nixos/zsh-shell.nix;
-    };
-    darwinModules = {
-      default = ./modules/darwin/default.nix;
-      homebrew = ./modules/darwin/homebrew.nix;
-      system-defaults = ./modules/darwin/system-defaults.nix;
-      zsh-shell = ./modules/darwin/zsh-shell.nix;
-    };
+    homeManagerModules.default = ./modules/home-manager/default.nix;
+    nixosModules.default = ./modules/nixos/default.nix;
+    darwinModules.default = ./modules/darwin/default.nix;
   in {
     inherit homeManagerModules nixosModules darwinModules;
 

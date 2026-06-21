@@ -11,7 +11,6 @@
     ./btop.nix
     ./yazi.nix
     ./git.nix
-    ./lazydocker.nix
   ];
 
   options.dotfiles.shell.enable = lib.mkEnableOption "shell suite (zsh, tmux, oh-my-posh, bat, btop, yazi, git, lazydocker)";
@@ -24,7 +23,5 @@
     dotfiles.btop.enable = lib.mkDefault true;
     dotfiles.yazi.enable = lib.mkDefault true;
     dotfiles.git.enable = lib.mkDefault true;
-
-    programs.lazydocker.enable = true;
   };
 }

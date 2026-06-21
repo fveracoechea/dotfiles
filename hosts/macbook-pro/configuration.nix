@@ -8,7 +8,7 @@ in {
   dotfiles = {
     homebrew.enable = true;
     system-defaults.enable = true;
-    zsh-shell.enable = true;
+    system-shell.enable = true;
   };
 
   system.primaryUser = username;

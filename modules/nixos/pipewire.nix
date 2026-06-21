@@ -11,6 +11,9 @@
   options.dotfiles.pipewire.enable = lib.mkEnableOption "PipeWire audio (with musnix)";
 
   config = lib.mkIf config.dotfiles.pipewire.enable {
+    # Realtime scheduling priority for audio (required by PipeWire)
+    security.rtkit.enable = true;
+
     # Enable audio with PipeWire
     services.pipewire = {
       enable = true;

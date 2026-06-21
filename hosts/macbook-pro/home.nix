@@ -28,6 +28,7 @@
     agent-browser
     glab
     redis
+    lazydocker
     claude-code
   ];
 
