@@ -8,12 +8,10 @@
   config = lib.mkIf config.dotfiles.networking.enable {
     networking = {
       hostName = "nixos";
+
       interfaces."eno1".wakeOnLan.enable = true;
 
-      firewall = {
-        enable = true;
-        allowedTCPPorts = [8888 11434];
-      };
+      firewall.enable = true;
 
       # wireless.enable = true;
       wireless.iwd.enable = true;

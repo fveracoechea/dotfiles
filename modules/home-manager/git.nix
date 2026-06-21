@@ -1,12 +1,15 @@
 {
+  inputs,
   lib,
   config,
   pkgs,
   ...
 }: {
-  options.dotfiles.git.enable = lib.mkEnableOption "git (with delta pager)";
+  options.dotfiles.git.enable = lib.mkEnableOption "git (with hunk pager)";
 
   config = lib.mkIf config.dotfiles.git.enable {
+    home.packages = [ inputs.hunk.packages.${pkgs.system}.default ];
+
     programs.git = {
       enable = true;
       signing.format = "openpgp";
@@ -19,6 +22,7 @@
         core = {
           editor = "nvim";
           sshCommand = "ssh -i ~/.ssh/id_github_hypr";
+          pager = "hunk pager";
         };
         pull = {
           rebase = true;
@@ -29,15 +33,13 @@
         credential = lib.mkIf pkgs.stdenv.isDarwin {
           helper = "osxkeychain";
         };
-        pagers = {
-          pager = "delta --dark --paging=never";
-        };
       };
     };
 
-    programs.delta = {
+    programs.lazygit = {
       enable = true;
-      enableGitIntegration = true;
+      enableZshIntegration = true;
+      settings.git.paging.pager = "hunk pager";
     };
   };
 }

@@ -11,11 +11,10 @@
     ./btop.nix
     ./yazi.nix
     ./git.nix
-    ./lazygit.nix
     ./lazydocker.nix
   ];
 
-  options.dotfiles.shell.enable = lib.mkEnableOption "shell suite (zsh, tmux, oh-my-posh, bat, btop, yazi, git, lazygit, lazydocker)";
+  options.dotfiles.shell.enable = lib.mkEnableOption "shell suite (zsh, tmux, oh-my-posh, bat, btop, yazi, git, lazydocker)";
 
   config = lib.mkIf config.dotfiles.shell.enable {
     dotfiles.zsh.enable = lib.mkDefault true;
@@ -25,7 +24,7 @@
     dotfiles.btop.enable = lib.mkDefault true;
     dotfiles.yazi.enable = lib.mkDefault true;
     dotfiles.git.enable = lib.mkDefault true;
-    dotfiles.lazygit.enable = lib.mkDefault true;
-    dotfiles.lazydocker.enable = lib.mkDefault true;
+
+    programs.lazydocker.enable = true;
   };
 }

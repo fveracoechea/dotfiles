@@ -3,14 +3,11 @@
   config,
   ...
 }: {
-  options.dotfiles.misc.enable = lib.mkEnableOption "miscellaneous NixOS services (fwupd, flatpak, firefox, printing, rtkit, gvfs, udev)";
+  options.dotfiles.misc.enable = lib.mkEnableOption "miscellaneous NixOS services (fwupd, firefox, printing, rtkit, gvfs, udev)";
 
   config = lib.mkIf config.dotfiles.misc.enable {
     # allows to update some devices' firmware, including UEFI for several machines.
     services.fwupd.enable = true;
-
-    # Enable flatpak
-    services.flatpak.enable = true;
 
     # Install firefox.
     programs.firefox.enable = true;

@@ -14,7 +14,6 @@
     ./gtk.nix
     ./hyprland
     ./karabiner.nix
-    ./lazygit.nix
     ./lazydocker.nix
     ./oh-my-posh.nix
     ./opencode

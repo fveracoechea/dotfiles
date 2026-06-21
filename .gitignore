@@ -2,6 +2,7 @@
 .config/lazygit/state.yml
 .config/tmux/plugins
 !.config/tmux/plugins/tpm
+.agent-loop
 node_modules
 steam-logs.txt
 hyprland-logs.txt

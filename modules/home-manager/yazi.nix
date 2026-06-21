@@ -1,9 +1,14 @@
-{lib, config, pkgs, ...}: let
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
   theme = pkgs.fetchFromGitHub {
     owner = "catppuccin";
     repo = "yazi";
-    rev = "fc69d6472d29b823c4980d23186c9c120a0ad32c";
-    hash = "sha256-Og33IGS9pTim6LEH33CO102wpGnPomiperFbqfgrJjw=";
+    rev = "baaf5d1c9427b836fbefd126aa855f9eab7a9d0d";
+    hash = "sha256-L6SApM07CSQk0znEsFP8WaxW+ZHcindXo612r1XcwIg=";
   };
   themePath =
     theme + "/themes/mocha/catppuccin-mocha-blue.toml";

@@ -1,10 +1,17 @@
-{lib, config, pkgs, ...}: {
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   options.dotfiles.opencode.enable = lib.mkEnableOption "opencode desktop CLI";
 
   config = lib.mkIf config.dotfiles.opencode.enable {
-    home.packages = [
-      pkgs.lsof
-      pkgs.opencode-desktop
+    home.packages = with pkgs; [
+      lsof
+      opencode-desktop
+      mcp-nixos
     ];
 
     home.sessionVariables = {
@@ -25,6 +32,10 @@
 
       settings = {
         autoupdate = false;
+
+        skills.paths = [
+          "${inputs.hunk}/skills"
+        ];
 
         mcp = {
           grep = {

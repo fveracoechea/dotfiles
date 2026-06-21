@@ -24,17 +24,9 @@
         "slack"
         "figma"
         "postman"
-        # "devtunnel"
-        # "opencode-desktop"
-        # "redis-insight"
-        # "moonlight"
-        # "displaylink"
-        # "postgres-unofficial"
+        "opencode-desktop"
       ];
       brews = [
-        # "pipx"
-        # "pyenv"
-        # "python@3.12"
         "pulumi"
         "awscli"
       ];

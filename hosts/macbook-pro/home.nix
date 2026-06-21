@@ -15,7 +15,7 @@
     fonts.enable = true;
     karabiner.enable = true;
     ssh.enable = true;
-    aerospace.enable = true;
+    # aerospace.enable = true;
     opencode.enable = true;
   };
 
@@ -31,19 +31,7 @@
     claude-code
   ];
 
-  # home.username = "franciscoveracoechea";
-  # home.homeDirectory = /Users/franciscoveracoechea;
-
-  # This value determines the home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update home Manager without changing this value. See
-  # the home Manager release notes for a list of state version
-  # changes in each release.
+  # DO NOT CHANGE
   home.stateVersion = "24.05";
-
-  # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
 }

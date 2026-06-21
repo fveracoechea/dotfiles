@@ -10,7 +10,6 @@
     ./misc.nix
     ./networking.nix
     ./nix-ld.nix
-    ./ollama.nix
     ./pipewire.nix
     ./timezone.nix
     ./zsh-shell.nix

@@ -30,6 +30,9 @@
 
     tmux-powerkit.url = "github:fabioluciano/tmux-powerkit";
     tmux-powerkit.inputs.nixpkgs.follows = "nixpkgs";
+
+    hunk.url = "github:modem-dev/hunk";
+    hunk.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
@@ -57,7 +60,6 @@
       gtk = ./modules/home-manager/gtk.nix;
       hyprland = ./modules/home-manager/hyprland/default.nix;
       karabiner = ./modules/home-manager/karabiner.nix;
-      lazygit = ./modules/home-manager/lazygit.nix;
       lazydocker = ./modules/home-manager/lazydocker.nix;
       oh-my-posh = ./modules/home-manager/oh-my-posh.nix;
       opencode = ./modules/home-manager/opencode/default.nix;
@@ -95,10 +97,10 @@
     inherit homeManagerModules nixosModules darwinModules;
 
     dotfilesPkgs = builtins.listToAttrs (map (system: {
-      name = system;
-      value = dotfilesPkgsFor system;
-    })
-    supportedSystems);
+        name = system;
+        value = dotfilesPkgsFor system;
+      })
+      supportedSystems);
 
     darwinConfigurations."macbook-pro" = nix-darwin.lib.darwinSystem rec {
       system = "aarch64-darwin";
