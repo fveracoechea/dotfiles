@@ -58,6 +58,8 @@
         viAlias = true;
         vimAlias = true;
         vimdiffAlias = true;
+        withRuby = true;
+        withPython3 = true;
         initLua = lib.mkBefore (lib.fileContents ./config/init.lua);
 
         extraPackages = with pkgs;
