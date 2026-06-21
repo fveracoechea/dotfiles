@@ -20,6 +20,7 @@
     opencode.enable = true;
     desktop-entries.enable = true;
     pro-audio.enable = true;
+    fuzzel.enable = true;
     hyprland = {
       enable = true;
       monitors = [

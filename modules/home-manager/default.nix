@@ -2,6 +2,7 @@
   imports = [
     ../core/palette.nix
 
+    ./neovim
     ./aerospace.nix
     ./bat.nix
     ./btop.nix

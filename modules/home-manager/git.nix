@@ -8,7 +8,7 @@
   options.dotfiles.git.enable = lib.mkEnableOption "git (with hunk pager)";
 
   config = lib.mkIf config.dotfiles.git.enable {
-    home.packages = [ inputs.hunk.packages.${pkgs.system}.default ];
+    home.packages = [inputs.hunk.packages.${pkgs.system}.default pkgs.gh];
 
     programs.git = {
       enable = true;
@@ -39,7 +39,7 @@
     programs.lazygit = {
       enable = true;
       enableZshIntegration = true;
-      settings.git.paging.pager = "hunk pager";
+      settings.git.pagers.pager = "hunk pager";
     };
   };
 }

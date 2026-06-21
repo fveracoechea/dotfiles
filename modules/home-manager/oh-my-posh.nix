@@ -37,8 +37,8 @@ in {
               {
                 type = "os";
                 style = "diamond";
-                powerline_symbol = "";
-                leading_diamond = "";
+                powerline_symbol = "";
+                leading_diamond = "";
                 foreground = p.text;
                 background = p.mantle;
                 template = "{{ .Icon }} ";
@@ -50,15 +50,15 @@ in {
               {
                 type = "session";
                 style = "powerline";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 foreground = p.blue;
                 background = p.mantle;
-                template = "{{ .UserName }}{{ if .SSHSession }}   {{ .HostName }}{{ end }}";
+                template = "{{ .UserName }}{{ if .SSHSession }}    {{ .HostName }}{{ end }}";
               }
               {
                 type = "path";
                 style = "powerline";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 foreground = p.pink;
                 background = p.mantle;
                 template = " {{ .Path }} ";
@@ -70,10 +70,10 @@ in {
               {
                 type = "executiontime";
                 style = "powerline";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 foreground = p.lavender;
                 background = p.mantle;
-                template = " {{ .FormattedMs }} ";
+                template = " {{ .FormattedMs }} ";
                 properties = {
                   style = "austin";
                   always_enabled = true;
