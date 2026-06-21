@@ -6,7 +6,6 @@ require("catppuccin").setup {
     solid = true,
   },
   integrations = {
-    cmp = true,
     telescope = { enabled = false },
     which_key = false,
     lsp_trouble = false,

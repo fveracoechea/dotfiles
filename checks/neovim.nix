@@ -73,8 +73,6 @@
         plugins.conform
         plugins.codesnap
         plugins.treesitter
-        plugins.copilot
-        plugins.cmp
         plugins.lualine
         utils.lsp-capabilities
       )

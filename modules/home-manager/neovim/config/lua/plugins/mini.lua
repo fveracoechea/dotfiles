@@ -4,6 +4,16 @@ require("mini.sessions").setup {
   directory = "~/.config/nvim",
 }
 
+require("mini.completion").setup {
+  lsp_completion = {
+    source_func = "completefunc",
+  },
+  window = {
+    info = { border = "rounded" },
+    signature = { border = "rounded" },
+  },
+}
+
 require("mini.pairs").setup {}
 
 require("mini.surround").setup {
@@ -27,7 +37,7 @@ local gen_loader = require("mini.snippets").gen_loader
 
 require("mini.snippets").setup {
   mappings = {
-    expand = "", -- disable default <C-j> to avoid conflict with cmp navigation
+    expand = "", -- disable default <C-j> to avoid conflict with completion navigation
   },
   snippets = {
     --   Load custom file with global snippets first (adjust for Windows)
@@ -42,9 +52,8 @@ require("mini.icons").setup {
   style = "glyph",
   lsp = {
     ellipsis_char = { glyph = "…", hl = "MiniIconsOrange" },
-    copilot = { glyph = "", hl = "MiniIconsGreen" },
     ["function"] = { glyph = "󰊕", hl = "MiniIconsBlue" },
-    snippet = { glyph = "", hl = "MiniIconsYellow" },
+    snippet = { glyph = "", hl = "MiniIconsYellow" },
   },
 }
 

@@ -20,18 +20,6 @@
       tree-sitter
     ];
 
-    cmp-mini-snippets = pkgs.vimUtils.buildVimPlugin {
-      name = "cmp_mini_snippets";
-      src = pkgs.fetchFromGitHub {
-        owner = "abeldekat";
-        repo = "cmp-mini-snippets";
-        rev = "582aea215ce2e65b880e0d23585c20863fbb7604";
-        hash = "sha256-gSvhxrjz6PZBgqbb4eBAwWEWSdefM4qL3nb75qGPaFA=";
-      };
-      nvimRequireCheck = "cmp_mini_snippets";
-      dependencies = [pkgs.vimPlugins.nvim-cmp];
-    };
-
     # Official @stylelint/language-server (not packaged in nixpkgs; the
     # `stylelint-lsp` attr is bmatcuk's separate project with a different API).
     stylelint-language-server = pkgs.buildNpmPackage {
@@ -51,6 +39,7 @@
     lib.mkIf config.dotfiles.neovim.enable {
       xdg = {
         enable = lib.mkDefault true;
+
         configFile."nvim/lua" = {
           recursive = true;
           source = ./config/lua;
@@ -100,13 +89,6 @@
           plenary-nvim
           nui-nvim
           lualine-nvim
-          nvim-cmp
-          cmp-path
-          cmp-buffer
-          cmp-nvim-lsp
-          cmp-mini-snippets
-          copilot-lua
-          copilot-cmp
           vim-tmux-navigator
           nvim-ts-context-commentstring
           nvim-ts-autotag
