@@ -69,49 +69,55 @@
       })
       supportedSystems);
 
-    darwinConfigurations."macbook-pro" = nix-darwin.lib.darwinSystem rec {
+    darwinConfigurations."macbook-pro" = let
       system = "aarch64-darwin";
-
       specialArgs = {
         inherit inputs;
         dotfilesPkgs = dotfilesPkgsFor system;
       };
+    in
+      nix-darwin.lib.darwinSystem {
+        inherit specialArgs;
 
-      modules = [
-        darwinModules.default
-        ./hosts/macbook-pro/configuration.nix
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "hm-backup";
-          home-manager.users.franciscoveracoechea = import ./hosts/macbook-pro/home.nix;
-          home-manager.extraSpecialArgs = specialArgs;
-        }
-      ];
-    };
+        modules = [
+          darwinModules.default
+          ./hosts/macbook-pro/configuration.nix
+          home-manager.darwinModules.home-manager
+          {
+            nixpkgs.hostPlatform = system;
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "hm-backup";
+            home-manager.users.franciscoveracoechea = import ./hosts/macbook-pro/home.nix;
+            home-manager.extraSpecialArgs = specialArgs;
+          }
+        ];
+      };
 
-    nixosConfigurations.nixos-desktop = nixpkgs.lib.nixosSystem rec {
+    nixosConfigurations.nixos-desktop = let
       system = "x86_64-linux";
-
       specialArgs = {
         inherit inputs;
         dotfilesPkgs = dotfilesPkgsFor system;
       };
+    in
+      nixpkgs.lib.nixosSystem {
+        inherit specialArgs;
 
-      modules = [
-        nixosModules.default
-        ./hosts/nixos-desktop/configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          nixpkgs.config.allowUnfree = true;
-          home-manager.backupFileExtension = "hm-backup";
-          home-manager.users.fveracoechea = import ./hosts/nixos-desktop/home.nix;
-          home-manager.extraSpecialArgs = specialArgs;
-        }
-      ];
-    };
+        modules = [
+          nixosModules.default
+          ./hosts/nixos-desktop/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            nixpkgs.hostPlatform = system;
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            nixpkgs.config.allowUnfree = true;
+            home-manager.backupFileExtension = "hm-backup";
+            home-manager.users.fveracoechea = import ./hosts/nixos-desktop/home.nix;
+            home-manager.extraSpecialArgs = specialArgs;
+          }
+        ];
+      };
   };
 }

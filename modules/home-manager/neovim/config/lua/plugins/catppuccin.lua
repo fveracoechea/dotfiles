@@ -28,3 +28,10 @@ require("catppuccin").setup {
 
 -- set colorscheme - setup must be called before loading
 vim.cmd.colorscheme "catppuccin-nvim"
+
+--- Completion popup menu: solid catppuccin 'surface0' bg so it doesn't inherit
+--- the transparent_background setting. PmenuSel keeps its accent.
+local palette = require("catppuccin.palettes").get_palette()
+vim.api.nvim_set_hl(0, "Pmenu", { bg = palette.base, fg = palette.text })
+vim.api.nvim_set_hl(0, "PmenuSbar", { bg = palette.base })
+vim.api.nvim_set_hl(0, "PmenuThumb", { bg = palette.surface0 })

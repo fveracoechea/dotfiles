@@ -1,5 +1,4 @@
 This is a NixOS/nix-darwin dotfiles repository using flakes
-
 ## Guidelines
 - Never build system config, the user should do it 
 - Naming: Use descriptive function names, kebab-case for file names
