@@ -112,6 +112,8 @@ require("snacks").setup {
   debug = { enabled = true },
   git = { enabled = true },
   gitbrowse = { enabled = true },
+  keymap = { enabled = true },
+  image = { enabled = true },
   lazygit = { enabled = true },
   quickfile = { enabled = true },
   input = { enabled = true },

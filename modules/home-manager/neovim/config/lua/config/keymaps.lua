@@ -1,4 +1,5 @@
-local map = vim.keymap.set
+local Snacks = require "snacks"
+local map = Snacks.keymap.set
 
 -- ============================================================================
 -- CORE VIM MAPPINGS
@@ -27,8 +28,6 @@ map("v", "<leader>cs", "<CMD>CodeSnapSave<CR>", { desc = "Save selected code sna
 -- ============================================================================
 -- SNACKS PLUGIN MAPPINGS
 -- ============================================================================
-
-local Snacks = require "snacks"
 
 map("n", "<leader>lsp", ":lsp restart<CR>", { desc = "Resart LSP Servers" })
 
@@ -238,43 +237,43 @@ end, { desc = "Previous completion, jump prev, or Shift-Tab", expr = true })
 
 -- OPENCODE
 
-vim.keymap.set({ "n", "x" }, "<leader>oa", function()
+map({ "n", "x" }, "<leader>oa", function()
   require("opencode").ask("@this: ", { submit = true })
 end, { desc = "Ask about this" })
 
-vim.keymap.set({ "n", "x" }, "<leader>o+", function()
+map({ "n", "x" }, "<leader>o+", function()
   require("opencode").prompt "@this"
 end, { desc = "Add this" })
 
-vim.keymap.set({ "n", "x" }, "<leader>os", function()
+map({ "n", "x" }, "<leader>os", function()
   require("opencode").select()
 end, { desc = "Select prompt" })
 
-vim.keymap.set("n", "<leader>ot", function()
+map("n", "<leader>ot", function()
   require("opencode").toggle()
 end, { desc = "Toggle embedded" })
 
-vim.keymap.set("n", "<leader>oc", function()
+map("n", "<leader>oc", function()
   require("opencode").command()
 end, { desc = "Select command" })
 
-vim.keymap.set("n", "<leader>on", function()
+map("n", "<leader>on", function()
   require("opencode").command "session_new"
 end, { desc = "New session" })
 
-vim.keymap.set("n", "<leader>oi", function()
+map("n", "<leader>oi", function()
   require("opencode").command "session_interrupt"
 end, { desc = "Interrupt session" })
 
-vim.keymap.set("n", "<leader>oA", function()
+map("n", "<leader>oA", function()
   require("opencode").command "agent_cycle"
 end, { desc = "Cycle selected agent" })
 
-vim.keymap.set("n", "<S-C-u>", function()
+map("n", "<S-C-u>", function()
   require("opencode").command "messages_half_page_up"
 end, { desc = "Messages half page up" })
 
-vim.keymap.set("n", "<S-C-d>", function()
+map("n", "<S-C-d>", function()
   require("opencode").command "messages_half_page_down"
 end, { desc = "Messages half page down" })
 
