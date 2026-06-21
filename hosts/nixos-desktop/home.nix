@@ -1,17 +1,15 @@
 {
-  inputs,
   pkgs,
   dotfilesPkgs,
   ...
 }: {
   imports = [
     ../../modules/home-manager/default.nix
-    inputs.neovim-config.homeManagerModules.default
   ];
 
   dotfiles = {
     shell.enable = true;
-    neovim.enable = false;
+    neovim.enable = true;
     gtk.enable = true;
     volta.enable = true;
     ghostty.enable = true;

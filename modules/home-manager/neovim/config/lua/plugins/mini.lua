@@ -8,10 +8,6 @@ require("mini.completion").setup {
   lsp_completion = {
     source_func = "completefunc",
   },
-  window = {
-    info = { border = "rounded" },
-    signature = { border = "rounded" },
-  },
 }
 
 require("mini.pairs").setup {}
@@ -56,6 +52,8 @@ require("mini.icons").setup {
     snippet = { glyph = "", hl = "MiniIconsYellow" },
   },
 }
+
+require("mini.icons").tweak_lsp_kind()
 
 local MiniClue = require "mini.clue"
 

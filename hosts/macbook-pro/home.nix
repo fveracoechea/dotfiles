@@ -5,7 +5,6 @@
 }: {
   imports = [
     ../../modules/home-manager/default.nix
-    inputs.neovim-config.homeManagerModules.default
   ];
 
   dotfiles = {
@@ -15,6 +14,7 @@
     fonts.enable = true;
     karabiner.enable = true;
     ssh.enable = true;
+    neovim.enable = true;
     # aerospace.enable = true;
     opencode.enable = true;
   };
