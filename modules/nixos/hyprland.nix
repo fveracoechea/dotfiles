@@ -1,39 +1,43 @@
 {
-  inputs,
-  system,
+  lib,
+  config,
+  dotfilesPkgs,
   pkgs,
   ...
 }: {
-  nix.settings = {
-    substituters = ["https://hyprland.cachix.org"];
-    trusted-substituters = ["https://hyprland.cachix.org"];
-    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
-  };
+  options.dotfiles.hyprland.enable = lib.mkEnableOption "Hyprland compositor";
 
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
+  config = lib.mkIf config.dotfiles.hyprland.enable {
+    nix.settings = {
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    };
 
-  hardware.graphics.enable = true;
-  hardware.graphics.enable32Bit = true;
+    hardware.bluetooth.enable = true;
+    hardware.bluetooth.powerOnBoot = true;
 
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true;
-    xwayland.enable = true;
-    package = inputs.hyprland.packages.${system}.hyprland;
-    portalPackage = inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland;
-  };
+    hardware.graphics.enable = true;
+    hardware.graphics.enable32Bit = true;
 
-  environment.systemPackages = with pkgs; [
-    wl-clipboard
-    libnotify
-    pavucontrol
-    nautilus
-  ];
+    programs.hyprland = {
+      enable = true;
+      withUWSM = true;
+      xwayland.enable = true;
+      package = dotfilesPkgs.hyprland;
+      portalPackage = dotfilesPkgs.hyprland-portal;
+    };
 
-  # Optional, hint Electron apps to use Wayland:
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    WLR_NO_HARDWARE_CURSORS = "1";
+    environment.systemPackages = with pkgs; [
+      wl-clipboard
+      libnotify
+      pavucontrol
+      nautilus
+    ];
+
+    environment.sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      WLR_NO_HARDWARE_CURSORS = "1";
+    };
   };
 }

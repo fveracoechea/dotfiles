@@ -1,27 +1,21 @@
 {
+  lib,
+  config,
   pkgs,
-  system,
-  inputs,
-  customUtils,
+  dotfilesPkgs,
   ...
 }: {
-  programs.mpv.enable = true;
+  config = lib.mkIf config.dotfiles.hyprland.enable {
+    programs.mpv.enable = true;
 
-  home.packages = with pkgs; [
-    inputs.ultrashell.packages.${system}.default
+    home.packages = with pkgs; [
+      dotfilesPkgs.ultrashell
 
-    hyprdim
-    hyprpaper
-    hyprshot
-    hyprpicker
-    hyprcursor
-
-    (writers.writeBashBin "set-screen-share-resolution" ''
-      hyprctl keyword monitor "${customUtils.monitors.samsung-odyssey-qhd}"
-    '')
-
-    (writers.writeBashBin "unset-screen-share-resolution" ''
-      hyprctl keyword monitor "${customUtils.monitors.samsung-odyssey}"
-    '')
-  ];
+      hyprdim
+      hyprpaper
+      hyprshot
+      hyprpicker
+      hyprcursor
+    ];
+  };
 }

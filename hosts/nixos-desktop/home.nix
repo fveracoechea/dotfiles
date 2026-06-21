@@ -1,30 +1,33 @@
 {
-  inputs,
   pkgs,
-  customPkgs,
+  dotfilesPkgs,
   ...
 }: {
   imports = [
-    ../../modules/home-manager/git.nix
-    ../../modules/home-manager/tmux
-    ../../modules/home-manager/zsh.nix
-    ../../modules/home-manager/bat.nix
-    ../../modules/home-manager/btop.nix
-    ../../modules/home-manager/yazi.nix
-    ../../modules/home-manager/oh-my-posh.nix
-    ../../modules/home-manager/gtk.nix
-    ../../modules/home-manager/volta.nix
-    ../../modules/home-manager/pro-audio.nix
-    ../../modules/home-manager/fuzzel.nix
-    ../../modules/home-manager/ghostty.nix
-    ../../modules/home-manager/hyprland
-    ../../modules/home-manager/sunshine.nix
-    ../../modules/home-manager/opencode
-    ../../modules/home-manager/desktop-entries
-    ../../modules/home-manager/fonts.nix
-    ../../modules/home-manager/spotify.nix
-    inputs.neovim-config.homeManagerModules.default
+    ../../modules/home-manager/default.nix
   ];
+
+  dotfiles = {
+    shell.enable = true;
+    neovim.enable = true;
+    gtk.enable = true;
+    volta.enable = true;
+    ghostty.enable = true;
+    sunshine.enable = true;
+    fonts.enable = true;
+    spotify.enable = true;
+    opencode.enable = true;
+    desktop-entries.enable = true;
+    pro-audio.enable = true;
+    fuzzel.enable = true;
+    hyprland = {
+      enable = true;
+      monitors = [
+        "DP-1, 5120x1440@119.98Hz, auto, auto, bitdepth, 8, cm, auto"
+        "HDMI-A-1, disable"
+      ];
+    };
+  };
 
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
@@ -47,26 +50,16 @@
     wireguard-tools
     lutgen
     beekeeper-studio
-    customPkgs.dev-manager-desktop
-    customPkgs.railway
+    dotfilesPkgs.dev-manager-desktop
+    dotfilesPkgs.railway
     openlinkhub
-    docker-compose
     zettlr
     agent-browser
     tiny-rdm
     obs-studio
   ];
 
-  # This value determines the home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update home Manager without changing this value. See
-  # the home Manager release notes for a list of state version
-  # changes in each release.
+  # DO NOT CHANGE
   home.stateVersion = "24.05";
-
-  # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
