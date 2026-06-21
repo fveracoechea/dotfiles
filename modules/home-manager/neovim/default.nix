@@ -31,13 +31,33 @@
       nvimRequireCheck = "cmp_mini_snippets";
       dependencies = [pkgs.vimPlugins.nvim-cmp];
     };
+
+    # Official @stylelint/language-server (not packaged in nixpkgs; the
+    # `stylelint-lsp` attr is bmatcuk's separate project with a different API).
+    stylelint-language-server = pkgs.buildNpmPackage {
+      pname = "stylelint-language-server";
+      version = "1.1.1";
+      src = pkgs.fetchurl {
+        url = "https://registry.npmjs.org/@stylelint/language-server/-/language-server-1.1.1.tgz";
+        hash = "sha256-l+7GKyWhrEvJ3boylbQBAZziwzbZoQdxWi9np5vaTf4=";
+      };
+      postPatch = ''
+        cp ${./stylelint-language-server-lock.json} package-lock.json
+      '';
+      npmDepsHash = "sha256-yMn596qq+PtYiaSCrUl05mQu3Zyl51a7d7S4GkuKjzY=";
+      dontNpmBuild = true;
+    };
   in
     lib.mkIf config.dotfiles.neovim.enable {
       xdg = {
         enable = lib.mkDefault true;
-        configFile."config" = {
+        configFile."nvim/lua" = {
           recursive = true;
-          source = ../nvim;
+          source = ./config/lua;
+        };
+        configFile."nvim/lsp" = {
+          recursive = true;
+          source = ./config/lsp;
         };
       };
 
@@ -49,7 +69,7 @@
         viAlias = true;
         vimAlias = true;
         vimdiffAlias = true;
-        initLua = lib.mkBefore (lib.fileContents ../nvim/init.lua);
+        initLua = lib.mkBefore (lib.fileContents ./config/init.lua);
 
         extraPackages = with pkgs;
           lib.optionals pkgs.stdenv.isLinux [
@@ -58,7 +78,7 @@
           ]
           ++ [
             nixd
-            stylelint-lsp
+            stylelint-language-server
             biome
             lua-language-server
             deno

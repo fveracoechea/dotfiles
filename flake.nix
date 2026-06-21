@@ -41,6 +41,7 @@
     nix-darwin,
     ...
   } @ inputs: let
+    lib = nixpkgs.lib;
     supportedSystems = ["x86_64-linux" "aarch64-darwin"];
 
     dotfilesPkgsFor = system: (import ./packages {
@@ -51,8 +52,16 @@
     homeManagerModules.default = ./modules/home-manager/default.nix;
     nixosModules.default = ./modules/nixos/default.nix;
     darwinModules.default = ./modules/darwin/default.nix;
+
+    neovimChecks = system: import ./checks/neovim.nix {inherit lib inputs system; pkgs = nixpkgs.legacyPackages.${system};};
   in {
     inherit homeManagerModules nixosModules darwinModules;
+
+    checks = builtins.listToAttrs (map (system: {
+        name = system;
+        value = neovimChecks system;
+      })
+      supportedSystems);
 
     dotfilesPkgs = builtins.listToAttrs (map (system: {
         name = system;
