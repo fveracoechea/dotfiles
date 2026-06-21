@@ -7,7 +7,7 @@ in {
 
   dotfiles = {
     homebrew.enable = true;
-    system-defaults.enable = true;
+    darwin-system-config.enable = true;
     system-shell.enable = true;
   };
 

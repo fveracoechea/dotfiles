@@ -3,9 +3,9 @@
   config,
   ...
 }: {
-  options.dotfiles.system-defaults.enable = lib.mkEnableOption "macOS system defaults";
+  options.dotfiles.darwin-system-config.enable = lib.mkEnableOption "macOS system defaults";
 
-  config = lib.mkIf config.dotfiles.system-defaults.enable {
+  config = lib.mkIf config.dotfiles.darwin-system-config.enable {
     system.defaults = {
       finder = {
         AppleShowAllFiles = true;
