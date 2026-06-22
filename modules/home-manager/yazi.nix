@@ -91,20 +91,22 @@ in {
               run = "mediainfo";
             }
             {
-              name = "*/";
+              url = "*/";
               run = ''piper -- eza -TL=3 --git-ignore --color=always --icons=always --group-directories-first --no-quotes "$1"'';
             }
           ];
           prepend_fetchers = [
             {
               id = "git";
-              name = "*";
+              url = "*";
               run = "git";
+              group = "git";
             }
             {
               id = "git";
-              name = "*/";
+              url = "*/";
               run = "git";
+              group = "git";
             }
           ];
         };
