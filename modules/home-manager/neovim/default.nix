@@ -95,15 +95,11 @@
           nvim-ts-context-commentstring
           nvim-ts-autotag
           nvim-lsp-file-operations
-          trouble-nvim
           mini-nvim
           snacks-nvim
-          yazi-nvim
           catppuccin-nvim
           nvim-lspconfig
-          tailwind-tools-nvim
           conform-nvim
-          nvim-lint
           gitsigns-nvim
           codesnap-nvim
           opencode-nvim

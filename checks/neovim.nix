@@ -65,10 +65,9 @@
         config.keymaps
         config.autocmds
         config.lsp
-        plugins.todo-comments
+        plugins.miscellaneous
         plugins.mini
         plugins.snacks
-        plugins.yazi
         plugins.catppuccin
         plugins.conform
         plugins.codesnap

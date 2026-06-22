@@ -25,9 +25,6 @@
     ultrashell.url = "github:fveracoechea/ultrashell";
     ultrashell.inputs.nixpkgs.follows = "nixpkgs";
 
-    mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
-    mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
-
     tmux-powerkit.url = "github:fabioluciano/tmux-powerkit";
     tmux-powerkit.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -53,7 +50,11 @@
     nixosModules.default = ./modules/nixos/default.nix;
     darwinModules.default = ./modules/darwin/default.nix;
 
-    neovimChecks = system: import ./checks/neovim.nix {inherit lib inputs system; pkgs = nixpkgs.legacyPackages.${system};};
+    neovimChecks = system:
+      import ./checks/neovim.nix {
+        inherit lib inputs system;
+        pkgs = nixpkgs.legacyPackages.${system};
+      };
   in {
     inherit homeManagerModules nixosModules darwinModules;
 
