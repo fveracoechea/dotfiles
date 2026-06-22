@@ -24,7 +24,6 @@
         "slack"
         "figma"
         "postman"
-        "opencode-desktop"
       ];
       brews = [
         "pulumi"

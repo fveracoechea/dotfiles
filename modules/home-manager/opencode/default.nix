@@ -10,7 +10,6 @@
   config = lib.mkIf config.dotfiles.opencode.enable {
     home.packages = with pkgs; [
       lsof
-      opencode-desktop
       mcp-nixos
     ];
 
