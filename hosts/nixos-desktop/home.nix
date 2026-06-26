@@ -57,6 +57,14 @@
     agent-browser
     tiny-rdm
     obs-studio
+
+    (writers.writeBashBin "set-screen-share-resolution" ''
+      hyprctl keyword monitor "DP-1, 2560x1440@120.00Hz, auto, auto, vrr, 3, bitdepth, 8, cm, auto"
+    '')
+
+    (writers.writeBashBin "unset-screen-share-resolution" ''
+      hyprctl keyword monitor "DP-1, 5120x1440@119.98Hz, auto, auto, bitdepth, 8, cm, auto"
+    '')
   ];
 
   # DO NOT CHANGE
