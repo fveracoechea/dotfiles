@@ -70,7 +70,7 @@
       })
       supportedSystems);
 
-    darwinConfigurations."macbook-pro" = let
+    darwinConfigurations.macbook-pro = let
       system = "aarch64-darwin";
       specialArgs = {
         inherit inputs;
