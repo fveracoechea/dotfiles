@@ -42,7 +42,7 @@
     supportedSystems = ["x86_64-linux" "aarch64-darwin"];
 
     dotfilesPkgsFor = system: (import ./packages {
-      inherit inputs system;
+      inherit inputs;
       pkgs = nixpkgs.legacyPackages.${system};
     });
 

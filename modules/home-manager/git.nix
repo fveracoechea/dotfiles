@@ -1,15 +1,15 @@
 {
-  inputs,
   lib,
   config,
   pkgs,
+  dotfilesPkgs,
   ...
 }: {
   options.dotfiles.git.enable = lib.mkEnableOption "git (with hunk pager)";
 
   config = let
     tomlFormat = pkgs.formats.toml {};
-    hunkPacakge = inputs.hunk.packages.${pkgs.system}.default;
+    hunkPacakge = dotfilesPkgs.hunk;
   in
     lib.mkIf config.dotfiles.git.enable {
       home.packages = [hunkPacakge pkgs.gh];

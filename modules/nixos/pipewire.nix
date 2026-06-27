@@ -3,10 +3,10 @@
   lib,
   config,
   ...
-}: {
-  imports = [
-    inputs.musnix.nixosModules.musnix
-  ];
+}: let
+  hasMusnix = inputs ? musnix;
+in {
+  imports = lib.optional hasMusnix inputs.musnix.nixosModules.musnix;
 
   options.dotfiles.pipewire.enable = lib.mkEnableOption "PipeWire audio (with musnix)";
 
@@ -28,6 +28,6 @@
     services.pulseaudio.enable = false;
 
     # Enable musnix, a module for real-time audio.
-    musnix.enable = true;
+    musnix.enable = lib.mkIf hasMusnix true;
   };
 }
