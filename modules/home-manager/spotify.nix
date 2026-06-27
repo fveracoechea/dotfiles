@@ -12,15 +12,13 @@
     hash = "sha256-VK9JpXYFuLMkIuMftFkkMy6Y5+ttuxDUYoIiAPlx6YY=";
   };
 in {
-  imports = [
-    inputs.spicetify-nix.homeManagerModules.default
-  ];
+  imports = lib.optional (inputs ? spicetify-nix) inputs.spicetify-nix.homeManagerModules.default;
 
   options.dotfiles.spotify.enable = lib.mkEnableOption "Spotify with spicetify-nix";
 
-  config = lib.mkIf config.dotfiles.spotify.enable {
+  config = lib.mkIf config.dotfiles.spotify.enable ({
     programs.cava.enable = true;
-
+  } // (lib.optionalAttrs (inputs ? spicetify-nix) {
     programs.spicetify = {
       enable = true;
       colorScheme = "mocha";
@@ -33,5 +31,5 @@ in {
         overwriteAssets = true;
       };
     };
-  };
+  }));
 }
