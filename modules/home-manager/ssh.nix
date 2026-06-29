@@ -1,4 +1,8 @@
-{lib, config, ...}: {
+{
+  lib,
+  config,
+  ...
+}: {
   options.dotfiles.ssh.enable = lib.mkEnableOption "SSH client config";
 
   config = lib.mkIf config.dotfiles.ssh.enable {
