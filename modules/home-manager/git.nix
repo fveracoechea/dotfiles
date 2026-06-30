@@ -33,7 +33,6 @@
           };
           core = {
             editor = "nvim";
-            # sshCommand = "ssh -i ~/.ssh/id_github_hypr";
             pager = "hunk pager";
           };
           pull = {

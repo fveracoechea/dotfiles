@@ -67,6 +67,25 @@
     '')
   ];
 
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    includes = [ "config.local" ];
+    settings = {
+      homelab = {
+        HostName = "10.0.0.2";
+        User = "fveracoechea";
+        IdentityFile = "~/.ssh/fveracoechea";
+      };
+
+      "github.com" = {
+        User = "git";
+        IdentitiesOnly = "yes";
+        IdentityFile = "~/.ssh/id_github_hypr";
+      };
+    };
+  };
+
   # DO NOT CHANGE
   home.stateVersion = "24.05";
   programs.home-manager.enable = true;
