@@ -73,13 +73,3 @@ vim.g.loaded_netrwPlugin = 1 -- disable netrw
 vim.opt.mouse = "" -- mouse mode (disabled)
 vim.opt.splitright = true -- split vertical window to the right
 vim.opt.splitbelow = true -- split horizontal window to the bottom
-
--- lazygit
-vim.g.lazygit_floating_window_scaling_factor = 0.85 -- scaling factor for floating window
-
--- enable mdx
-vim.filetype.add {
-  extension = {
-    mdx = "markdown",
-  },
-}

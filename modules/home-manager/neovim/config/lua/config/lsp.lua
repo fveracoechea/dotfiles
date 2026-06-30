@@ -1,3 +1,10 @@
+-- enable mdx
+vim.filetype.add {
+  extension = {
+    mdx = "markdown",
+  },
+}
+
 -- appropriately highlight codefences returned from denols
 vim.g.markdown_fenced_languages = {
   "ts=typescript",
