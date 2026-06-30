@@ -55,6 +55,9 @@
   # Printing
   services.printing.enable = true;
 
+  # Enable the system-wide SSH agent
+  programs.ssh.startAgent = true;
+
   # Virtual file system support (e.g., Trash can)
   services.gvfs.enable = true;
 
