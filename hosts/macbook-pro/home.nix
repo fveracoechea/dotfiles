@@ -1,8 +1,4 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ../../modules/home-manager/default.nix
   ];
@@ -13,10 +9,21 @@
     ghostty.enable = true;
     fonts.enable = true;
     karabiner.enable = true;
-    ssh.enable = true;
     neovim.enable = true;
     # aerospace.enable = true;
     opencode.enable = true;
+  };
+
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    settings = {
+      "github.com" = {
+        AddKeysToAgent = "yes";
+        IdentityFile = "~/.ssh/id_github_hypr";
+        UseKeychain = "yes";
+      };
+    };
   };
 
   home.packages = with pkgs; [

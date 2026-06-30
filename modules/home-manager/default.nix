@@ -19,7 +19,6 @@
     ./pro-audio.nix
     ./shell.nix
     ./spotify.nix
-    ./ssh.nix
     ./sunshine.nix
     ./tmux
     ./volta.nix
