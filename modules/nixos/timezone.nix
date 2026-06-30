@@ -3,7 +3,7 @@
   config,
   ...
 }: let
-  encoding = "en_US.UTF-8";
+  locale = "en_US.UTF-8";
 in {
   options.dotfiles.timezone.enable = lib.mkEnableOption "timezone and locale";
 
@@ -12,18 +12,18 @@ in {
     time.timeZone = "America/New_York";
 
     # Select internationalisation properties.
-    i18n.defaultLocale = encoding;
+    i18n.defaultLocale = locale;
 
     i18n.extraLocaleSettings = {
-      LC_ADDRESS = encoding;
-      LC_IDENTIFICATION = encoding;
-      LC_MEASUREMENT = encoding;
-      LC_MONETARY = encoding;
-      LC_NAME = encoding;
-      LC_NUMERIC = encoding;
-      LC_PAPER = encoding;
-      LC_TELEPHONE = encoding;
-      LC_TIME = encoding;
+      LC_ADDRESS = locale;
+      LC_IDENTIFICATION = locale;
+      LC_MEASUREMENT = locale;
+      LC_MONETARY = locale;
+      LC_NAME = locale;
+      LC_NUMERIC = locale;
+      LC_PAPER = locale;
+      LC_TELEPHONE = locale;
+      LC_TIME = locale;
     };
   };
 }
