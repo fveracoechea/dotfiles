@@ -4,6 +4,7 @@
 
     ./bootloader.nix
     ./display-manager.nix
+    ./tailscale-client.nix
     ./docker.nix
     ./gaming.nix
     ./hyprland.nix

@@ -8,6 +8,7 @@
     bootloader.enable = true;
     display-manager.enable = true;
     docker.enable = true;
+    tailscale-client = true;
     system-shell.enable = true;
     nix-ld.enable = true;
     timezone.enable = true;
