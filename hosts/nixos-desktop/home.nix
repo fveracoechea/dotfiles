@@ -36,7 +36,6 @@
   home.file.".face.icon".source = ../../assets/face.jpg;
 
   home.packages = with pkgs; [
-    slack
     vesktop
     google-chrome
     kooha

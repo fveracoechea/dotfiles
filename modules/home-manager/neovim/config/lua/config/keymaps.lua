@@ -6,7 +6,11 @@ local map = Snacks.keymap.set
 -- ============================================================================
 
 -- Save file
-map("n", "<C-s>", "<CMD>w<CR>", { desc = "file save" })
+map("n", "<C-s>", "<CMD>w<CR>", { desc = "save file" })
+map({ "n", "i" }, "<Esc>", "<CMD>w<CR>", { desc = "Save file" })
+
+-- Select all
+vim.keymap.set("n", "<C-a>", "ggVG", { desc = "Select All" })
 
 -- Window management
 map("n", "<leader>\\", "<C-w>v", { desc = "Split window vertically" })
@@ -115,10 +119,6 @@ end, { desc = "Open the file manager at the current file" })
 
 -- Buffer management
 
-map("n", "<leader>b", function()
-  Snacks.picker.buffers()
-end, { desc = "Find open buffers" })
-
 map("n", "<leader>x", function()
   Snacks.bufdelete()
 end, { desc = "Delete Buffer" })
@@ -126,6 +126,15 @@ end, { desc = "Delete Buffer" })
 map("n", "<leader>xo", function()
   Snacks.bufdelete.other()
 end, { desc = "Delete Other Buffers" })
+
+map("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
+map("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
+
+for i = 1, 9 do
+  map("n", "<leader>" .. i, function()
+    vim.cmd("BufferLineGoToBuffer " .. i)
+  end, { desc = "Buffer " .. i })
+end
 
 -- Git integration
 

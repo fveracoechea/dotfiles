@@ -96,6 +96,7 @@
           nvim-ts-autotag
           nvim-lsp-file-operations
           mini-nvim
+          bufferline-nvim
           snacks-nvim
           catppuccin-nvim
           nvim-lspconfig

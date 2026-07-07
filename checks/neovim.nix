@@ -67,6 +67,7 @@
         config.lsp
         plugins.miscellaneous
         plugins.mini
+        plugins.bufferline
         plugins.snacks
         plugins.catppuccin
         plugins.conform
