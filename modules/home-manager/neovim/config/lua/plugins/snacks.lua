@@ -15,13 +15,6 @@ require("snacks").setup {
         ttl = 5 * 60,
         enabled = Snacks.git.get_root() ~= nil,
       },
-      {
-        section = "terminal",
-        cmd = "fastfetch  -l none",
-        pane = 2,
-        indent = 2,
-        height = 18,
-      },
     },
   },
 

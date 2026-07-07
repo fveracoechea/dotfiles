@@ -2,7 +2,7 @@
   xdg.configFile."nvim/snippets/global.json".text = builtins.toJSON {
     log = {
       prefix = "log";
-      body = ["console.log({$1);"];
+      body = ["console.log($1);"];
       description = "Log output to console";
     };
     "arrow function" = {
