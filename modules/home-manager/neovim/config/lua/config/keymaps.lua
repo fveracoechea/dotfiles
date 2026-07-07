@@ -116,7 +116,7 @@ end, { desc = "Open the file manager at the current file" })
 -- Buffer management
 
 map("n", "<leader>b", function()
-  Snacks.picker.buffers { layout = { preset = "ivy" } }
+  Snacks.picker.buffers()
 end, { desc = "Find open buffers" })
 
 map("n", "<leader>x", function()

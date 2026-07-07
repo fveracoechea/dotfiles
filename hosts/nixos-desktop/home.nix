@@ -70,7 +70,7 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    includes = [ "config.local" ];
+    includes = ["config.local"];
     settings = {
       homelab = {
         HostName = "10.0.0.2";

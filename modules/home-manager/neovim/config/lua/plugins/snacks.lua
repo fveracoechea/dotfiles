@@ -18,17 +18,6 @@ require("snacks").setup {
     },
   },
 
-  preset = {
-    keys = {
-      { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-      { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-      { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
-      { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-      { icon = " ", key = "s", desc = "Restore Session", section = ":lua require('mini.sessions').read()" },
-      { icon = " ", key = "q", desc = "Quit", action = ":qa" },
-    },
-  },
-
   indent = {
     enabled = true,
     char = "┊",
@@ -41,6 +30,7 @@ require("snacks").setup {
 
   picker = {
     enabled = true,
+    layout = { preset = "ivy", layout = { height = 0.75 } },
     sources = {
       explorer = {
         hidden = true,
@@ -55,49 +45,14 @@ require("snacks").setup {
             min_width = 50,
           },
         },
-        win = {
-          list = {
-            keys = {
-              ["<C-h>"] = nil,
-              ["<C-j>"] = nil,
-              ["<C-k>"] = nil,
-              ["<C-l>"] = nil,
-            },
-          },
-        },
       },
       buffers = {
         current = false,
         sort_lastused = true,
-        layout = {
-          preset = "ivy",
-          layout = {
-            height = 0.5,
-          },
-        },
-      },
-      diagnostics = {
-        layout = {
-          preset = "select",
-          layout = {
-            width = 0.8,
-            min_width = 80,
-          },
-        },
-      },
-      diagnostics_buffer = {
-        layout = {
-          preset = "select",
-          layout = {
-            width = 0.8,
-            min_width = 80,
-          },
-        },
       },
     },
   },
 
-  chunk = { enabled = true },
   notifier = { enabled = true },
   bigfile = { enabled = true },
   animate = { enabled = true },

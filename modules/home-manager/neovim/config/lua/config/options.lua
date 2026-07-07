@@ -73,3 +73,6 @@ vim.g.loaded_netrwPlugin = 1 -- disable netrw
 vim.opt.mouse = "" -- mouse mode (disabled)
 vim.opt.splitright = true -- split vertical window to the right
 vim.opt.splitbelow = true -- split horizontal window to the bottom
+
+-- pasting over a selection no longer clobbers your clipboard
+vim.cmd [[ xnoremap <expr> p 'pgv"'.v:register.'y' ]]
