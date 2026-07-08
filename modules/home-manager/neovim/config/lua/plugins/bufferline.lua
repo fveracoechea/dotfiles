@@ -3,6 +3,9 @@ require("bufferline").setup {
   options = {
     mode = "buffers",
     sort_by = "recently_used",
+    indicator = {
+      style = "underline",
+    },
     numbers = "ordinal",
     diagnostics_update_in_insert = false,
     show_buffer_close_icons = true,
