@@ -32,6 +32,8 @@
       settings = {
         autoupdate = false;
 
+        permission.external_directory."~/OPINIONS.md" = "allow";
+
         skills = {
           hunk-review = "${inputs.hunk}/skills/hunk-review/SKILL.md";
         };
