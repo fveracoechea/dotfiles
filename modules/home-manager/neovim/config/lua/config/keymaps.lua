@@ -1,13 +1,11 @@
 local Snacks = require "snacks"
 local map = Snacks.keymap.set
-
 -- ============================================================================
 -- CORE VIM MAPPINGS
 -- ============================================================================
 
 -- Save file
-map("n", "<C-s>", "<CMD>w<CR>", { desc = "save file" })
-map({ "n", "i" }, "<Esc>", "<CMD>w<CR>", { desc = "Save file" })
+map({ "n", "i" }, "<Esc>", "<CMD>w<CR><Esc>", { desc = "Save file" })
 
 -- Select all
 vim.keymap.set("n", "<C-a>", "ggVG", { desc = "Select All" })

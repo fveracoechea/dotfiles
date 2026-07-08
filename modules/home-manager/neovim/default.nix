@@ -82,6 +82,13 @@
             stylua
             shfmt
             eslint_d
+
+            nixd
+            alejandra
+            graphql-language-service-cli
+            stylelint
+            fzf
+            tree-sitter
           ]
           ++ global-packages;
 
