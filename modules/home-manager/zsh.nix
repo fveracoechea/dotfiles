@@ -9,6 +9,7 @@
   config = lib.mkIf config.dotfiles.zsh.enable {
     home.packages = with pkgs; [
       fastfetch
+      pure-prompt
     ];
 
     programs.fzf = {
@@ -50,6 +51,8 @@
         cat = "bat";
         e = "exit";
         c = "clear";
+        ".." = "cd ..";
+        cc = "claude --dangerously-skip-permissions";
       };
 
       plugins = [
@@ -87,16 +90,16 @@
           zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
           zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
+          bindkey '^f' autosuggest-accept
+
           # Source secrets
           source ~/.config/zsh/secrets.zsh
 
-          # Make sure brew is on the path for M1
-          if [[ $(uname -m) == 'arm64' ]]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-          fi
+          autoload -U promptinit; promptinit
+          prompt pure
 
-          # startup script
-          clear
+          zstyle :prompt:pure:git:stash show yes
+          zstyle :prompt:pure:path:separator dim yes
         '';
     };
   };
