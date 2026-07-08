@@ -36,7 +36,6 @@
     glab
     redis
     lazydocker
-    claude-code
   ];
 
   # DO NOT CHANGE

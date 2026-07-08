@@ -4,6 +4,7 @@
 }: {
   dev-manager-desktop = pkgs.callPackage ./dev-manager-desktop.nix {};
   railway = pkgs.callPackage ./railway.nix {};
+  stylelint-language-server = pkgs.callPackage ./stylelint-language-server.nix {};
 
   hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
   hyprland-portal = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;

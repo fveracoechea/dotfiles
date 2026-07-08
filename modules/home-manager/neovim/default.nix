@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs,
+  dotfilesPkgs,
   ...
 }: {
   options.dotfiles.neovim.enable = lib.mkEnableOption "Neovim config";
@@ -20,21 +21,7 @@
       tree-sitter
     ];
 
-    # Official @stylelint/language-server (not packaged in nixpkgs; the
-    # `stylelint-lsp` attr is bmatcuk's separate project with a different API).
-    stylelint-language-server = pkgs.buildNpmPackage {
-      pname = "stylelint-language-server";
-      version = "1.1.1";
-      src = pkgs.fetchurl {
-        url = "https://registry.npmjs.org/@stylelint/language-server/-/language-server-1.1.1.tgz";
-        hash = "sha256-l+7GKyWhrEvJ3boylbQBAZziwzbZoQdxWi9np5vaTf4=";
-      };
-      postPatch = ''
-        cp ${./stylelint-language-server-lock.json} package-lock.json
-      '';
-      npmDepsHash = "sha256-yMn596qq+PtYiaSCrUl05mQu3Zyl51a7d7S4GkuKjzY=";
-      dontNpmBuild = true;
-    };
+    stylelint-language-server = dotfilesPkgs.stylelint-language-server;
   in
     lib.mkIf config.dotfiles.neovim.enable {
       xdg = {
