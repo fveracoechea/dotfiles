@@ -5,9 +5,7 @@
   pkgs,
   ...
 }: {
-  options.dotfiles.opencode.enable = lib.mkEnableOption "opencode desktop CLI";
-
-  config = lib.mkIf config.dotfiles.opencode.enable {
+  config = lib.mkIf config.dotfiles.coding-agents.enable {
     home.packages = with pkgs; [
       lsof
       mcp-nixos
@@ -21,6 +19,8 @@
     programs.opencode = {
       enable = true;
 
+      context = ./AGENTS.md;
+
       commands = {
         create-pr = ./command/create-pr.md;
       };
@@ -32,9 +32,9 @@
       settings = {
         autoupdate = false;
 
-        skills.paths = [
-          "${inputs.hunk}/skills"
-        ];
+        skills = {
+          hunk-review = "${inputs.hunk}/skills/hunk-review/SKILL.md";
+        };
 
         mcp = {
           grep = {

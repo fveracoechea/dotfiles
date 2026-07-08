@@ -16,7 +16,7 @@
     sunshine.enable = true;
     fonts.enable = true;
     spotify.enable = true;
-    opencode.enable = true;
+    coding-agents.enable = true;
     desktop-entries.enable = true;
     pro-audio.enable = true;
     fuzzel.enable = true;

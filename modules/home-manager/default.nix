@@ -14,8 +14,7 @@
     ./gtk.nix
     ./hyprland
     ./karabiner.nix
-    ./oh-my-posh.nix
-    ./opencode
+    ./coding-agents
     ./pro-audio.nix
     ./shell.nix
     ./spotify.nix

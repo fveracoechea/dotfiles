@@ -11,7 +11,7 @@
     karabiner.enable = true;
     neovim.enable = true;
     # aerospace.enable = true;
-    opencode.enable = true;
+    coding-agents.enable = true;
   };
 
   programs.ssh = {
