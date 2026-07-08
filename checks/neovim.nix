@@ -17,7 +17,7 @@
         home.username = "neovim-test";
         home.homeDirectory = "/tmp/neovim-test";
         home.stateVersion = "25.05";
-        imports = ["${flake.outPath}/modules/home-manager/neovim/default.nix"];
+        imports = ["${flake.outPath}/modules/home-manager/neovim.nix"];
         dotfiles.neovim.enable = true;
       }
     ];
@@ -27,7 +27,7 @@
   # config would install, plus the repo's lua config on the runtimepath.
   # This lets the headless smoke test run in pure eval, no real HOME needed.
   cfg = home.config.programs.neovim;
-  configDir = flake.outPath + "/modules/home-manager/neovim/config";
+  configDir = flake.outPath + "/config/nvim";
 
   testNvim =
     pkgs'.wrapNeovim cfg.finalPackage.unwrapped {

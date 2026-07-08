@@ -7,13 +7,8 @@
 }: {
   options.dotfiles.neovim.enable = lib.mkEnableOption "Neovim config";
 
-  imports = [
-    ./snippets.nix
-  ];
-
   config = let
     global-packages = with pkgs; [
-      nixd
       alejandra
       graphql-language-service-cli
       stylelint
@@ -24,20 +19,9 @@
     stylelint-language-server = dotfilesPkgs.stylelint-language-server;
   in
     lib.mkIf config.dotfiles.neovim.enable {
-      xdg = {
-        enable = lib.mkDefault true;
-
-        configFile."nvim/lua" = {
-          recursive = true;
-          source = ./config/lua;
-        };
-        configFile."nvim/lsp" = {
-          recursive = true;
-          source = ./config/lsp;
-        };
-      };
-
       home.packages = global-packages;
+
+      home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink ../../config/nvim;
 
       programs.neovim = {
         enable = true;
@@ -45,9 +29,9 @@
         viAlias = true;
         vimAlias = true;
         vimdiffAlias = true;
-        withRuby = true;
-        withPython3 = true;
-        initLua = lib.mkBefore (lib.fileContents ./config/init.lua);
+        sideloadInitLua = true;
+        withRuby = false;
+        withPython3 = false;
 
         extraPackages = with pkgs;
           lib.optionals pkgs.stdenv.isLinux [
@@ -69,13 +53,6 @@
             stylua
             shfmt
             eslint_d
-
-            nixd
-            alejandra
-            graphql-language-service-cli
-            stylelint
-            fzf
-            tree-sitter
           ]
           ++ global-packages;
 

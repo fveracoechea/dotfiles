@@ -49,3 +49,7 @@ _Avoid_: bundle, configuration, profile
 **Grouping**:
 A `dotfiles.*` module that composes several atomic `dotfiles.*` modules under one enable switch. The grouping imports its members (so their options exist) and sets each member's `enable` to `mkDefault true` under its own `mkIf`. A host enables the grouping for the full set, or overrides individual members to `false` to opt out. Examples: `dotfiles.shell`, `dotfiles.gaming`.
 _Avoid_: bundle, profile, suite
+
+**Config Directory**:
+A top-level `config/` directory at the repo root that holds non-Nix application configuration files (lua, json, toml), namespaced per application (e.g. `config/nvim/`). Each Home Manager module symlinks its application's subdirectory into place via `config.lib.file.mkOutOfStoreSymlink`, so the files are edited in their native format with full editor tooling rather than embedded as Nix string literals. See ADR-0005.
+_Avoid_: config folder, dotfiles directory

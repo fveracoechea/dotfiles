@@ -9,7 +9,7 @@ This is a NixOS/nix-darwin dotfiles repository using flakes
 ## Neovim lua config checks
 
 The flake exposes two `checks` derivations per system that validate the lua
-config under `modules/home-manager/neovim/config/`:
+config under `config/nvim/`:
 
 - `neovim-lua-lint` — runs `stylua --check` (format drift, config in
   `.stylua.toml`) and `luacheck` (static analysis, config in `.luacheckrc`).
@@ -27,7 +27,7 @@ nix build .#checks.x86_64-linux.neovim-smoke-test
 scripts/check-lua.sh
 ```
 
-When editing lua: run `stylua modules/home-manager/neovim/config/` to format,
+When editing lua: run `stylua config/nvim/` to format,
 then `scripts/check-lua.sh` to validate. Add new `require` targets to the
 `modules` array in `checks/neovim.nix` when new plugin/config files are added.
 
