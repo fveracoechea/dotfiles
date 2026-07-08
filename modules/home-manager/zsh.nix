@@ -9,7 +9,6 @@
   config = lib.mkIf config.dotfiles.zsh.enable {
     home.packages = with pkgs; [
       fastfetch
-      pure-prompt
     ];
 
     programs.fzf = {
@@ -56,6 +55,16 @@
       };
 
       plugins = [
+        {
+          name = "pure-prompt";
+          # nurl https://github.com/sindresorhus/pure/releases/tag/v1.28.1
+          src = pkgs.fetchFromGitHub {
+            owner = "sindresorhus";
+            repo = "pure";
+            rev = "v1.28.1";
+            hash = "sha256-DEdSaab2VrzWwIKx92DnzjVKgmjdGnvFCGVQrbG7AnI=";
+          };
+        }
         {
           name = "zsh-fzf-history-search";
           # nurl https://github.com/joshskidmore/zsh-fzf-history-search

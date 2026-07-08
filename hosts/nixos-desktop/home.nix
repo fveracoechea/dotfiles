@@ -69,14 +69,17 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    includes = ["config.local"];
     settings = {
+      hostinger = {
+        HostName = "168.231.68.183";
+        User = "fveracoechea";
+        IdentityFile = "~/.ssh/fveracoechea";
+      };
       homelab = {
         HostName = "10.0.0.2";
         User = "fveracoechea";
         IdentityFile = "~/.ssh/fveracoechea";
       };
-
       "github.com" = {
         User = "git";
         IdentitiesOnly = "yes";

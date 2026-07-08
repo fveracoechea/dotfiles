@@ -4,7 +4,7 @@ require("bufferline").setup {
     mode = "buffers",
     sort_by = "recently_used",
     indicator = {
-      style = "underline",
+      style = "none",
     },
     numbers = "ordinal",
     diagnostics_update_in_insert = false,
