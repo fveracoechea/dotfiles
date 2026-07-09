@@ -18,5 +18,5 @@
     ];
   };
 
-  imports = [./opencode.nix ./claude-code.nix];
+  imports = [./opencode.nix ./claude-code.nix ./herdr.nix];
 }

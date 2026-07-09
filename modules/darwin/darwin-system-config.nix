@@ -9,7 +9,7 @@
     system.defaults = {
       NSGlobalDomain = {
         AppleInterfaceStyle = "Dark";
-        KeyRepeat = 4; # fast key repeat
+        KeyRepeat = 3; # fast key repeat
         InitialKeyRepeat = 15; # short delay before repeat
         AppleShowAllExtensions = true;
       };
