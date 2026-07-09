@@ -34,6 +34,10 @@ vim.diagnostic.config {
   },
 }
 
+-- Disable document_color globally: nvim 0.12.3 has a bug in document_color.lua:225
+-- where assert(get_client_by_id(id)) fires on LSP reload before on_detach cleans up stale client_state
+vim.lsp.document_color.enable(false)
+
 -- Enable the servers listed here that have been configured in `lua/lsp/*`
 vim.lsp.enable {
   "biome",

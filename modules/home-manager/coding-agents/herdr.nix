@@ -8,8 +8,8 @@
       enable = true;
       settings = {
         keys = {
-          prefix = "crtl+b";
-          detatch = "prefi+d";
+          prefix = "ctrl+b";
+          detatch = "prefix+d";
         };
 
         theme = {
