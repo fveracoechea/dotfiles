@@ -11,7 +11,6 @@
         AppleInterfaceStyle = "Dark";
         KeyRepeat = 4; # fast key repeat
         InitialKeyRepeat = 15; # short delay before repeat
-        _HIHideMenuBar = false; # auto-hide the menu bar
         AppleShowAllExtensions = true;
       };
 
