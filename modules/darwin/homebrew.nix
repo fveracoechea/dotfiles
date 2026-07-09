@@ -6,7 +6,6 @@
   options.dotfiles.homebrew.enable = lib.mkEnableOption "Homebrew casks and formulae";
 
   config = lib.mkIf config.dotfiles.homebrew.enable {
-    # Homebrew - needs to be manually installed.
     homebrew = {
       enable = true;
       onActivation = {

@@ -1,10 +1,15 @@
-{lib, config, ...}: {
+{
+  lib,
+  config,
+  ...
+}: {
   options.dotfiles.karabiner.enable = lib.mkEnableOption "Karabiner-Elements complex modifications";
 
   config = lib.mkIf config.dotfiles.karabiner.enable {
     # enable xdg config directory by default
     xdg.enable = lib.mkDefault true;
 
+    # Karabiner-Elements is installed by homebrew
     xdg.configFile."karabiner/assets/complex_modifications/nix.json".text = builtins.toJSON {
       title = "CapsLock modifier - Nix managed";
       rules = [

@@ -62,7 +62,7 @@
             owner = "sindresorhus";
             repo = "pure";
             rev = "v1.28.1";
-            hash = "sha256-DEdSaab2VrzWwIKx92DnzjVKgmjdGnvFCGVQrbG7AnI=";
+            hash = "sha256-UQ0hP3qJd4Qxiw1LXPdb9d0Dc4OSD3HJpgYzaCfujno=";
           };
         }
         {
