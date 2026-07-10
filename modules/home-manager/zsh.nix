@@ -61,17 +61,18 @@
           file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
         }
         {
-          name = "pure-prompt";
-          src = pkgs.pure-prompt;
-        }
-        {
           name = "zsh-fzf-history-search";
           src = pkgs.zsh-fzf-history-search;
+          file = "share/zsh-fzf-history-search/zsh-fzf-history-search.plugin.zsh";
         }
         {
           name = "fzf-tab";
           src = pkgs.zsh-fzf-tab;
           file = "share/fzf-tab/fzf-tab.plugin.zsh";
+        }
+        {
+          name = "pure-prompt";
+          src = pkgs.pure-prompt;
         }
       ];
 
@@ -86,6 +87,11 @@
           zstyle ':completion:*' menu no
           zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
           zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+          # Rebind ^R after vi-mode init so fzf-history-search wins
+          function zvm_after_init() {
+            bindkey '^R' fzf_history_search
+          }
 
           bindkey '^f' autosuggest-accept
 
