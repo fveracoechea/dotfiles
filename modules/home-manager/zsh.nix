@@ -56,34 +56,22 @@
 
       plugins = [
         {
+          name = "vi-mode";
+          src = pkgs.zsh-vi-mode;
+          file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+        }
+        {
           name = "pure-prompt";
-          # nurl https://github.com/sindresorhus/pure/releases/tag/v1.28.1
-          src = pkgs.fetchFromGitHub {
-            owner = "sindresorhus";
-            repo = "pure";
-            rev = "v1.28.1";
-            hash = "sha256-UQ0hP3qJd4Qxiw1LXPdb9d0Dc4OSD3HJpgYzaCfujno=";
-          };
+          src = pkgs.pure-prompt;
         }
         {
           name = "zsh-fzf-history-search";
-          # nurl https://github.com/joshskidmore/zsh-fzf-history-search
-          src = pkgs.fetchFromGitHub {
-            owner = "joshskidmore";
-            repo = "zsh-fzf-history-search";
-            rev = "d5a9730b5b4cb0b39959f7f1044f9c52743832ba";
-            hash = "sha256-tQqIlkgIWPEdomofPlmWNEz/oNFA1qasILk4R5RWobY=";
-          };
+          src = pkgs.zsh-fzf-history-search;
         }
         {
           name = "fzf-tab";
-          # nurl https://github.com/Aloxaf/fzf-tab
-          src = pkgs.fetchFromGitHub {
-            owner = "Aloxaf";
-            repo = "fzf-tab";
-            rev = "b6e1b22458a131f835c6fe65bdb88eb45093d2d2";
-            hash = "sha256-4A7zpaO1rNPvS0rrmmxg56rJGpZHnw/g+x5FJd0EshI=";
-          };
+          src = pkgs.zsh-fzf-tab;
+          file = "share/fzf-tab/fzf-tab.plugin.zsh";
         }
       ];
 
