@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  username = "franciscoveracoechea";
+  username = "fveracoechea";
 in {
   imports = [
     ../../modules/darwin/default.nix
