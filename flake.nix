@@ -89,7 +89,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "hm-backup";
-            home-manager.users.franciscoveracoechea = import ./hosts/macbook-pro/home.nix;
+            home-manager.users.fveracoechea = import ./hosts/macbook-pro/home.nix;
             home-manager.extraSpecialArgs = specialArgs;
           }
         ];
