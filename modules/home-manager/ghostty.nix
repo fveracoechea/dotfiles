@@ -26,6 +26,7 @@
         window-padding-x = 6;
         window-padding-y = 6;
         window-decoration = "auto";
+        macos-titlebar-style = "hidden";
 
         font-size =
           if pkgs.stdenv.isDarwin

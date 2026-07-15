@@ -97,7 +97,7 @@
             bindkey '^R' fzf_history_search
           }
 
-          bindkey '^f' autosuggest-accept
+          bindkey '^y' autosuggest-accept
 
           # Source secrets
           source ~/.config/zsh/secrets.zsh

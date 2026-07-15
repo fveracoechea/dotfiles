@@ -9,19 +9,40 @@
   config = lib.mkIf (config.dotfiles.aerospace.enable && pkgs.stdenv.isDarwin) {
     xdg.enable = true;
 
+    services.jankyborders = let
+      palette = config.dotfiles.palette;
+      toSketchybar = hex: "0xff${lib.strings.toLower (builtins.substring 1 6 hex)}";
+    in {
+      enable = true;
+      settings = {
+        style = "round";
+        width = "6.0";
+        active_color = toSketchybar palette.mauve;
+        inactive_color = toSketchybar palette.surface2;
+      };
+    };
+
     programs.aerospace = {
       enable = true;
 
       launchd.enable = true;
 
       settings = {
-        gaps = {
-          inner.horizontal = 8;
-          inner.vertical = 8;
-          outer.left = 8;
-          outer.right = 8;
-          outer.top = 8;
-          outer.bottom = 8;
+        config-version = 2;
+
+        after-startup-command = [
+          "exec-and-forget borders"
+        ];
+
+        gaps = let
+          gap = 12;
+        in {
+          inner.horizontal = gap;
+          inner.vertical = gap;
+          outer.left = gap;
+          outer.right = gap;
+          outer.top = gap;
+          outer.bottom = gap;
         };
 
         mode.main.binding = {
@@ -71,6 +92,8 @@
           # Reload config
           alt-shift-r = "reload-config";
         };
+
+        persistent-workspaces = ["1" "2" "3" "4" "5"];
 
         on-window-detected = [
           {
