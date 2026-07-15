@@ -16,17 +16,11 @@
       casks = [
         "docker-desktop"
         "karabiner-elements"
-        "beekeeper-studio"
         "google-chrome"
-        "microsoft-teams"
-        "microsoft-outlook"
         "slack"
         "figma"
         "postman"
-      ];
-      brews = [
-        "pulumi"
-        "awscli"
+        "zoom"
       ];
     };
   };

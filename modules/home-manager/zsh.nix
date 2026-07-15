@@ -9,6 +9,10 @@
   config = lib.mkIf config.dotfiles.zsh.enable {
     home.packages = with pkgs; [
       fastfetch
+      jq
+      just
+      ripgrep
+      wget
     ];
 
     programs.fzf = {

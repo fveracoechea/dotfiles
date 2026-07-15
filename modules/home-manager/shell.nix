@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }: {
   imports = [
@@ -15,6 +16,12 @@
   options.dotfiles.shell.enable = lib.mkEnableOption "shell suite (zsh, tmux, bat, btop, yazi, git, lazydocker)";
 
   config = lib.mkIf config.dotfiles.shell.enable {
+    home.packages = with pkgs; [
+      watchman
+      wireguard-tools
+      agent-browser
+    ];
+
     dotfiles.zsh.enable = lib.mkDefault true;
     dotfiles.tmux.enable = lib.mkDefault true;
     dotfiles.bat.enable = lib.mkDefault true;

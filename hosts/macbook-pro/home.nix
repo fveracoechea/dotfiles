@@ -10,6 +10,7 @@
     fonts.enable = true;
     karabiner.enable = true;
     neovim.enable = true;
+    spotify.enable = true;
     # aerospace.enable = true;
     coding-agents.enable = true;
   };
@@ -19,23 +20,19 @@
     enableDefaultConfig = false;
     settings = {
       "github.com" = {
-        AddKeysToAgent = "yes";
-        IdentityFile = "~/.ssh/id_github_hypr";
+        User = "git";
         UseKeychain = "yes";
+        AddKeysToAgent = "yes";
+        IdentitiesOnly = "yes";
+        IdentityFile = "~/.ssh/id_github";
       };
     };
   };
 
   home.packages = with pkgs; [
-    watchman
-    ripgrep
-    wget
-    just
-    wireguard-tools
-    agent-browser
-    glab
     redis
     lazydocker
+    handy
   ];
 
   # DO NOT CHANGE
