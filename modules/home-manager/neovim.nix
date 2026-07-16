@@ -21,7 +21,10 @@
     lib.mkIf config.dotfiles.neovim.enable {
       home.packages = global-packages;
 
-      home.file.".config/nvim".source = config.lib.file.mkOutOfStoreSymlink ../../config/nvim;
+      xdg.configFile."nvim" = {
+        recursive = true;
+        source = ../../config/nvim;
+      };
 
       programs.neovim = {
         enable = true;
@@ -29,9 +32,9 @@
         viAlias = true;
         vimAlias = true;
         vimdiffAlias = true;
-        sideloadInitLua = true;
         withRuby = false;
         withPython3 = false;
+        initLua = lib.mkBefore (lib.fileContents ../../config/nvim/init.lua);
 
         extraPackages = with pkgs;
           lib.optionals pkgs.stdenv.isLinux [

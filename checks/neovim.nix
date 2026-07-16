@@ -2,7 +2,6 @@
   lib,
   pkgs,
   inputs,
-  system,
 }: let
   flake = inputs.self;
 
@@ -29,25 +28,24 @@
   cfg = home.config.programs.neovim;
   configDir = flake.outPath + "/config/nvim";
 
-  testNvim =
-    pkgs'.wrapNeovim cfg.finalPackage.unwrapped {
-      viAlias = false;
-      vimAlias = false;
-      configure = {
-        customRC = ''
-          let &runtimepath = '${configDir},' . &runtimepath
-        '';
-        packages.home-manager = {
-          start = lib.pipe cfg.plugins [
-            (builtins.filter (p: p != null))
-            (map (p:
-              if builtins.isAttrs p && p ? plugin
-              then p.plugin
-              else p))
-          ];
-        };
+  testNvim = pkgs'.wrapNeovim cfg.finalPackage.unwrapped {
+    viAlias = false;
+    vimAlias = false;
+    configure = {
+      customRC = ''
+        let &runtimepath = '${configDir},' . &runtimepath
+      '';
+      packages.home-manager = {
+        start = lib.pipe cfg.plugins [
+          (builtins.filter (p: p != null))
+          (map (p:
+            if builtins.isAttrs p && p ? plugin
+            then p.plugin
+            else p))
+        ];
       };
     };
+  };
 
   smokeTest =
     pkgs'.runCommand "neovim-config-smoke-test" {
