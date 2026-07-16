@@ -33,8 +33,8 @@
         vimAlias = true;
         vimdiffAlias = true;
         withRuby = false;
-        withPython3 = false;
-        initLua = lib.mkBefore (lib.fileContents ../../config/nvim/init.lua);
+        withPython3 = true;
+        initLua = lib.mkAfter (lib.fileContents ../../config/nvim/init.lua);
 
         extraPackages = with pkgs;
           lib.optionals pkgs.stdenv.isLinux [
