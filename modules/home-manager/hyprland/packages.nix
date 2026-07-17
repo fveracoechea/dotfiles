@@ -10,8 +10,6 @@
 
     home.packages = with pkgs; [
       dotfilesPkgs.ultrashell
-
-      hyprdim
       hyprpaper
       hyprshot
       hyprpicker

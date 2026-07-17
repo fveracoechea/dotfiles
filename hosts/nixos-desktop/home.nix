@@ -50,7 +50,6 @@
     zettlr
     tiny-rdm
     obs-studio
-    handy
 
     (writers.writeBashBin "set-screen-share-resolution" ''
       hyprctl keyword monitor "DP-1, 2560x1440@120.00Hz, auto, auto, vrr, 3, bitdepth, 8, cm, auto"

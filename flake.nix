@@ -30,6 +30,9 @@
 
     hunk.url = "github:modem-dev/hunk";
     hunk.inputs.nixpkgs.follows = "nixpkgs";
+
+    handy.url = "github:cjpais/Handy";
+    handy.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
@@ -107,6 +110,7 @@
 
         modules = [
           nixosModules.default
+          inputs.handy.nixosModules.default
           ./hosts/nixos-desktop/configuration.nix
           home-manager.nixosModules.home-manager
           {

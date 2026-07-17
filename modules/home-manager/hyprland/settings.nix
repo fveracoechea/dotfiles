@@ -28,7 +28,6 @@ in {
 
         exec-once = [
           "ultrashell"
-          "hyprdim --fade 25"
         ];
 
         general = {

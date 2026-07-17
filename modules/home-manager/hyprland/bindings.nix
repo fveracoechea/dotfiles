@@ -19,6 +19,7 @@
         workspaces = [1 2 3 4 5 6 7 8 9];
         browser = "google-chrome-stable";
         search = "fuzzel --cache ${config.home.homeDirectory}/.config/fuzzel/cache";
+        handy = "handy --toggle-transcription";
 
         openapp = key: app: "SUPER, ${key}, Open ${app}, exec, ${app}";
         movefocus = key: direction: "SUPER, ${key}, Move window focus ${lib.toUpper direction}, movefocus, ${direction}";
@@ -58,6 +59,7 @@
           (openapp "B" browser)
           (openapp "S" terminal)
           (openapp "A" search)
+          (openapp "O" handy)
         ]
         # Switch workspaces with SUPER + [1-9]
         ++ (map (i: "SUPER, ${toString i}, Switch to workspace ${toString i}, workspace, ${toString i}") workspaces)
