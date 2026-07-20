@@ -21,6 +21,7 @@
         "figma"
         "postman"
         "zoom"
+        "openvpn-connect"
       ];
       brews = [];
     };
