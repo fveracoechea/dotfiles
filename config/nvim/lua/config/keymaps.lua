@@ -118,7 +118,7 @@ end, { desc = "Open the file manager at the current file" })
 
 -- Buffer management
 
-map("n", "<leader>x", function()
+map("n", "<leader>xx", function()
   Snacks.bufdelete()
 end, { desc = "Delete Buffer" })
 
