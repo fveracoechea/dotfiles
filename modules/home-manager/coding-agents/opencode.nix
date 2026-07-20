@@ -84,6 +84,42 @@
               ".astro"
             ];
           };
+          oxlint = {
+            command = ["oxlint" "--lsp"];
+            extensions = [
+              ".js"
+              ".jsx"
+              ".ts"
+              ".tsx"
+              ".vue"
+              ".svelte"
+              ".astro"
+            ];
+          };
+          oxfmt = {
+            command = ["oxfmt" "--lsp"];
+            extensions = [
+              ".js"
+              ".jsx"
+              ".ts"
+              ".tsx"
+              ".toml"
+              ".json"
+              ".jsonc"
+              ".json5"
+              ".yaml"
+              ".yml"
+              ".html"
+              ".vue"
+              ".handlebars"
+              ".hbs"
+              ".css"
+              ".scss"
+              ".less"
+              ".graphql"
+              ".md"
+            ];
+          };
         };
       };
     };

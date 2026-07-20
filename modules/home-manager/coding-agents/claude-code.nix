@@ -62,6 +62,44 @@
             ".astro" = "astro";
           };
         };
+        oxlint = {
+          command = "oxlint";
+          args = ["--lsp"];
+          extensionToLanguage = {
+            ".js" = "javascript";
+            ".jsx" = "javascriptreact";
+            ".ts" = "typescript";
+            ".tsx" = "typescriptreact";
+            ".vue" = "vue";
+            ".svelte" = "svelte";
+            ".astro" = "astro";
+          };
+        };
+        oxfmt = {
+          command = "oxfmt";
+          args = ["--lsp"];
+          extensionToLanguage = {
+            ".js" = "javascript";
+            ".jsx" = "javascriptreact";
+            ".ts" = "typescript";
+            ".tsx" = "typescriptreact";
+            ".toml" = "toml";
+            ".json" = "json";
+            ".jsonc" = "jsonc";
+            ".json5" = "json5";
+            ".yaml" = "yaml";
+            ".yml" = "yaml";
+            ".html" = "html";
+            ".vue" = "vue";
+            ".handlebars" = "handlebars";
+            ".hbs" = "handlebars";
+            ".css" = "css";
+            ".scss" = "scss";
+            ".less" = "less";
+            ".graphql" = "graphql";
+            ".md" = "markdown";
+          };
+        };
       };
     };
   };
