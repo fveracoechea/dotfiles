@@ -16,7 +16,7 @@
       enable = true;
       settings = {
         style = "round";
-        width = "6.0";
+        width = "8.0";
         active_color = toSketchybar palette.mauve;
         inactive_color = toSketchybar palette.surface2;
       };
