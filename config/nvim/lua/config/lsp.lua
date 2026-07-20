@@ -49,6 +49,8 @@ vim.lsp.enable {
   "jsonls",
   "lua_ls",
   "nixd",
+  "oxfmt",
+  "oxlint",
   "relay_lsp",
   "stylelint_lsp",
   "tailwindcss",
