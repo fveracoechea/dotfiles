@@ -22,6 +22,7 @@
         "postman"
         "zoom"
         "openvpn-connect"
+        "handy"
       ];
       brews = [];
     };
