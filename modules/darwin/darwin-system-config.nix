@@ -14,6 +14,8 @@
         AppleShowAllExtensions = true;
       };
 
+      universalaccess.mouseDriverCursorSize = 1.5;
+
       finder = {
         AppleShowAllFiles = true;
         AppleShowAllExtensions = true;
