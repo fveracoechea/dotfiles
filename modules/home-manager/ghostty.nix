@@ -30,7 +30,7 @@
 
         font-size =
           if pkgs.stdenv.isDarwin
-          then 17
+          then 18
           else 13;
 
         font-family-bold = "JetBrainsMono Nerd Font Bold";

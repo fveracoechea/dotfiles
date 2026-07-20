@@ -35,7 +35,7 @@
         ];
 
         gaps = let
-          gap = 16;
+          gap = 20;
         in {
           inner.horizontal = gap;
           inner.vertical = gap;
