@@ -2,6 +2,7 @@
   lib,
   pkgs,
   inputs,
+  system,
 }: let
   flake = inputs.self;
 
