@@ -17,6 +17,30 @@
           type = "command";
           command = "${./claude-statusline.sh}";
         };
+
+        permissions = {
+          deny = [
+            "EnterPlanMode"
+            "ExitPlanMode"
+            "DesignSync"
+            "NotebookEdit"
+            "SendMessage"
+            "PushNotification"
+            "RemoteTrigger"
+            "ReportFindings"
+            "ScheduleWakeup"
+            "AskUserQuestion"
+            "CronCreate"
+            "CronDelete"
+            "CronList"
+          ];
+        };
+
+        disableBundledSkills = true;
+        disableWorkflows = true;
+        disableRemoteControl = true;
+        disableClaudeAiConnectors = true;
+        disableArtifact = true;
       };
 
       skills = {
