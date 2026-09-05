@@ -14,7 +14,7 @@
         theme = "dark-ansi";
 
         model = "claude-opus-5";
-        effortLevel = "medium";
+        effortLevel = "high";
 
         statusLine = {
           type = "command";

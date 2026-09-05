@@ -9,9 +9,11 @@
     ./desktop-entries
     ./fonts.nix
     ./fuzzel.nix
+    ./gaming.nix
     ./ghostty.nix
     ./git.nix
     ./gtk.nix
+    ./handy.nix
     ./hyprland
     ./karabiner.nix
     ./mangohud.nix

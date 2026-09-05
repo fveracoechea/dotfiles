@@ -6,7 +6,7 @@
 }: {
   options.dotfiles.aerospace.enable = lib.mkEnableOption "Aerospace macOS tiling window manager";
 
-  config = lib.mkIf (config.dotfiles.aerospace.enable && pkgs.stdenv.isDarwin) {
+  config = lib.mkIf (config.dotfiles.aerospace.enable && pkgs.stdenv.hostPlatform.isDarwin) {
     xdg.enable = true;
 
     services.jankyborders = let

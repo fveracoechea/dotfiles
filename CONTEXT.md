@@ -19,8 +19,32 @@ _Avoid_: local package, in-repo package
 _Appears in legacy code only._ Previously the set of custom packages built for the target system and injected into all modules via `specialArgs`. Replaced by `dotfilesPkgs`.
 
 **Dotfiles Pkgs**:
-The set of packages this flake provides to its modules via `specialArgs`, injected under the name `dotfilesPkgs`. Contains two kinds of packages: locally-built packages defined in `packages/` and packages wrapped from the flake's non-nixpkgs inputs (e.g. `hyprland`, `tmux-powerkit`). Modules read `dotfilesPkgs.<name>` instead of touching `inputs` or `system` directly, so external consumers only need to pass `dotfilesPkgs` to use the flake.
+The set of packages this flake provides to its modules via `specialArgs`, injected under the name `dotfilesPkgs`. Contains two kinds of packages: locally-built packages defined in `packages/` and packages wrapped from the flake's non-nixpkgs inputs (e.g. `tmux-powerkit`). All are built on the Latest Channel. Modules read `dotfilesPkgs.<name>` instead of touching `inputs` or `system` directly, so external consumers only need to pass `dotfilesPkgs` to use the flake.
 _Avoid_: customPkgs, custom packages, local packages
+
+**Release Channel**:
+A platform-specific nixpkgs release branch that builds System-owned packages. It moves through deliberate Release updates, not routine app and tool updates. See ADR-0007.
+_Avoid_: stable, stable channel, stable nixpkgs
+
+**Latest Channel**:
+The `nixpkgs-unstable` branch that builds Home-owned packages. It moves on demand without disturbing the Release Channel.
+_Avoid_: unstable, unstable channel, bleeding edge
+
+**Version-Coupled Package**:
+A package whose working version is tied to a package on the other side of the channel seam, so it takes its partner's channel instead of its owner's channel. See ADR-0007.
+_Avoid_: pinned package, exception, override
+
+**Packaging Exception**:
+A package that takes the channel for its purpose instead of its System location because only a packaging constraint prevents Home Manager from owning it. Use only when separating the package from its System integration is not practical. See ADR-0007.
+_Avoid_: app override, layer exception
+
+**Channel Hold**:
+A temporary assignment to the other channel because a package does not build or work from its default channel. A Channel Hold needs a reason and an exit condition. See ADR-0007.
+_Avoid_: pin, workaround, exception
+
+**System Toolset**:
+The small set of Release Channel packages needed for boot, administration, recovery, or by a System Module. Personal development tools and desktop utilities belong to the Home layer instead.
+_Avoid_: system packages, global tools
 
 **Theme**:
 A visual style applied consistently across applications. Themes are configured per-application in each module rather than via a unified theming framework like Stylix.

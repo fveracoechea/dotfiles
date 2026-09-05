@@ -26,8 +26,6 @@
 
   home.packages = with pkgs; [
     redis
-    lazydocker
-    handy
   ];
 
   # DO NOT CHANGE

@@ -26,6 +26,38 @@ development environment across macOS and Linux using Nix flakes.
 - **[Nix Flakes](https://nixos.org/)**: Reproducible package management and system configuration
 - **[Home Manager](https://github.com/nix-community/home-manager)**: User environment management
 
+### Package channels
+
+Two nixpkgs channels feed this flake, so Home packages can move without disturbing the System. See [ADR-0007](docs/adr/0007-split-nixpkgs-channels-by-package-owner.md).
+
+| Channel             | Input                       | Branch                   | Builds                        |
+| ------------------- | --------------------------- | ------------------------ | ----------------------------- |
+| **Latest Channel**  | `nixpkgs-latest`            | `nixpkgs-unstable`       | Home-owned packages           |
+| **Release Channel** | `nixpkgs-stable`     | `nixos-26.05`            | Linux System-owned packages   |
+| **Release Channel** | `nixpkgs-stable-darwin`    | `nixpkgs-26.05-darwin`   | macOS System-owned packages   |
+
+Package ownership decides the channel. Version-Coupled Packages follow their
+partner, Spotify uses the Latest Channel despite its darwin System location,
+and a broken Latest package can use a documented Channel Hold.
+
+`nix-darwin` is pinned to `nix-darwin-26.05` because it asserts that its own
+branch corresponds to the Nixpkgs branch it evaluates against.
+
+```bash
+# Newer coding agents, CLI, and apps. Leaves the kernel and compositor alone.
+nix flake update nixpkgs-latest
+
+# Move the System. Do this deliberately and test both hosts.
+nix flake update nixpkgs-stable nixpkgs-stable-darwin nix-darwin
+
+# One tool only, when it has its own input.
+nix flake update herdr
+```
+
+When a release lands, move all three release refs together:
+`nixpkgs-stable` to `nixos-YY.MM`, `nixpkgs-stable-darwin` to
+`nixpkgs-YY.MM-darwin`, and `nix-darwin` to `nix-darwin-YY.MM`.
+
 ### Window Management & Desktop
 
 - **[Hyprland](https://hyprland.org/)**: Dynamic tiling Wayland compositor
@@ -169,7 +201,7 @@ External consumer example:
 
 ## Documentation
 
-- **[Architecture Decision Records](docs/adr/)** — decisions on module structure, theming, macOS package split, and the `dotfiles.*` enable namespace.
+- **[Architecture Decision Records](docs/adr/)** — decisions on module structure, theming, macOS package split, the `dotfiles.*` enable namespace, and the nixpkgs channel split.
 - **[CONTEXT.md](CONTEXT.md)** — domain glossary for the repository.
 
 ## License

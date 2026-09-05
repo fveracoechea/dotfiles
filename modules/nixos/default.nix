@@ -8,6 +8,7 @@
     ./tailscale-client.nix
     ./docker.nix
     ./gaming.nix
+    ./handy.nix
     ./hyprland.nix
     ./networking.nix
     ./nix-ld.nix

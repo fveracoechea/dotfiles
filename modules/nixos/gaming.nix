@@ -1,5 +1,6 @@
 {
   pkgs,
+  pkgs-latest,
   lib,
   config,
   ...
@@ -7,52 +8,57 @@
   options.dotfiles.gaming.enable = lib.mkEnableOption "gaming suite (steam, gamescope, sunshine, openrgb, AMD tools)";
 
   config = lib.mkIf config.dotfiles.gaming.enable {
-    hardware = {
-      graphics.extraPackages = [pkgs.gamescope-wsi];
-      cpu.amd.updateMicrocode = true;
-      amdgpu.initrd.enable = true;
-      xone.enable = true;
-    };
+    # Gaming packages take the Latest Channel even though this module sits in
+    # the system layer. Routed through package options; GameMode is the one
+    # exception: its NixOS module exposes no package option.
+    # See ADR-0007.
+    hardware.graphics.extraPackages = [pkgs-latest.gamescope-wsi];
 
     programs = {
-      steam.enable = true;
-      steam.protontricks.enable = true;
-      steam.extraCompatPackages = [pkgs.proton-ge-bin];
-      steam.gamescopeSession = {
+      steam = {
         enable = true;
-        env = {
-          DXVK_HDR = "1";
-          ENABLE_HDR = "1";
+        package = pkgs-latest.steam;
+        protontricks = {
+          enable = true;
+          package = pkgs-latest.protontricks;
         };
-        args = [
-          "--adaptive-sync" # VRR support
-          "--hdr-enabled" # HDR
-          "--hdr-itm-enable"
-          "--rt" # Real time scheduling
-          "-W 2560"
-          "-H 1440"
-          "-r 120" # Refresh rate
-          "-f" # Fullscreen
-          "-O HDMI-A-1" # Output display (dummy plug, sunshine capture target)
-        ];
+        extraCompatPackages = [pkgs-latest.proton-ge-bin];
+        gamescopeSession = {
+          enable = true;
+          env = {
+            DXVK_HDR = "1";
+            ENABLE_HDR = "1";
+          };
+          args = [
+            "--adaptive-sync" # VRR support
+            "--hdr-enabled" # HDR
+            "--hdr-itm-enable"
+            "--rt" # Real time scheduling
+            "-W 2560"
+            "-H 1440"
+            "-r 120" # Refresh rate
+            "-f" # Fullscreen
+            "-O HDMI-A-1" # Output display (dummy plug, sunshine capture target)
+          ];
+        };
       };
 
       gamemode.enable = true;
-      gamescope.enable = true;
-      gamescope.capSysNice = false;
+      gamescope = {
+        enable = true;
+        # Also serves the Steam Session: its script calls `gamescope` from PATH.
+        package = pkgs-latest.gamescope;
+        capSysNice = false;
+      };
     };
 
     environment = {
       sessionVariables = {
         STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
       };
-      systemPackages = with pkgs; [
-        # lutris
-        mesa-demos
-        ethtool
-        protonup-ng
-        amdgpu_top
-        lact
+      systemPackages = [
+        pkgs.ethtool
+        pkgs-latest.lact
       ];
     };
 
@@ -62,12 +68,15 @@
       after = ["multi-user.target"];
       wantedBy = ["multi-user.target"];
       serviceConfig = {
-        ExecStart = "${pkgs.lact}/bin/lact daemon";
+        ExecStart = "${pkgs-latest.lact}/bin/lact daemon";
       };
     };
 
     services = {
-      hardware.openrgb.enable = true;
+      hardware.openrgb = {
+        enable = true;
+        package = pkgs-latest.openrgb;
+      };
 
       # Super+Alt+Q blindly ends the Steam Session (kills gamescope,
       # session script exits, Ly greeter returns). evdev-level, works in any session
@@ -81,6 +90,7 @@
 
       sunshine = {
         enable = true;
+        package = pkgs-latest.sunshine;
         # Started via nixos-fake-graphical-session.target (Steam Session only);
         # Hyprland is uwsm-managed and never activates that target
         autoStart = false;

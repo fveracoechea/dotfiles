@@ -20,6 +20,14 @@
       watchman
       wireguard-tools
       agent-browser
+      lazydocker
+      docker-compose
+      zip
+      unzip
+      cmake
+      gnumake
+      cargo
+      openssl
     ];
 
     dotfiles.zsh.enable = lib.mkDefault true;

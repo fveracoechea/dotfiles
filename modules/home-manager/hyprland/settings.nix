@@ -13,6 +13,12 @@ in {
       package = null;
       portalPackage = null;
 
+      # Set explicitly, not left to the default: the module flips its default
+      # to "lua" at `home.stateVersion` 26.05, and the compositor is held at
+      # 0.55.4 for hyprlang. A stray `hyprland.lua` also wins over
+      # `hyprland.conf`, so the two must never disagree.
+      configType = "hyprlang";
+
       settings = {
         monitor = config.dotfiles.hyprland.monitors;
 

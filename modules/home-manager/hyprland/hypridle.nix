@@ -1,11 +1,14 @@
 {
   lib,
   config,
+  pkgs-stable,
   ...
 }: {
   config = lib.mkIf config.dotfiles.hyprland.enable {
     services.hypridle = {
       enable = true;
+      # Release Channel: tracks the compositor. See ADR-0007.
+      package = pkgs-stable.hypridle;
 
       settings = {
         general = {
