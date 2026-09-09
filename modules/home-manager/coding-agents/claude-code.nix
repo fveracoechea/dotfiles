@@ -54,7 +54,7 @@
         disableWorkflows = true;
         disableRemoteControl = true;
         disableClaudeAiConnectors = true;
-        disableArtifact = true;
+        disableArtifact = false;
       };
 
       skills = {

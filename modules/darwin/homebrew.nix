@@ -26,6 +26,8 @@
         "zoom"
         "openvpn-connect"
         "handy"
+        "1password-cli"
+        "1password"
       ];
       brews = [
         "maven"
