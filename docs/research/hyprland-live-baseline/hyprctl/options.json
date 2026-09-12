@@ -1,0 +1,120 @@
+[
+  {
+    "option": "cursor:enable_hyprcursor",
+    "int": 0,
+    "set": true
+  },
+  {
+    "option": "misc:vrr",
+    "int": 2,
+    "set": true
+  },
+  {
+    "option": "misc:animate_manual_resizes",
+    "int": 1,
+    "set": true
+  },
+  {
+    "option": "misc:animate_mouse_windowdragging",
+    "int": 1,
+    "set": true
+  },
+  {
+    "option": "general:layout",
+    "str": "dwindle",
+    "set": true
+  },
+  {
+    "option": "general:border_size",
+    "int": 3,
+    "set": true
+  },
+  {
+    "option": "general:resize_on_border",
+    "int": 1,
+    "set": true
+  },
+  {
+    "option": "general:gaps_in",
+    "custom": "10 10 10 10",
+    "set": true
+  },
+  {
+    "option": "general:gaps_out",
+    "custom": "10 18 18 18",
+    "set": true
+  },
+  {
+    "option": "general:col.active_border",
+    "custom": "ff89b4fa fff2cdcd 90deg",
+    "set": true
+  },
+  {
+    "option": "general:col.inactive_border",
+    "custom": "ff585b70 0deg",
+    "set": true
+  },
+  {
+    "option": "layout:single_window_aspect_ratio",
+    "vec2": [
+      16,
+      9
+    ],
+    "set": true
+  },
+  {
+    "option": "dwindle:preserve_split",
+    "int": 1,
+    "set": true
+  },
+  {
+    "option": "dwindle:force_split",
+    "int": 2,
+    "set": true
+  },
+  {
+    "option": "decoration:rounding",
+    "int": 8,
+    "set": true
+  },
+  {
+    "option": "decoration:blur:enabled",
+    "int": 1,
+    "set": true
+  },
+  {
+    "option": "master:allow_small_split",
+    "int": 1,
+    "set": true
+  },
+  {
+    "option": "master:mfact",
+    "float": 0.320000,
+    "set": true
+  },
+  {
+    "option": "master:new_on_top",
+    "int": 0,
+    "set": true
+  },
+  {
+    "option": "binds:drag_threshold",
+    "int": 10,
+    "set": true
+  },
+  {
+    "option": "binds:allow_workspace_cycles",
+    "int": 1,
+    "set": true
+  },
+  {
+    "option": "xwayland:force_zero_scaling",
+    "int": 1,
+    "set": true
+  },
+  {
+    "option": "ecosystem:no_update_news",
+    "int": 1,
+    "set": true
+  }
+]
