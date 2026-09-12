@@ -21,7 +21,8 @@
 
 return {
   { index = 1, record = {
-      modmask = 64, key = "J",
+      modmask = 64, key = "J", keycode = 0,
+      submap = "", catch_all = false,
       description = "Toggle window split",
       dispatcher = "layoutmsg", arg = "togglesplit,",
       flags = { locked = false, mouse = false, release = false,
@@ -29,7 +30,8 @@ return {
         auto_consuming = false, has_description = true },
   } },
   { index = 2, record = {
-      modmask = 64, key = "T",
+      modmask = 64, key = "T", keycode = 0,
+      submap = "", catch_all = false,
       description = "Toggle window floating/tiling",
       dispatcher = "togglefloating", arg = "",
       flags = { locked = false, mouse = false, release = false,
@@ -37,7 +39,8 @@ return {
         auto_consuming = false, has_description = true },
   } },
   { index = 4, record = {
-      modmask = 68, key = "F",
+      modmask = 68, key = "F", keycode = 0,
+      submap = "", catch_all = false,
       description = "Tiled full screen",
       dispatcher = "fullscreenstate", arg = "0 2",
       flags = { locked = false, mouse = false, release = false,
@@ -45,7 +48,8 @@ return {
         auto_consuming = false, has_description = true },
   } },
   { index = 8, record = {
-      modmask = 64, key = "J",
+      modmask = 64, key = "J", keycode = 0,
+      submap = "", catch_all = false,
       description = "Move window focus D",
       dispatcher = "movefocus", arg = "d",
       flags = { locked = false, mouse = false, release = false,
@@ -53,7 +57,8 @@ return {
         auto_consuming = false, has_description = true },
   } },
   { index = 26, record = {
-      modmask = 64, key = "C",
+      modmask = 64, key = "C", keycode = 0,
+      submap = "", catch_all = false,
       description = "Copy",
       dispatcher = "sendshortcut", arg = "CTRL, INSERT, activewindow",
       flags = { locked = false, mouse = false, release = false,
@@ -61,7 +66,8 @@ return {
         auto_consuming = false, has_description = true },
   } },
   { index = 46, record = {
-      modmask = 9, key = "mouse:272",
+      modmask = 9, key = "mouse:272", keycode = 0,
+      submap = "", catch_all = false,
       description = "",
       dispatcher = "mouse", arg = "movewindow",
       flags = { locked = false, mouse = true, release = false,

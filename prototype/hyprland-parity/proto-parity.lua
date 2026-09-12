@@ -44,6 +44,9 @@ local function canonical(entry)
   return {
     modmask = entry.modmask,
     key = entry.key,
+    keycode = entry.keycode,
+    submap = entry.submap,
+    catch_all = entry.catch_all,
     description = entry.description,
     dispatcher = entry.dispatcher,
     arg = entry.arg,
@@ -54,6 +57,9 @@ end
 local function eq(a, b)
   if a.modmask ~= b.modmask then return false, "modmask" end
   if a.key ~= b.key then return false, "key" end
+  if a.keycode ~= b.keycode then return false, "keycode" end
+  if a.submap ~= b.submap then return false, "submap" end
+  if a.catch_all ~= b.catch_all then return false, "catch_all" end
   if a.description ~= b.description then return false, "description" end
   if a.dispatcher ~= b.dispatcher then return false, "dispatcher" end
   if a.arg ~= b.arg then return false, "arg" end
@@ -64,8 +70,9 @@ local function eq(a, b)
 end
 
 local function describe(r)
-  return string.format("mod=%d key=%s desc=%q dsp=%s arg=%q",
-    r.modmask, r.key, r.description, r.dispatcher, r.arg)
+  return string.format("mod=%d key=%s kc=%d submap=%q catch_all=%s desc=%q dsp=%s arg=%q",
+    r.modmask, r.key, r.keycode, r.submap, tostring(r.catch_all),
+    r.description, r.dispatcher, r.arg)
 end
 
 local expected = dofile(here .. "/proto-expected.lua")
@@ -166,6 +173,28 @@ do
   local m = clone_expected()
   m[1].record.arg = "togglesplit"
   compare_mutation(m, "trailing comma dropped from layoutmsg arg")
+end
+
+-- 7. submap change: the current baseline has only "" submaps, but a config
+--    that registers a bind inside a submap must be caught
+do
+  local m = clone_expected()
+  m[1].record.submap = "resize"
+  compare_mutation(m, "bind moved into submap 'resize'")
+end
+
+-- 8. keycode bind: key as raw keycode instead of keysym
+do
+  local m = clone_expected()
+  m[1].record.keycode = 36
+  compare_mutation(m, "keycode 36 recorded instead of keysym")
+end
+
+-- 9. catch_all bind
+do
+  local m = clone_expected()
+  m[1].record.catch_all = true
+  compare_mutation(m, "catch_all flipped to true")
 end
 
 print(failures == 0
