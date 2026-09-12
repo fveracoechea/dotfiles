@@ -39,7 +39,12 @@ readonly OPTIONS=(
 readonly CONF_FILES=(hyprland.conf hypridle.conf hyprlock.conf hyprpaper.conf)
 readonly COMPANION_PATTERN='ultrashell|hypridle|hyprpaper|hyprlock|quickshell|fuzzel|ghostty'
 readonly UNIT_PATTERN='hypr|uwsm'
-readonly STORE_PATH_RE='/nix/store/[a-z0-9]+/'
+# Nix store paths are /nix/store/<32-char hash>-<name>/; the hash alone is
+# never followed directly by a slash.
+readonly STORE_PATH_RE='/nix/store/[a-z0-9]+-[^/]+/'
+readonly HYPRLAND_VERSION='0.55.4'
+readonly HYPRLAND_TAG='v0.55.4'
+readonly BIND_FLAGS='locked mouse release repeat longPress non_consuming auto_consuming has_description modmask submap key keycode catch_all dispatcher arg description'
 
 die() {
   echo "error: $*" >&2
@@ -61,7 +66,8 @@ capture() {
   mkdir -p "$out/hyprctl" "$out/generated" "$out/observed"
 
   hyprctl version -j >"$out/hyprctl/version.json"
-  hyprctl monitors -j | jq 'map(del(.id, .serial, .description))' >"$out/hyprctl/monitors.json"
+  # "monitors all" includes disabled outputs, which plain "monitors" omits
+  hyprctl monitors all -j | jq 'map(del(.id, .serial, .description))' >"$out/hyprctl/monitors.json"
   hyprctl binds -j >"$out/hyprctl/binds.json"
   hyprctl workspacerules -j >"$out/hyprctl/workspacerules.json"
   hyprctl configerrors -j >"$out/hyprctl/configerrors.json"
@@ -96,7 +102,9 @@ capture() {
         "process observations record comm names and counts only, never argv"
       ]}' >"$out/metadata.json"
 
-  if grep -rqF "${HYPRLAND_INSTANCE_SIGNATURE}=" "$out"; then
+  # The signature value itself is the leak risk, not the variable name
+  # (the generated hyprland.conf mentions the name without its value).
+  if grep -rqF -- "$HYPRLAND_INSTANCE_SIGNATURE" "$out"; then
     die "instance signature leaked into capture; remove $out"
   fi
   if grep -rqE "$STORE_PATH_RE" "$out"; then
@@ -150,20 +158,24 @@ validate() {
       "$dir/generated/$conf" || fail=1
   done
 
-  check "version.json has version and tag" '.version and .tag' "$dir/hyprctl/version.json" || fail=1
-  check "monitors.json is a sanitized non-empty array" \
-    'type == "array" and length >= 1 and all(.[]; has("name") and (has("serial") | not) and (has("description") | not))' \
+  check "version.json is the pinned 0.55.4" \
+    ".version == \"$HYPRLAND_VERSION\" and .tag == \"$HYPRLAND_TAG\"" \
+    "$dir/hyprctl/version.json" || fail=1
+  check "monitors.json is a sanitized non-empty array without id or serial" \
+    'type == "array" and length >= 1 and all(.[]; has("name") and (has("id") | not) and (has("serial") | not) and (has("description") | not))' \
     "$dir/hyprctl/monitors.json" || fail=1
-  check "binds.json entries carry dispatcher, key, modmask, description, arg" \
-    'type == "array" and length > 0 and all(.[]; has("dispatcher") and has("key") and has("modmask") and has("description") and has("arg"))' \
+  check "binds.json entries carry every flag, dispatcher, key, modmask, description, arg" \
+    "type == \"array\" and length > 0 and all(.[]; $(printf 'has("%s") and ' $BIND_FLAGS)true)" \
     "$dir/hyprctl/binds.json" || fail=1
   check "workspacerules.json entries carry workspaceString" \
     'type == "array" and length > 0 and all(.[]; has("workspaceString"))' \
     "$dir/hyprctl/workspacerules.json" || fail=1
   check "configerrors.json is an array" 'type == "array"' \
     "$dir/hyprctl/configerrors.json" || fail=1
-  check "options.json entries are all set" \
-    'type == "array" and length > 0 and all(.[]; has("option") and .set == true)' \
+  local expected_options
+  expected_options=$(printf '%s\n' "${OPTIONS[@]}" | sort | jq -R '.' | jq -s -c '.')
+  check "options.json covers exactly the checklist options, all set" \
+    "type == \"array\" and length == ${#OPTIONS[@]} and all(.[]; has(\"option\") and .set == true) and ([.[].option] | sort) == $expected_options" \
     "$dir/hyprctl/options.json" || fail=1
 
   check_file "observed/companion-processes.txt exists" \
@@ -172,12 +184,6 @@ validate() {
     "$dir/observed/systemd-user-units.txt" || fail=1
   check "metadata.json has capturedAt and hyprlandVersion" \
     '.capturedAt and .hyprlandVersion' "$dir/metadata.json" || fail=1
-  if grep -rqF 'HYPRLAND_INSTANCE_SIGNATURE=' "$dir"; then
-    echo "FAIL: capture contains an instance-signature assignment"
-    fail=1
-  else
-    echo "ok: capture contains no instance-signature assignment"
-  fi
 
   if [[ $fail -ne 0 ]]; then
     echo "validation failed for $dir" >&2
@@ -199,15 +205,15 @@ EOF
 [{"name": "TEST-1", "width": 5120, "height": 1440}]
 EOF
   cat >"$fixture/hyprctl/binds.json" <<'EOF'
-[{"modmask": 64, "key": "J", "dispatcher": "layoutmsg", "arg": "togglesplit,", "description": "Toggle window split"}]
+[{"locked": false, "mouse": false, "release": false, "repeat": false, "longPress": false, "non_consuming": false, "auto_consuming": false, "has_description": true, "modmask": 64, "submap": "", "key": "J", "keycode": 0, "catch_all": false, "dispatcher": "layoutmsg", "arg": "togglesplit,", "description": "Toggle window split"}]
 EOF
   cat >"$fixture/hyprctl/workspacerules.json" <<'EOF'
 [{"workspaceString": "1", "persistent": true}]
 EOF
   echo '[""]' >"$fixture/hyprctl/configerrors.json"
-  cat >"$fixture/hyprctl/options.json" <<'EOF'
-[{"option": "misc:vrr", "int": 2, "set": true}]
-EOF
+  printf '%s\n' "${OPTIONS[@]}" |
+    jq -R '{"option": ., "int": 1, "set": true}' | jq -s '.' \
+    >"$fixture/hyprctl/options.json"
   echo 'exec-once=ultrashell' >"$fixture/generated/hyprland.conf"
   echo 'lock_cmd=hyprlock' >"$fixture/generated/hypridle.conf"
   echo 'background {' >"$fixture/generated/hyprlock.conf"
@@ -249,11 +255,26 @@ EOF
   jq 'del(.[0].serial)' "$fixture/hyprctl/monitors.json" >"$fixture/hyprctl/monitors.json.tmp"
   mv "$fixture/hyprctl/monitors.json.tmp" "$fixture/hyprctl/monitors.json"
 
+  # Tamper: id key in monitors.json
+  jq '.[0].id = 0' "$fixture/hyprctl/monitors.json" >"$fixture/hyprctl/monitors.json.tmp"
+  mv "$fixture/hyprctl/monitors.json.tmp" "$fixture/hyprctl/monitors.json"
+  expect_fail "id key in monitors.json is rejected" "sanitized monitors"
+  jq 'del(.[0].id)' "$fixture/hyprctl/monitors.json" >"$fixture/hyprctl/monitors.json.tmp"
+  mv "$fixture/hyprctl/monitors.json.tmp" "$fixture/hyprctl/monitors.json"
+
   # Tamper: bind entry missing description
   jq '.[0] |= del(.description)' "$fixture/hyprctl/binds.json" >"$fixture/hyprctl/binds.json.tmp"
   mv "$fixture/hyprctl/binds.json.tmp" "$fixture/hyprctl/binds.json"
   expect_fail "bind entry without description is rejected" "bind shape"
   jq '.[0].description = "Toggle window split"' "$fixture/hyprctl/binds.json" \
+    >"$fixture/hyprctl/binds.json.tmp"
+  mv "$fixture/hyprctl/binds.json.tmp" "$fixture/hyprctl/binds.json"
+
+  # Tamper: bind entry missing a flag
+  jq '.[0] |= del(.locked)' "$fixture/hyprctl/binds.json" >"$fixture/hyprctl/binds.json.tmp"
+  mv "$fixture/hyprctl/binds.json.tmp" "$fixture/hyprctl/binds.json"
+  expect_fail "bind entry without the locked flag is rejected" "bind flags"
+  jq '.[0].locked = false' "$fixture/hyprctl/binds.json" \
     >"$fixture/hyprctl/binds.json.tmp"
   mv "$fixture/hyprctl/binds.json.tmp" "$fixture/hyprctl/binds.json"
 
@@ -264,8 +285,27 @@ EOF
   jq '.[0].set = true' "$fixture/hyprctl/options.json" >"$fixture/hyprctl/options.json.tmp"
   mv "$fixture/hyprctl/options.json.tmp" "$fixture/hyprctl/options.json"
 
-  # Tamper: unredacted store path in a conf copy
-  echo 'exec=/nix/store/abc123/pkg/bin/tool' >>"$fixture/generated/hyprland.conf"
+  # Tamper: option outside the checklist
+  jq '.[0].option = "bogus:not-an-option"' "$fixture/hyprctl/options.json" \
+    >"$fixture/hyprctl/options.json.tmp"
+  mv "$fixture/hyprctl/options.json.tmp" "$fixture/hyprctl/options.json"
+  expect_fail "option outside the checklist is rejected" "option list"
+  jq '.[0].option = "cursor:enable_hyprcursor"' "$fixture/hyprctl/options.json" \
+    >"$fixture/hyprctl/options.json.tmp"
+  mv "$fixture/hyprctl/options.json.tmp" "$fixture/hyprctl/options.json"
+
+  # Tamper: wrong Hyprland version
+  jq '.version = "0.56.0"' "$fixture/hyprctl/version.json" \
+    >"$fixture/hyprctl/version.json.tmp"
+  mv "$fixture/hyprctl/version.json.tmp" "$fixture/hyprctl/version.json"
+  expect_fail "version other than the pinned 0.55.4 is rejected" "pinned version"
+  jq '.version = "0.55.4"' "$fixture/hyprctl/version.json" \
+    >"$fixture/hyprctl/version.json.tmp"
+  mv "$fixture/hyprctl/version.json.tmp" "$fixture/hyprctl/version.json"
+
+  # Tamper: unredacted store path in a conf copy, realistic hash-name form
+  echo 'exec-once = /nix/store/2swbxihjql78pnn5kfmhjq5dvp9m744b-dbus-1.16.2/bin/dbus-update-activation-environment' \
+    >>"$fixture/generated/hyprland.conf"
   expect_fail "unredacted store path is rejected" "store path redaction"
   sed -i '$d' "$fixture/generated/hyprland.conf"
 
@@ -273,7 +313,7 @@ EOF
   echo '[{"modmask"' >"$fixture/hyprctl/binds.json"
   expect_fail "truncated binds.json is rejected" "JSON parse"
   cat >"$fixture/hyprctl/binds.json" <<'EOF'
-[{"modmask": 64, "key": "J", "dispatcher": "layoutmsg", "arg": "togglesplit,", "description": "Toggle window split"}]
+[{"locked": false, "mouse": false, "release": false, "repeat": false, "longPress": false, "non_consuming": false, "auto_consuming": false, "has_description": true, "modmask": 64, "submap": "", "key": "J", "keycode": 0, "catch_all": false, "dispatcher": "layoutmsg", "arg": "togglesplit,", "description": "Toggle window split"}]
 EOF
 
   expect_pass "restored synthetic capture passes again"

@@ -7,18 +7,18 @@ Snapshot of the running Hyprland 0.55.4 session on `nixos-desktop`, captured on 
 `scripts/capture-hyprland-baseline.sh` ran read-only `hyprctl` inspection commands and copied the Home-Manager-generated configs. It never dispatched, reloaded, locked, or mutated compositor state. To re-run:
 
 ```sh
-scripts/capture-hyprland-baseline.sh test            # self-tests against a synthetic fixture
-scripts/capture-hyprland-baseline.sh capture <dir>   # live capture, requires a Hyprland session
-scripts/capture-hyprland-baseline.sh validate <dir>  # shape and sanitization checks
+bash scripts/capture-hyprland-baseline.sh test            # self-tests against a synthetic fixture
+bash scripts/capture-hyprland-baseline.sh capture <dir>   # live capture, requires a Hyprland session
+bash scripts/capture-hyprland-baseline.sh validate <dir>  # shape and sanitization checks
 ```
 
 ## Evidence classification
 
 The migration needs to know what each file proves. Three kinds of evidence live here.
 
-**Configuration evidence: what the parser holds.** `hyprctl/options.json` records 23 live `getoption` results from the parity checklist, all with `set: true`. `hyprctl/binds.json` records all 46 bindings with every flag (`locked`, `release`, `repeat`, `longPress`, `non_consuming`, `auto_consuming`, `mouse`, `has_description`), modmask, submap, dispatcher, argument, and description. `hyprctl/workspacerules.json` records the 5 persistent workspace rules. `hyprctl/configerrors.json` is `[""]`, the 0.55.4 representation of no errors. `generated/*.conf` are byte copies of the effective hyprlang files Home Manager generated, with one exception noted under sanitization.
+**Configuration evidence: what the parser holds.** `hyprctl/options.json` records 23 live `getoption` results from the parity checklist, all with `set: true`. `hyprctl/binds.json` records all 46 bindings with every flag (`locked`, `release`, `repeat`, `longPress`, `non_consuming`, `auto_consuming`, `mouse`, `has_description`), modmask, submap, dispatcher, argument, and description. `hyprctl/workspacerules.json` records the 5 persistent workspace rules. `hyprctl/configerrors.json` is `[""]`, the 0.55.4 representation of no errors. `generated/*.conf` are copies of the hyprlang files Home Manager generated on disk, with one exception noted under sanitization.
 
-**Observed behavior: what the session was doing at capture time.** `hyprctl/monitors.json` mixes the two kinds. `name`, `width`, `height`, `refreshRate`, `scale`, `transform`, `currentFormat`, and `colorManagementPreset` reflect the applied monitor config; `focused`, `dpmsStatus`, `vrr`, `activeWorkspace`, and `reserved` are runtime state. A concrete example of the difference: `misc:vrr` is `2` in options.json (configuration), while the monitor's `vrr` field is `false` (nothing was fullscreen at capture time). `observed/companion-processes.txt` lists process names and counts, and `observed/systemd-user-units.txt` lists unit names and states. Neither records argv or PIDs.
+**Observed behavior: what the session was doing at capture time.** `hyprctl/monitors.json` mixes the two kinds. It was captured with `hyprctl monitors all -j`, so it includes disabled outputs; both DP-1 (enabled) and HDMI-A-1 (disabled) are present. `name`, `width`, `height`, `refreshRate`, `scale`, `transform`, `currentFormat`, and `colorManagementPreset` reflect the applied monitor config; `focused`, `dpmsStatus`, `vrr`, `activeWorkspace`, and `reserved` are runtime state. A concrete example of the difference: `misc:vrr` is `2` in options.json (configuration), while the monitor's `vrr` field is `false`. That is consistent with no fullscreen window at capture time, but VRR state alone cannot prove whether anything was fullscreen, so no such claim is made here. `observed/companion-processes.txt` lists process names and counts, and `observed/systemd-user-units.txt` lists unit names and states. Neither records argv or PIDs.
 
 **Source cross-check.** The captured evidence matches the audit in `docs/research/current-hyprland-configuration-audit.md` and the Nix sources:
 
@@ -46,7 +46,7 @@ These were deliberately not exercised, because testing them changes session stat
 
 ## Gaps and limitations
 
-- 0.55.4 has no `hyprctl windowrule` dump. Windowrule evidence comes from the generated conf file, not from the live parser's internal rule state. A parse check of that file against the live session exists only indirectly: the session loaded this exact file, and `configerrors` reports none.
+- 0.55.4 has no `hyprctl windowrule` dump. The windowrule evidence here is the on-disk generated conf, not the live parser's internal rule state. That the session loaded this exact file is not directly verifiable; the indirect evidence is that the live `getoption` values and the empty `configerrors` result agree with the disk file's contents, and the session was started against this generation of the config.
 - `configerrors` is coarse. It returns one empty string rather than a structured error list, so it cannot distinguish error kinds.
 - `monitors.json` drops `id`, `serial`, and `description` per sanitization policy. The description string (which embeds the serial) is not preserved byte-identically anywhere.
 - Store path hashes in the conf copies are replaced with `<hash>`. Only line 1 of `hyprland.conf` was affected (the HM dbus session integration); every config-relevant line is untouched.
