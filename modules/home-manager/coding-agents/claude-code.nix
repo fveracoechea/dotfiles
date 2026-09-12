@@ -14,7 +14,7 @@
         theme = "dark-ansi";
 
         model = "claude-opus-5";
-        effortLevel = "medium";
+        effortLevel = "high";
 
         statusLine = {
           type = "command";
@@ -54,12 +54,12 @@
         disableWorkflows = true;
         disableRemoteControl = true;
         disableClaudeAiConnectors = true;
-        disableArtifact = true;
+        disableArtifact = false;
       };
 
       skills = {
         herdr = "${codingAgentSources.herdr}/skills/herdr";
-        hunk-review = "${codingAgentSources.hunk}/skills/hunk-review";
+        hunk-review = "${codingAgentSources.hunk}/packages/hunk/skills/hunk-review";
         babysit-pr = ../../../.agents/skills/babysit-pr;
         frontend-design = ../../../.agents/skills/frontend-design;
       };

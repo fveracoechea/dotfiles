@@ -11,7 +11,7 @@
       enable = true;
       enableZshIntegration = true;
       package =
-        if pkgs.stdenv.isDarwin
+        if pkgs.stdenv.hostPlatform.isDarwin
         then pkgs.ghostty-bin
         else pkgs.ghostty;
 
@@ -29,7 +29,7 @@
         macos-titlebar-style = "hidden";
 
         font-size =
-          if pkgs.stdenv.isDarwin
+          if pkgs.stdenv.hostPlatform.isDarwin
           then 17
           else 13;
 

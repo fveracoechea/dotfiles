@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs-stable,
   ...
 }: let
   monitor = "DP-1";
@@ -9,6 +10,8 @@ in {
   config = lib.mkIf config.dotfiles.hyprland.enable {
     services.hyprpaper = {
       enable = true;
+      # Release Channel: tracks the compositor. See ADR-0007.
+      package = pkgs-stable.hyprpaper;
       settings = {
         preload = [wallpaper];
         wallpaper = [

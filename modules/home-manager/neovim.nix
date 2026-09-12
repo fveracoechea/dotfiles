@@ -37,7 +37,7 @@
         initLua = lib.mkAfter (lib.fileContents ../../config/nvim/init.lua);
 
         extraPackages = with pkgs;
-          lib.optionals pkgs.stdenv.isLinux [
+          lib.optionals pkgs.stdenv.hostPlatform.isLinux [
             xclip
             wl-clipboard
           ]

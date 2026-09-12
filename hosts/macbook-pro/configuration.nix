@@ -13,7 +13,6 @@ in {
   # Used for backwards compatibility.
   system.stateVersion = 5;
   nixpkgs.hostPlatform = "aarch64-darwin";
-  nixpkgs.config.allowUnfree = true;
 
   nix = {
     package = pkgs.nix;
