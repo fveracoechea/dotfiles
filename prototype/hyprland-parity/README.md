@@ -48,4 +48,14 @@ The user set the seam: hand-written Lua lives as store-backed native modules fol
 
 ## Status
 
-Awaiting user approval through the coordinator. If approved, capture this directory on its prototype branch as the primary source for the build ticket.
+Approved by the user on 2026-09-12 as the parity contract for the build ticket. The approved design:
+
+- ordered binding records including duplicates, flags, keycodes, submaps, descriptions, and args, with coverage both ways (missing and extra records both fail)
+- typed option comparison with normalization
+- window rules, env, startup, and monitor specs compared against the captured config
+- real Lua config run through the pinned Hyprland parser
+- dispatcher mappings verified from the Hyprland 0.55.4 source, no guesses
+- a final user session gate for behavior
+- full implementation also carries bridge invalid/missing/schema fixtures and companion/System ownership fixtures
+
+This comparator is method evidence only, not the completed gate. The build ticket ([Build the Hyprland Lua verification harness](https://github.com/fveracoechea/dotfiles/issues/36)) owns the real one.
