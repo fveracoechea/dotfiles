@@ -46,10 +46,10 @@ These were deliberately not exercised, because testing them changes session stat
 
 ## Gaps and limitations
 
-- 0.55.4 has no `hyprctl windowrule` dump. The windowrule evidence here is the on-disk generated conf, not the live parser's internal rule state. That the session loaded this exact file is not directly verifiable; the indirect evidence is that the live `getoption` values and the empty `configerrors` result agree with the disk file's contents, and the session was started against this generation of the config.
+- 0.55.4 has no `hyprctl windowrule` dump. The windowrule evidence here is the on-disk generated conf, not the live parser's internal rule state. The live `getoption` values agree with the disk file and `configerrors` reports no errors. Neither proves that the session loaded this exact file.
 - `configerrors` is coarse. It returns one empty string rather than a structured error list, so it cannot distinguish error kinds.
 - `monitors.json` drops `id`, `serial`, and `description` per sanitization policy. The description string (which embeds the serial) is not preserved byte-identically anywhere.
 - Store path hashes in the conf copies are replaced with `<hash>`. Only line 1 of `hyprland.conf` was affected (the HM dbus session integration); every config-relevant line is untouched.
-- Process observations use truncated comm names (`.ultrashell-wrapped`), and child processes of the wrapper were not enumerated. The capture proves presence, not the full process tree.
+- Process observations use truncated comm names (`.ultrashell-wra`), and child processes of the wrapper were not enumerated. The capture proves presence, not the full process tree.
 - Companion configs are captured as files, not as running behavior. hypridle and hyprpaper were running when captured; their runtime behavior (timers, wallpaper drawing) is untested here.
-- The capture is one point in time. It reflects the session as of 2026-09-12 with no fullscreen windows and HDMI-A-1 disabled.
+- The capture is one point in time. It reflects the session as of 2026-09-12 with HDMI-A-1 disabled. Fullscreen window state was not captured.
