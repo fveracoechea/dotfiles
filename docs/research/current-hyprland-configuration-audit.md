@@ -69,13 +69,13 @@ All Home-side settings go through `wayland.windowManager.hyprland` (HM module fr
 Local Nix helpers (`openapp`, `movefocus`, `resizeactive`) and a `map` over 1-9 generate the `bindd` list. Constants: `terminal = "ghostty"`, `browser = "google-chrome-stable"`, `search = "fuzzel --cache ${config.home.homeDirectory}/.config/fuzzel/cache"`, `handy = "handy --toggle-transcription"`.
 
 - `bindm`: `SHIFT_ALT, mouse:272, movewindow` (resize binding commented out, line 11).
-- `bindd` fixed entries: split toggle (`SUPER, J`), float toggle, fullscreen 0 / fullscreenstate 0 2 / fullscreen 1, killactive, four movefocus (K/J/L/H map to u/d/r/l), four resizeactive, pseudo + allpseudo via `hyprctl dispatch`, workspace cycle via TAB (e+1 / e-1 / previous), group toggle + moveoutofgroup, four app launchers (B browser, S terminal, A search, O handy), clipboard bridge via `sendshortcut` CTRL/SHIFT INSERT.
+- `bindd` has 27 fixed entries: split toggle (`SUPER, J`), float toggle, fullscreen 0 / fullscreenstate 0 2 / fullscreen 1, killactive, four movefocus (K/J/L/H map to u/d/r/l), four resizeactive, pseudo + allpseudo via `hyprctl dispatch`, workspace cycle via TAB (e+1 / e-1 / previous), group toggle + moveoutofgroup, four app launchers (B browser, S terminal, A search, O handy), clipboard bridge via `sendshortcut` CTRL/SHIFT INSERT.
 - Generated entries: `SUPER, 1-9` workspace switch; `SUPER SHIFT, 1-9` movetoworkspace.
 - Attribution comment points at Omarchy's tiling-v2.conf.
 
 ### 3.3 Environment (modules/home-manager/hyprland/env.nix)
 
-`env` list: `BROWSER`, Wayland-forcing block (`GDK_BACKEND`, `QT_QPA_PLATFORM`, `QT_STYLE_OVERRIDE=kvantum`, `SDL_VIDEODRIVER`, `MOZ_ENABLE_WAYLAND`, `ELECTRON_OZONE_PLATFORM_HINT`, `OZONE_PLATFORM`, `XDG_SESSION_TYPE`), QT DPI block (`QT_AUTO_SCREEN_SCALE_FACTOR`, `QT_QPA_PLATFORMTHEME=qt6ct`, `QT_WAYLAND_DISABLE_WINDOWDECORATION`), desktop identification (`XDG_CURRENT_DESKTOP`, `XDG_SESSION_DESKTOP` = Hyprland), cursor sizes (`XCURSOR_SIZE=38`, `HYPRCURSOR_SIZE=38`).
+`env` has 16 entries: `BROWSER`, Wayland-forcing block (`GDK_BACKEND`, `QT_QPA_PLATFORM`, `QT_STYLE_OVERRIDE=kvantum`, `SDL_VIDEODRIVER`, `MOZ_ENABLE_WAYLAND`, `ELECTRON_OZONE_PLATFORM_HINT`, `OZONE_PLATFORM`, `XDG_SESSION_TYPE`), QT DPI block (`QT_AUTO_SCREEN_SCALE_FACTOR`, `QT_QPA_PLATFORMTHEME=qt6ct`, `QT_WAYLAND_DISABLE_WINDOWDECORATION`), desktop identification (`XDG_CURRENT_DESKTOP`, `XDG_SESSION_DESKTOP` = Hyprland), cursor sizes (`XCURSOR_SIZE=38`, `HYPRCURSOR_SIZE=38`).
 
 Plus `ecosystem.no_update_news = true` and `xwayland.force_zero_scaling = true`.
 
@@ -99,7 +99,7 @@ Class/title regexes are built with `builtins.concatStringsSep "|"`, then injecte
 
 ### 3.7 hyprlock (modules/home-manager/hyprland/hyprlock.nix)
 
-`package = pkgs-stable.hyprlock`. `general.disable_loading_bar`, `hide_cursor`. `background` and `input-field` are **`mkForce`** lists (overriding HM module defaults). Wallpaper path: `$HOME/dotfiles/assets/wallpapers/dark-forrest-ultrawide.png`; face image: `$HOME/dotfiles/assets/face.jpg` (see section 6). Two `label`s with `cmd[update:5000]` date commands. Input field uses seven palette colors via the same `toRgb` helper, `$USER`, `$FAIL`, `$ATTEMPTS` placeholders, and icon glyphs in `placeholder_text`/`fail_text`.
+`package = pkgs-stable.hyprlock`. `general.disable_loading_bar`, `hide_cursor`. `background` and `input-field` are **`mkForce`** lists (overriding HM module defaults). Wallpaper path: `$HOME/dotfiles/assets/wallpapers/dark-forrest-ultrawide.png`; face image: `$HOME/dotfiles/assets/face.jpg` (see section 6). Two `label`s with `cmd[update:5000]` date commands. The input field uses six palette colors via the same `toRgb` helper. The image border uses lavender, the seventh color in the module. The placeholders use `$USER`, `$FAIL`, `$ATTEMPTS`, and icon glyphs in `placeholder_text`/`fail_text`.
 
 ### 3.8 hyprpaper (modules/home-manager/hyprland/hyprpaper.nix)
 
@@ -127,7 +127,7 @@ Two connector facts live outside the monitor list and are host-coupled to the sa
 
 ### 3.12 Runtime artifacts the config feeds
 
-- `ultrashell` on `exec-once`; built from the ultrashell flake input with Release Channel Hyprland dependencies (ADR-0007). Ultrashell theme/input boundaries are tracked in the separate Theme Wayfinder map (issues #15-23; #19 research closed).
+- `ultrashell` on `exec-once`; built from the ultrashell flake input with Release Channel Hyprland dependencies (ADR-0007). [Map a rebuild-driven global Theme architecture](https://github.com/fveracoechea/dotfiles/issues/15) tracks its Theme boundaries, with [Research Ultrashell Theme input boundaries](https://github.com/fveracoechea/dotfiles/issues/19) complete.
 - `enable-stream-output` / `disable-stream-output` scripts mutate Hyprland monitor state via `hyprctl keyword` at Steam Session entry/exit.
 - Ly launches the uwsm-wrapped Hyprland session; ADR-0006 depends on Hyprland being uwsm-managed so Sunshine stays exclusive to the Steam Session.
 
@@ -137,7 +137,7 @@ Two connector facts live outside the monitor list and are host-coupled to the sa
 2. **`config.home.homeDirectory` interpolation** in the fuzzel cache flag (bindings.nix:21) and in hyprpaper/hyprlock wallpaper paths. In hand-written Lua this must either be hardcoded to `/home/fveracoechea`, sourced from `$HOME`, or generated.
 3. **Wallpapers are repo-checkout paths, not Nix store paths.** `$HOME/dotfiles/assets/...` assumes the repo lives at `/home/fveracoechea/dotfiles` (this worktree confirms that layout). This is a live-edit affordance, not a reproducible store reference. Note the asymmetry: `.face` *is* copied into the store by HM (hosts/nixos-desktop/home.nix:34-35) while hyprlock's `image.path` is not.
 4. **Nix-generated repetition.** Persistent workspaces (map over 1-5), 18 workspace bindings (two maps over 1-9), and the windowrule regexes are generated by Nix code. A Lua port either writes them out longhand or keeps a generator.
-5. **Palette conversion.** `toRgb` (`lib.substring 1 6` + lowercase) appears in three modules (theme, hyprlock, and a `toHex` variant in fuzzel). In Lua the colors become literals; a later palette change would no longer propagate automatically. This intersects with the Theme map (issues #16-18): the palette is the planned Theme input.
+5. **Palette conversion.** `toRgb` (`lib.substring 1 6` + lowercase) appears in three modules (theme, hyprlock, and a `toHex` variant in fuzzel). In Lua the colors become literals; a later palette change would no longer propagate automatically. This intersects with [Map a rebuild-driven global Theme architecture](https://github.com/fveracoechea/dotfiles/issues/15): the palette is the planned Theme input.
 6. **`mkForce` semantics.** `decoration` (settings.nix:58) and hyprlock's `background`/`input-field` rely on HM merge/override mechanics. Hand-written Lua has no merge: final values must be complete and single-sourced.
 7. **configType flip hazard.** The HM default flips to `"lua"` at stateVersion 26.05. During migration the explicit `configType` must move in the same commit that introduces/removes the Lua file, because a stray `hyprland.lua` silently wins over `hyprland.conf` (settings.nix:16-20).
 
@@ -195,19 +195,19 @@ Every box must be verifiable against the 0.55.4 `hyprland.conf` before the forma
 - [ ] `binds`: drag_threshold 10, allow_workspace_cycles
 - [ ] `workspace`: 1-5 persistent
 - [ ] `bindm`: SHIFT_ALT mouse:272 movewindow
-- [ ] `bindd`: all 22 fixed bindings incl. fullscreenstate, sendshortcut clipboard bridge, hyprctl dispatch allpseudo; 18 mapped workspace bindings with descriptions
-- [ ] `env`: all 15 variables verbatim
+- [ ] `bindd`: all 27 fixed bindings incl. fullscreenstate, sendshortcut clipboard bridge, hyprctl dispatch allpseudo; 18 mapped workspace bindings with descriptions
+- [ ] `env`: all 16 entries verbatim
 - [ ] `ecosystem.no_update_news`, `xwayland.force_zero_scaling`
 - [ ] `windowrule`: all 9 rules, class/title regexes preserved (decide fate of the `[F|f]` quirk deliberately)
-- [ ] hypridle: package (stable), lock_cmd, 900s/1800s listeners, ignore_dbus_inhibit
-- [ ] hyprlock: package (stable), background (wallpaper path, blur), two date labels, face image with lavender border, input-field with all palette colors and placeholders (mkForce-equivalent)
-- [ ] hyprpaper: package (stable), DP-1 preload/wallpaper, yellow-mountains path
+- [ ] hypridle: Release Channel package, lock_cmd, 900s/1800s listeners, ignore_dbus_inhibit
+- [ ] hyprlock: Release Channel package, background (wallpaper path, blur), two date labels, face image with lavender border, input-field with all palette colors and placeholders (mkForce-equivalent)
+- [ ] hyprpaper: Release Channel package, DP-1 preload/wallpaper, yellow-mountains path
 - [ ] `home.pointerCursor`: capitaine-cursors, size 38, gtk/x11/hyprcursor flags
-- [ ] Packages: mpv program; ultrashell, pavucontrol, nautilus, libnotify, wtype, wl-clipboard (Latest); quickshell, hyprpaper, hyprshot, hyprpicker, hyprcursor (Release)
+- [ ] Packages: mpv program; ultrashell, pavucontrol, nautilus, libnotify, wtype, wl-clipboard (Latest Channel); quickshell, hyprpaper, hyprshot, hyprpicker, hyprcursor (Release Channel)
 - [ ] NixOS side untouched: programs.hyprland (uwsm, xwayland, package, portal), bluetooth, graphics, NIXOS_OZONE_WL, WLR_NO_HARDWARE_CURSORS
 - [ ] Sunshine toggle scripts still toggle HDMI-A-1 correctly against the new config
 - [ ] `configType` and the presence/absence of config files move in one commit; no `hyprland.lua` + `hyprland.conf` coexistence
-- [ ] Channel rules intact: compositor stays System-owned Release; satellites stay `pkgs-stable` with ADR-0007 reasons at each use site
+- [ ] Channel rules intact: compositor stays System-owned on the Release Channel; satellites stay `pkgs-stable` with ADR-0007 reasons at each use site
 - [ ] macbook-pro still evaluates (module shared, hyprland inert)
 - [ ] Validation gate exists for the new format (flake check or script, modeled on checks/neovim.nix)
 - [ ] docs/hyprland-summary.md rewritten or retired; ADR-0002/0004 stale references fixed
