@@ -1,5 +1,7 @@
 # Hyprland Lua data bridge: how Nix data reaches hand-written Hyprland Lua
 
+Authority note: the human decision in [Decide the native Lua data bridge](https://github.com/fveracoechea/dotfiles/issues/30) supersedes the proposals in this document where they differ, including the fallback-and-defaults failure behavior, the `rgb()` string form of Theme colors, and the `config-only` reload mode. This document keeps its research value; the ticket holds the decision.
+
 Research date: 2026-09-12. Hyprland version researched: 0.55.4 (tag `v0.55.4-b`, commit `a0136d8`, the version held in this repo). Home Manager module: current nixpkgs `wayland.windowManager.hyprland` with the 0.55 Lua backend (`configType` default flips to `"lua"` at `home.stateVersion` 26.05).
 
 The decision this research serves: the human chose hand-written Hyprland Lua in the Config Directory (ADR-0005 pattern), forbids Nix-generated Lua source, and suggested Nix-generated JSON or YAML for host data (monitors, Theme values, paths) that the Lua config reads. This document studies what the embedded Lua of Hyprland 0.55 gives us, whether a JSON or YAML parser exists without adding a runtime dependency, whether pure-Lua parser vendoring is sound, and which data bridge format to use.
@@ -96,7 +98,7 @@ One narrow seam, one file, one schema:
 3. `config/hypr/bridge.lua`, hand-written: build the data path from `XDG_CONFIG_HOME` or `$HOME/.config`, open it with `io.open`, run `json.decode` inside `pcall`, validate the shape, and return one table with defaults on failure.
 4. Hand-written `config/hypr/hyprland.lua` (plus the existing split: `monitors.lua`, `bindings.lua`, `windowrules.lua`, `theme.lua`): `require` the bridge and feed `hl.monitor`, `hl.config` border colors, and `hl.env` from the returned table.
 
-Why JSON over the alternatives: the parser is the only audited, tested, frozen piece of code in the seam; the Nix side is one `builtins.toJSON`; typing is exact for every value the bridge carries; `jq` can validate the generated file in a flake check; and the data file stays out of the hand-written Lua the human wants to own.
+Why JSON over the alternatives: the Nix side is one `builtins.toJSON`; typing is exact for every value the bridge carries; `jq` can validate the generated file in a flake check; and the data file stays out of the hand-written Lua the human wants to own. The vendored parser is third-party code that gets pinned, reviewed, and tested like any dependency.
 
 ## Remaining human choices
 
