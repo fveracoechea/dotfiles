@@ -75,7 +75,7 @@ A `dotfiles.*` module that composes several atomic `dotfiles.*` modules under on
 _Avoid_: bundle, profile, suite
 
 **Config Directory**:
-A top-level `config/` directory at the repo root that holds non-Nix application configuration files (lua, json, toml), namespaced per application (e.g. `config/nvim/`). Each Home Manager module symlinks its application's subdirectory into place via `config.lib.file.mkOutOfStoreSymlink`, so the files are edited in their native format with full editor tooling rather than embedded as Nix string literals. See ADR-0005.
+A top-level `config/` directory at the repo root that holds non-Nix application configuration files (lua, json, toml), namespaced per application (e.g. `config/nvim/`). Each Home Manager module installs its application's subdirectory from the repo into the Nix store via `xdg.configFile` source paths, so the files are edited in their native format with full editor tooling rather than embedded as Nix string literals; edits reach the application on the next rebuild. See ADR-0005.
 _Avoid_: config folder, dotfiles directory
 
 **Steam Session**:
