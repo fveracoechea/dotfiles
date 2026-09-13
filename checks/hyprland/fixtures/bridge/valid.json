@@ -1,0 +1,14 @@
+{
+  "monitors": [
+    "DP-1, 5120x1440@119.98Hz, auto, auto, bitdepth, 8, cm, auto",
+    "HDMI-A-1, disable"
+  ],
+  "theme": {
+    "blue": "#89b4fa",
+    "flamingo": "#f2cdcd",
+    "surface2": "#585b70"
+  },
+  "paths": {
+    "fuzzelCache": "/home/fveracoechea/.cache/fuzzel"
+  }
+}

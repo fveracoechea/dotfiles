@@ -125,12 +125,21 @@
         inherit lib inputs system;
         pkgs = latestPkgsFor system;
       };
+
+    # Hyprland gates. The parser check uses the System-owned Release Channel
+    # compositor (ADR-0007); everything else runs on the Latest Channel tools.
+    hyprlandChecks = system:
+      import ./checks/hyprland.nix {
+        inherit lib inputs system;
+        pkgs = latestPkgsFor system;
+        pkgs-stable = stablePkgsFor system;
+      };
   in {
     inherit homeManagerModules nixosModules darwinModules;
 
     checks = builtins.listToAttrs (map (system: {
         name = system;
-        value = neovimChecks system;
+        value = (neovimChecks system) // (hyprlandChecks system);
       })
       supportedSystems);
 

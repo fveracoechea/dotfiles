@@ -1,0 +1,147 @@
+-- Reference data bridge loader for the Hyprland native Lua configuration.
+--
+-- This file is the harness's executable definition of the bridge contract from
+-- the data bridge decision (issue 30): the Lua side validates every required
+-- field before any bridge-dependent value reaches the config, and invents no
+-- defaults. The port ticket copies this loader into config/hypr/bridge.lua and
+-- the parity gate runs the production copy; this copy keeps the contract
+-- testable before the port lands.
+--
+-- Schema (all fields required, no extras validated):
+--   {
+--     "monitors": [ "<host monitor spec strings, verbatim>" ],
+--     "theme": {
+--       "blue": "#RRGGBB",
+--       "flamingo": "#RRGGBB",
+--       "surface2": "#RRGGBB"
+--     },
+--     "paths": {
+--       "fuzzelCache": "<absolute path>"
+--     }
+--   }
+
+-- The vendored decoder is required by its production module name: the port
+-- installs lib/json.lua as the lib.json module, and the harness puts
+-- checks/hyprland/lib on package.path so this copy runs unchanged.
+
+local json = require "lib.json"
+
+local bridge = {}
+
+local HEX_COLOR_PATTERN = "^#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$"
+
+local function reject(message)
+  return nil, "bridge: " .. message
+end
+
+local function valid_monitors(value)
+  if type(value) ~= "table" then
+    return "monitors must be an array of strings"
+  end
+  -- Explicit integer walk: a sparse array ([1]=a, [3]=b) has no reliable
+  -- length, and json null decodes to a value no string accepts.
+  local count = 0
+  for index = 1, math.huge do
+    local item = value[index]
+    if item == nil then
+      -- the next index must also be empty, otherwise the array has a hole
+      if value[index + 1] ~= nil then
+        return "monitors has a gap at index " .. index
+      end
+      break
+    end
+    if type(item) ~= "string" then
+      return "monitors[" .. index .. "] must be a string"
+    end
+    if item == "" then
+      return "monitors[" .. index .. "] must not be empty"
+    end
+    count = count + 1
+    if count > 64 then
+      return "monitors has more than 64 entries"
+    end
+  end
+  if count == 0 then
+    return "monitors must not be empty"
+  end
+  return nil
+end
+
+local function valid_theme(value)
+  if type(value) ~= "table" then
+    return "theme must be an object"
+  end
+  for _, name in ipairs { "blue", "flamingo", "surface2" } do
+    local color = value[name]
+    if color == nil then
+      return "theme." .. name .. " is required"
+    end
+    if type(color) ~= "string" or not color:match(HEX_COLOR_PATTERN) then
+      return "theme." .. name .. " must be raw hex like #89b4fa"
+    end
+  end
+  return nil
+end
+
+local function valid_paths(value)
+  if type(value) ~= "table" then
+    return "paths must be an object"
+  end
+  local cache = value.fuzzelCache
+  if cache == nil then
+    return "paths.fuzzelCache is required"
+  end
+  if type(cache) ~= "string" or cache == "" then
+    return "paths.fuzzelCache must be a non-empty string"
+  end
+  if cache:sub(1, 1) ~= "/" then
+    return "paths.fuzzelCache must be an absolute path"
+  end
+  return nil
+end
+
+function bridge.load(path)
+  local file = io.open(path, "r")
+  if not file then
+    return reject("cannot open " .. path)
+  end
+  local content = file:read "*a"
+  file:close()
+
+  local ok, data = pcall(json.decode, content)
+  if not ok then
+    return reject("malformed JSON in " .. path .. ": " .. tostring(data))
+  end
+  if type(data) ~= "table" then
+    return reject "bridge data must be a JSON object"
+  end
+
+  local err = valid_monitors(data.monitors)
+  if err then
+    return reject(err)
+  end
+  err = valid_theme(data.theme)
+  if err then
+    return reject(err)
+  end
+  err = valid_paths(data.paths)
+  if err then
+    return reject(err)
+  end
+
+  return data
+end
+
+function bridge.default_path()
+  local xdg = os.getenv "XDG_CONFIG_HOME"
+  if not xdg or xdg == "" then
+    local home = os.getenv "HOME"
+    if not home or home == "" then
+      return nil, "bridge: neither XDG_CONFIG_HOME nor HOME is set"
+    end
+    xdg = home .. "/.config"
+  end
+  return xdg .. "/dotfiles/hyprland.json"
+end
+
+return bridge
