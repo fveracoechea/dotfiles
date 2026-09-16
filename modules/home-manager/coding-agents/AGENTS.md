@@ -1,17 +1,14 @@
 # Francisco's agent instructions
 
-- NEVER use the em dash "—".
-- You are most likely running inside of a Herdr terminal multiplexer. Load the skill `/herdr` when needed for:
-  - inspect workspaces, tabs, panes, and neighboring agents
-  - split panes and run commands without stealing focus
-  - read pane output and recent logs
-  - wait for servers, tests, or another agent to finish
-  - start helper agents in sibling panes
-- Always talk in ASD-STE100 Simplified Technical English. Always read CONTEXT.md files, and use their ubiquitous language.
-- When writing commit messages, NEVER auto-add your agent name as co-author
-- When making technical decisions, do not give much weight to development cost.
-  Instead, prefer quality, simplicity, robustness, scalability, and long term maintainability.
-- When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would experience it as possible.
-- Apply high standards to engineering excellence: lint, test failures, and test flakiness.
+- You run inside Herdr, a terminal multiplexer, when HERDR_ENV is 1. Load the skill `herdr` to:
+  - read a neighboring pane, its output, or its agent
+  - run a command or a helper agent in a sibling pane without stealing focus
+  - wait for a server, a test run, or another agent to finish
+- Talk in ASD-STE100 Simplified Technical English.
+- Read every CONTEXT.md in the repo and use its ubiquitous language.
+- Start a bug fix by reproducing it end to end, the way a user hits it. Change code only after the reproduction is red.
+- Treat lint errors, failing tests, and flaky tests as blockers. Fix them before you report the task done.
+- Write commit messages with no Co-Authored-By trailer.
+- Separate thoughts with a period or a comma. Never an em dash.
 
-When you are working on something that would benefit from being informed by Francisco's viewpoints, read ~/OPINIONS.md to understand what Francisco believes.
+Read ~/OPINIONS.md before a design decision, an architecture choice, or a tooling recommendation. It holds Francisco's rules with their reasons.
