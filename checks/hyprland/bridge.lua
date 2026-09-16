@@ -38,17 +38,10 @@ local function valid_monitors(value)
   if type(value) ~= "table" then
     return "monitors must be an array of strings"
   end
-  -- Explicit integer walk: a sparse array ([1]=a, [3]=b) has no reliable
-  -- length, and json null decodes to a value no string accepts.
-  local count = 0
-  for index = 1, math.huge do
-    local item = value[index]
-    if item == nil then
-      -- the next index must also be empty, otherwise the array has a hole
-      if value[index + 1] ~= nil then
-        return "monitors has a gap at index " .. index
-      end
-      break
+  local count, last = 0, 0
+  for index, item in pairs(value) do
+    if type(index) ~= "number" or index % 1 ~= 0 or index < 1 or index > 64 then
+      return "monitors must be an array with at most 64 entries"
     end
     if type(item) ~= "string" then
       return "monitors[" .. index .. "] must be a string"
@@ -57,12 +50,13 @@ local function valid_monitors(value)
       return "monitors[" .. index .. "] must not be empty"
     end
     count = count + 1
-    if count > 64 then
-      return "monitors has more than 64 entries"
-    end
+    last = math.max(last, index)
   end
   if count == 0 then
     return "monitors must not be empty"
+  end
+  if last ~= count then
+    return "monitors must not have gaps"
   end
   return nil
 end

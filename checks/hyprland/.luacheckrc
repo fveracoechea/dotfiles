@@ -17,7 +17,7 @@ ignore = {
   "631",
 }
 
--- The vendored decoder is pinned upstream and stays verbatim.
+-- The decoder retains upstream style; strict grammar has direct regression tests.
 exclude_files = {
   "**/lib/json.lua",
 }

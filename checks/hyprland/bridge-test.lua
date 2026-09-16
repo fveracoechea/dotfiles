@@ -59,6 +59,7 @@ expect_reject("missing-paths.json", "missing paths")
 expect_reject("missing-fuzzel-cache.json", "missing fuzzelCache")
 expect_reject("empty-monitors.json", "empty monitors array")
 expect_reject("wrong-type-monitors.json", "monitors not an array")
+expect_reject("sparse-monitors.json", "sparse monitor object")
 expect_reject("malformed.json", "malformed JSON")
 expect_reject("null-color.json", "null theme color")
 expect_reject("null-monitors.json", "null monitors")
@@ -70,16 +71,50 @@ expect_reject("short-hex.json", "truncated hex color")
 expect_reject("relative-path.json", "relative fuzzelCache path")
 expect_reject("top-level-array.json", "top-level JSON array")
 
--- The pinned rxi/json.lua v0.1.2 decoder accepts a trailing comma; the
--- structure still decodes cleanly, so the schema decides acceptance. This is
--- evidence of decoder permissiveness, not a claim of strict JSON.
-print "== decoder permissiveness (documented evidence) =="
+print "== strict decoder grammar =="
+expect_reject("trailing-comma.json", "trailing comma")
+expect_reject("invalid-number.json", "invalid JSON number in extra field")
+expect_reject("invalid-unicode.json", "invalid unicode in monitor string")
 do
-  local data = bridge.load(fixture "trailing-comma.json")
-  assert_true(data ~= nil, "trailing comma accepted by pinned decoder (documented)")
+  local json = require "lib.json"
+  for _, text in ipairs {
+    "[1,]",
+    '{"x":1,}',
+    "01",
+    "-01",
+    "0x10",
+    "1.",
+    "-.1",
+    "1e",
+    "1e+",
+    "1e9999",
+    "[1,,2]",
+    '{"a":null,"a":1}',
+    "true false",
+    '"\\uZ1234"',
+    '"\\u123"',
+    '"\\uD800"',
+    '"\\uDC00"',
+    '"\\uD800\\u0041"',
+    '"\\x20"',
+    '"unterminated',
+    '"' .. string.char(0) .. '"',
+    '"' .. string.char(0xc0, 0x80) .. '"',
+    '"' .. string.char(0xed, 0xa0, 0x80) .. '"',
+  } do
+    assert_true(not pcall(json.decode, text), "malformed JSON rejected: " .. string.format("%q", text))
+  end
+  for _, text in ipairs { "0", "-0", "1.25", "-1.25e+2", "1E-2", "[]", "{}", "[true,false,null]" } do
+    assert_true(pcall(json.decode, text), "valid JSON accepted: " .. text)
+  end
+  assert_true(json.decode '"\\uD83D\\uDE00"' == utf8.char(0x1f600), "surrogate pair decoded")
+  assert_true(json.decode '"\\u0041"' == "A", "BMP escape decoded")
+  assert_true(json.decode '"\\\\u0041"' == "\\u0041", "escaped backslash is not a unicode escape")
+  assert_true(json.decode('"' .. utf8.char(0x1f600) .. '"') == utf8.char(0x1f600), "raw UTF-8 preserved")
+  assert_true(json.encode(json.null) == "null", "null sentinel round trips")
 end
 do
-  -- The vendored decoder carries one local deviation from upstream: JSON null
+  -- The vendored decoder preserves JSON null
   -- decodes to the json.null sentinel instead of nil, so an explicit null
   -- anywhere in the bridge schema is rejected instead of dropped or hidden.
   local json = require "lib.json"

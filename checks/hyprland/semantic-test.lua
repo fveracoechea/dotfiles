@@ -251,6 +251,73 @@ end
 
 print "== typed options =="
 do
+  local function rejected(label, fn)
+    local hl = stub.new()
+    report(not pcall(fn, hl), label)
+  end
+  for _, keys in ipairs { "SUPER + K + J", "SUPER J", "SUPER ++ J", "SUPER + mouse:272 + J" } do
+    rejected("unsupported key form rejected: " .. keys, function(hl)
+      hl.bind(keys, hl.dsp.window.close())
+    end)
+  end
+  for _, name in ipairs { "ignore_mods", "device", "transparent", "click", "drag", "dont_inhibit", "submap_universal" } do
+    rejected("unsupported bind option rejected: " .. name, function(hl)
+      hl.bind("SUPER + J", hl.dsp.window.close(), { [name] = true })
+    end)
+  end
+  rejected("non-boolean bind flag rejected", function(hl)
+    hl.bind("SUPER + J", hl.dsp.window.close(), { locked = "false" })
+  end)
+  rejected("release and repeat rejected", function(hl)
+    hl.bind("SUPER + J", hl.dsp.window.close(), { release = true, repeating = true })
+  end)
+  rejected("submap reset extension rejected", function(hl)
+    hl.define_submap("resize", "other", function() end)
+  end)
+  rejected("named rule collision rejected", function(hl)
+    hl.window_rule { name = "same", match = { class = "foo" }, float = true }
+    hl.window_rule { name = "same", match = { class = "bar" }, center = true }
+  end)
+  local base = { { workspaceString = "1", persistent = true } }
+  for _, change in ipairs {
+    { enabled = false },
+    { monitor = "WRONG" },
+    { gaps_out = 999 },
+    { layout_opts = { mfact = 0.9 } },
+    { persistent = "false" },
+  } do
+    local rule = { workspace = "1", persistent = true }
+    for k, v in pairs(change) do
+      rule[k] = v
+    end
+    report(#records.diff_workspace_rules({ rule }, base) > 0, "workspace extension or disabled rule fails parity")
+  end
+  report(
+    #records.diff_workspace_rules(
+        { { workspace = "1", persistent = true } },
+        { { workspaceString = "1", persistent = true, monitor = "DP-1" } }
+      ) > 0,
+    "unmodeled baseline workspace field rejected"
+  )
+  rejected("unknown table-valued option rejected", function(hl)
+    hl.config { input = { sensitivity = {} } }
+  end)
+  local hl, state = stub.new()
+  local args = { workspace = "2" }
+  local dispatcher = hl.dsp.window.move(args)
+  args.workspace = "1"
+  local mapped = records.legacy_dispatcher(dispatcher.__hl_dispatcher)
+  report(mapped and mapped.arg == "2", "dispatcher captures arguments at construction")
+  local rule = { workspace = "1", persistent = false }
+  hl.workspace_rule(rule)
+  rule.persistent = true
+  report(state.workspace_rules[1].persistent == false, "rule captures values at registration")
+  local options = { top = 99, right = 18, bottom = 18, left = 18 }
+  hl.config { general = { gaps_out = options } }
+  options.top = 10
+  report(state.options[1].value.top == 99, "typed options capture values at registration")
+end
+do
   local state = stub.run {
     function(hl)
       hl.config {
@@ -317,6 +384,38 @@ do
 end
 
 print "== baseline decode gate (Lua 5.5 + vendored decoder) =="
+do
+  local hl, state = stub.new()
+  hl.config {
+    cursor = { enable_hyprcursor = false },
+    misc = { vrr = 2, animate_manual_resizes = true, animate_mouse_windowdragging = true },
+    general = {
+      layout = "dwindle",
+      border_size = 3,
+      resize_on_border = true,
+      gaps_in = 10,
+      gaps_out = { top = 10, right = 18, bottom = 18, left = 18 },
+      ["col.active_border"] = { colors = { "rgb(89b4fa)", "rgb(f2cdcd)" }, angle = 90 },
+      ["col.inactive_border"] = "rgb(585b70)",
+    },
+    layout = { single_window_aspect_ratio = "16 9" },
+    dwindle = { preserve_split = true, force_split = 2 },
+    decoration = { rounding = 8, blur = { enabled = true } },
+    master = { allow_small_split = true, mfact = 0.32, new_on_top = false },
+    binds = { drag_threshold = 10, allow_workspace_cycles = true },
+    xwayland = { force_zero_scaling = true },
+    ecosystem = { no_update_news = true },
+  }
+  local f = assert(io.open(root .. "/docs/research/hyprland-live-baseline/hyprctl/options.json"))
+  local baseline = require("lib.json").decode(f:read "*a")
+  f:close()
+  local differences = records.diff_options(state.options, baseline)
+  report(
+    #state.options == 23 and #differences == 0,
+    "all 23 baseline options represented with typed Lua values",
+    differences
+  )
+end
 do
   local json = require "lib.json"
   local f = assert(io.open(root .. "/docs/research/hyprland-live-baseline/hyprctl/binds.json", "r"))
@@ -407,6 +506,69 @@ mapping_rejected("focus with both direction and workspace rejected", "focus", { 
 mapping_rejected("send_shortcut without window rejected", "send_shortcut", { mods = "CTRL", key = "INSERT" })
 mapping_rejected("float with unsupported field rejected", "window.float", { on = "enable" })
 
+do
+  local hl = stub.new()
+  local calls = {
+    hl.dsp.layout "togglesplit,",
+    hl.dsp.window.float(),
+    hl.dsp.window.fullscreen(),
+    hl.dsp.window.fullscreen_state { internal = 0, client = 2 },
+    hl.dsp.window.close(),
+    hl.dsp.focus { direction = "u" },
+    hl.dsp.window.resize { x = 0, y = 100, relative = true },
+    hl.dsp.window.pseudo(),
+    hl.dsp.exec_cmd "google-chrome-stable",
+    hl.dsp.focus { workspace = "1" },
+    hl.dsp.group.toggle(),
+    hl.dsp.window.move { out_of_group = true },
+    hl.dsp.send_shortcut { mods = "CTRL", key = "INSERT", window = "activewindow" },
+    hl.dsp.window.move { workspace = "1" },
+    hl.dsp.window.drag(),
+  }
+  local covered = {}
+  for _, call in ipairs(calls) do
+    local mapped, err = records.legacy_dispatcher(call.__hl_dispatcher)
+    report(mapped ~= nil, "baseline constructor maps", { tostring(err) })
+    if mapped then
+      covered[mapped.dispatcher] = true
+    end
+  end
+  local f = assert(io.open(root .. "/docs/research/hyprland-live-baseline/hyprctl/binds.json"))
+  local baseline = require("lib.json").decode(f:read "*a")
+  f:close()
+  for _, bind in ipairs(baseline) do
+    report(covered[bind.dispatcher], "baseline dispatcher covered: " .. bind.dispatcher)
+  end
+end
+mapping_rejected("close selector rejected", "window.close", { window = "class:kitty" })
+mapping_rejected(
+  "fullscreen state selector rejected",
+  "window.fullscreen_state",
+  { internal = 0, client = 2, window = "class:kitty" }
+)
+mapping_rejected(
+  "resize selector rejected",
+  "window.resize",
+  { x = 0, y = 100, relative = true, window = "class:kitty" }
+)
+mapping_rejected("focus on current monitor rejected", "focus", { workspace = "1", on_current_monitor = true })
+mapping_rejected(
+  "shortcut extra field rejected",
+  "send_shortcut",
+  { mods = "CTRL", key = "INSERT", window = "activewindow", extra = true }
+)
+mapping_rejected("resize non-boolean relative rejected", "window.resize", { x = 0, y = 100, relative = "false" })
+mapping_rejected("move ambiguous group/workspace rejected", "window.move", { workspace = "1", out_of_group = true })
+do
+  local hl = stub.new()
+  report(not pcall(hl.dsp.exec_cmd, "google-chrome-stable", { float = true }), "exec rule argument rejected")
+  report(not pcall(hl.dsp.window.close, {}, {}), "extra positional constructor argument rejected")
+  report(
+    not pcall(hl.dsp.window.close, { window = "class:kitty" }),
+    "unsupported constructor rejected even without binding"
+  )
+end
+
 print "== monitor spec parity mutations =="
 do
   local rules_module = dofile(here .. "/fixtures/semantic/rules-module.lua")
@@ -414,6 +576,14 @@ do
   local conf = f:read "*a"
   f:close()
   local conf_monitors = records.conf_lines(conf, "monitor")
+
+  do
+    local hl, state = stub.new()
+    rules_module.apply(hl)
+    state.monitors[1].disabled = false
+    local differences = records.diff_monitors(state.monitors, conf_monitors)
+    report(#differences == 0, "explicit disabled=false matches the enabled baseline monitor", differences)
+  end
 
   local function monitor_mutation_detected(label, mutate)
     local bad_state = stub.run {
@@ -482,6 +652,8 @@ do
     rules[3].size = "1024 769"
   end)
 end
+
+dofile(here .. "/lifecycle-test.lua")(here, root, report)
 
 print(
   failures == 0 and "== semantic tests: all " .. checks .. " checks pass =="

@@ -2,161 +2,274 @@
   lib,
   pkgs,
   pkgs-stable,
+  pkgs-darwin,
+  pkgs-stable-darwin,
+  dotfilesPkgs,
+  dotfilesPkgs-darwin,
   inputs,
-  system,
 }: let
-  flake = inputs.self;
-
-  hyprlandCheckDir = flake.outPath + "/checks/hyprland";
-  productionConfigDir = flake.outPath + "/config/hypr";
-
-  # The gate runs on Lua 5.5, the interpreter version Hyprland 0.55.4 embeds
-  # (CMakeLists.txt asks pkg-config for lua55/lua5.5).
-  lua55 = pkgs.lua5_5;
-
-  # The Release Channel owns the compositor (ADR-0007), so the parser gate
-  # uses the System-owned Hyprland, pinned at 0.55.4 in nixos-26.05.
+  root = inputs.self.outPath;
+  checkDir = root + "/checks/hyprland";
+  configDir = root + "/config/hypr";
+  sourceReady = builtins.pathExists (configDir + "/entry.lua");
+  lua = pkgs.lua5_5;
   hyprland = pkgs-stable.hyprland;
+  baselineConf = builtins.readFile (root + "/docs/research/hyprland-live-baseline/generated/hyprland.conf");
+  baselineMonitors = lib.filter (x: x != null) (map (line: let
+    match = builtins.match "monitor[[:space:]]*=[[:space:]]*(.*)" line;
+  in
+    if match == null
+    then null
+    else builtins.head match) (lib.splitString "\n" baselineConf));
 
-  luaTest = name: script: extraEnv:
-    pkgs.runCommand name ({
-      nativeBuildInputs = [lua55];
-      repoRoot = flake.outPath;
-    } // extraEnv) ''
-      set -euo pipefail
-      export HOME=$TMPDIR
-      lua ${flake.outPath}/checks/hyprland/${script} "$repoRoot"
-      touch "$out"
-    '';
-
-  # Formatting, lint, and Lua 5.5 syntax for hand-written Hyprland Lua: the
-  # harness itself now, and config/hypr as soon as the port adds it.
-  luaSourcesCheck =
-    pkgs.runCommand "hyprland-lua-static" {
-      nativeBuildInputs = with pkgs; [
-        stylua
-        luaPackages.luacheck
-        lua55
-      ];
-      checkDir = hyprlandCheckDir;
-      configDir = productionConfigDir;
-      luacheckrc = hyprlandCheckDir + "/.luacheckrc";
-      HOME = "$TMPDIR";
-    } ''
-      set -euo pipefail
-      stylua --check "$checkDir"
-      luacheck --config "$luacheckrc" --no-cache "$checkDir" --exclude-files "$checkDir/lib/json.lua"
-
-      if [ -d "$configDir" ]; then
-        stylua --check "$configDir"
-        luacheck --config "$luacheckrc" --no-cache "$configDir" --exclude-files "$configDir/lib/json.lua"
-        find "$configDir" -name '*.lua' -print0 | while IFS= read -r -d "" f; do
-          ${lua55}/bin/luac -p "$f"
-        done
-        echo "config/hypr present and clean"
-      else
-        echo "config/hypr not present yet; checked the harness only"
-      fi
-
-      find "$checkDir" -name '*.lua' -print0 | while IFS= read -r -d "" f; do
-        ${lua55}/bin/luac -p "$f"
-      done
-      touch "$out"
-    '';
-
-  # The real parser gate on the verified fixture shapes. --verify-config never
-  # starts the compositor loop, so it runs in a plain sandbox with only
-  # XDG_RUNTIME_DIR set. The invalid fixtures must fail; a parser gate that
-  # only accepts is not a gate.
-  parserFixtureCheck =
-    pkgs.runCommand "hyprland-parser-fixture" {
-      nativeBuildInputs = [hyprland];
-      fixtureDir = hyprlandCheckDir + "/verify-config";
-      XDG_RUNTIME_DIR = "$TMPDIR/runtime";
-    } ''
-      set -euo pipefail
-      mkdir -p "$XDG_RUNTIME_DIR"
-
-      cat > "$TMPDIR/invalid-syntax.lua" <<'BROKEN'
-      hl.bind("SUPER + W, hl.dsp.window.close()
-      BROKEN
-
-      if [ "${hyprland.version}" != "0.55.4" ]; then
-        echo "hyprland parser gate must run on the pinned 0.55.4, got ${hyprland.version}" >&2
-        exit 1
-      fi
-
-      HYPR="${hyprland}/bin/Hyprland"
-      "$HYPR" --verify-config -c "$fixtureDir/valid.lua"
-      echo "valid fixture: config ok"
-
-      if "$HYPR" --verify-config -c "$fixtureDir/invalid-dispatcher.lua"; then
-        echo "invalid-dispatcher fixture unexpectedly parsed" >&2
-        exit 1
-      fi
-      echo "invalid-dispatcher fixture: rejected"
-
-      if "$HYPR" --verify-config -c "$TMPDIR/invalid-syntax.lua"; then
-        echo "invalid-syntax fixture unexpectedly parsed" >&2
-        exit 1
-      fi
-      echo "invalid-syntax fixture: rejected"
-
-      touch "$out"
-    '';
-
-  # Bridge contract tests under Lua 5.5, including the vendored decoder.
-  bridgeCheck = luaTest "hyprland-bridge-tests" "bridge-test.lua" {};
-
-  # Semantic parity harness tests in fixture mode.
-  semanticCheck = luaTest "hyprland-semantic-fixture" "semantic-test.lua" {};
-
-  # Production parity: red until the port ticket adds config/hypr. The gate
-  # must stay in `checks` so `nix flake check` cannot pass while the hyprlang
-  # configuration still owns the compositor.
-  parityCheck = luaTest "hyprland-production-parity" "parity-test.lua" {};
-
-  # The seam contract from the module-and-seam decision: configType = "lua"
-  # generates hypr/hyprland.lua and must never coexist with hyprland.conf.
-  # Proven by test against the Home Manager module at the flake's pinned rev;
-  # the port ticket extends this fixture with the extraLuaFiles entries.
-  ownershipCheck = let
-    home = inputs.home-manager.lib.homeManagerConfiguration {
-      inherit pkgs;
+  repoHome = {
+    homePkgs ? pkgs,
+    releasePkgs ? pkgs-stable,
+    packages ? dotfilesPkgs,
+    enable ? true,
+    homeDirectory ? "/home/fveracoechea",
+    monitors ? baselineMonitors,
+  }:
+    inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = homePkgs;
+      extraSpecialArgs = {
+        pkgs-stable = releasePkgs;
+        dotfilesPkgs = packages;
+      };
       modules = [
+        (root + "/modules/core/palette.nix")
+        (root + "/modules/home-manager/hyprland")
         {
-          home.username = "hyprland-test";
-          home.homeDirectory = "/tmp/hyprland-test";
-          home.stateVersion = "25.05";
-          wayland.windowManager.hyprland = {
-            enable = true;
-            configType = "lua";
-            package = null;
-            portalPackage = null;
+          home = {
+            username = "hyprland-fixture";
+            inherit homeDirectory;
+            stateVersion = "25.05";
           };
+          dotfiles.hyprland = {inherit enable monitors;};
         }
       ];
     };
-    fileNames = builtins.attrNames home.config.xdg.configFile;
+  production = repoHome {};
+  syntheticMonitor = "DP-9, preferred, auto, 1.25";
+  synthetic = repoHome {
+    homeDirectory = "/tmp/hyprland-fixture";
+    monitors = [syntheticMonitor];
+  };
+  darwin = repoHome {
+    homePkgs = pkgs-darwin;
+    releasePkgs = pkgs-stable-darwin;
+    packages = dotfilesPkgs-darwin;
+    enable = false;
+  };
+
+  # Stage Home Manager's sources, including directory sources and generated JSON.
+  # No config or bridge data is supplied by this check.
+  stage = home:
+    pkgs.linkFarm "hyprland-config" (lib.mapAttrsToList (_: file: {
+      name = lib.removePrefix "${lib.removePrefix "${home.config.home.homeDirectory}/" home.config.xdg.configHome}/" file.target;
+      path = file.source;
+    }) (lib.filterAttrs (_: file: file.enable) home.config.xdg.configFile));
+  productionStage = assert nativeOwnership production; stage production;
+  syntheticStage = stage synthetic;
+
+  nativeOwnership = home: let
+    cfg = home.config.wayland.windowManager.hyprland;
+    files = home.config.xdg.configFile;
   in
-    pkgs.runCommand "hyprland-ownership-fixture" {
-      fileList = lib.concatStringsSep "\n" fileNames;
-    } ''
-      set -euo pipefail
-      printf '%s\n' "$fileList" > files.txt
-      grep -Fxq "hypr/hyprland.lua" files.txt \
-        || { echo "FAIL: configType=lua did not generate hypr/hyprland.lua" >&2; exit 1; }
-      if grep -Fxq "hypr/hyprland.conf" files.txt; then
-        echo "FAIL: configType=lua generated hypr/hyprland.conf" >&2
-        exit 1
-      fi
+    cfg.configType
+    == "lua"
+    && cfg.settings == {}
+    && cfg.extraConfig == ""
+    && files ? "hypr/hyprland.lua"
+    && !(files ? "hypr/hyprland.conf")
+    && builtins.attrNames (lib.filterAttrs (_: file: file.autoLoad) cfg.extraLuaFiles) == ["entry"];
+
+  # Upstream shape check only. This is not the repo's production Home.
+  upstream = inputs.home-manager.lib.homeManagerConfiguration {
+    inherit pkgs;
+    modules = [
+      {
+        home = {
+          username = "upstream-fixture";
+          homeDirectory = "/tmp/upstream-fixture";
+          stateVersion = "25.05";
+        };
+        wayland.windowManager.hyprland = {
+          enable = true;
+          package = null;
+          portalPackage = null;
+          configType = "lua";
+          settings = {};
+          extraLuaFiles.entry = {
+            content = ./hyprland/verify-config/valid.lua;
+            autoLoad = true;
+          };
+        };
+      }
+    ];
+  };
+  upstreamStage = assert nativeOwnership upstream; stage upstream;
+
+  systemConfig =
+    (inputs.nixpkgs-stable.lib.nixosSystem {
+      specialArgs = {inherit dotfilesPkgs;};
+      modules = [
+        (root + "/modules/nixos/hyprland.nix")
+        {
+          nixpkgs.pkgs = pkgs-stable;
+          dotfiles.hyprland.enable = true;
+          system.stateVersion = "25.05";
+        }
+      ];
+    }).config;
+  homeConfig = synthetic.config;
+  homePackages = map (p: p.drvPath) homeConfig.home.packages;
+  ownership =
+    homeConfig.wayland.windowManager.hyprland.package
+    == null
+    && homeConfig.wayland.windowManager.hyprland.portalPackage == null
+    && homeConfig.services.hypridle.package.drvPath == pkgs-stable.hypridle.drvPath
+    && homeConfig.programs.hyprlock.package.drvPath == pkgs-stable.hyprlock.drvPath
+    && homeConfig.services.hyprpaper.package.drvPath == pkgs-stable.hyprpaper.drvPath
+    && lib.all (p: builtins.elem p.drvPath homePackages) [
+      dotfilesPkgs.ultrashell
+      pkgs-stable.quickshell
+      pkgs-stable.hyprpaper
+      pkgs-stable.hyprshot
+      pkgs-stable.hyprpicker
+      pkgs-stable.hyprcursor
+    ]
+    && systemConfig.programs.hyprland.package.drvPath == hyprland.drvPath
+    && systemConfig.programs.hyprland.portalPackage.drvPath == pkgs-stable.xdg-desktop-portal-hyprland.drvPath
+    && systemConfig.programs.hyprland.withUWSM
+    && systemConfig.programs.hyprland.xwayland.enable;
+
+  luaTest = name: script:
+    pkgs.runCommand name {nativeBuildInputs = [lua];} ''
+      export HOME="$TMPDIR"
+      lua ${checkDir}/${script} ${root}
       touch "$out"
     '';
+  missingSource = name:
+    pkgs.runCommand name {} ''
+      echo "${name}: config/hypr/entry.lua does not exist yet; issue 37 must add the native source." >&2
+      exit 1
+    '';
+  parserSetup = ''
+    export XDG_RUNTIME_DIR="$TMPDIR/runtime"
+    mkdir -p "$XDG_RUNTIME_DIR"
+    test '${hyprland.version}' = '0.55.4'
+  '';
 in {
-  hyprland-lua-static = luaSourcesCheck;
-  hyprland-bridge-tests = bridgeCheck;
-  hyprland-semantic-fixture = semanticCheck;
-  hyprland-parser-fixture = parserFixtureCheck;
-  hyprland-ownership-fixture = ownershipCheck;
-  hyprland-production-parity = parityCheck;
+  hyprland-lua-static =
+    pkgs.runCommand "hyprland-lua-static" {
+      nativeBuildInputs = [pkgs.stylua pkgs.luaPackages.luacheck lua];
+    } ''
+      set -euo pipefail
+      export HOME="$TMPDIR"
+      for directory in ${checkDir} ${configDir}; do
+        [ -d "$directory" ] || continue
+        stylua --check "$directory"
+        luacheck --config ${checkDir}/.luacheckrc --no-cache "$directory" --exclude-files "$directory/lib/json.lua"
+        find "$directory" -name '*.lua' -print0 | while IFS= read -r -d "" file; do
+          ${lua}/bin/luac -p "$file"
+        done
+      done
+      touch "$out"
+    '';
+  hyprland-bridge-tests = luaTest "hyprland-bridge-tests" "bridge-test.lua";
+  hyprland-semantic-fixture = luaTest "hyprland-semantic-fixture" "semantic-test.lua";
+
+  hyprland-parser-fixture = pkgs.runCommand "hyprland-parser-fixture" {} ''
+    ${parserSetup}
+    ${hyprland}/bin/Hyprland --verify-config -c ${checkDir}/verify-config/valid.lua
+    printf '%s\n' 'hl.bind("SUPER + W, hl.dsp.window.close()' > "$TMPDIR/invalid-syntax.lua"
+    for file in ${checkDir}/verify-config/invalid-dispatcher.lua "$TMPDIR/invalid-syntax.lua"; do
+      if ${hyprland}/bin/Hyprland --verify-config -c "$file"; then
+        echo "Invalid fixture unexpectedly parsed: $file" >&2
+        exit 1
+      fi
+    done
+    export XDG_CONFIG_HOME=${upstreamStage}
+    export HOME=/tmp/upstream-fixture
+    cmp ${upstreamStage}/hypr/entry.lua ${checkDir}/verify-config/valid.lua
+    ${hyprland}/bin/Hyprland --verify-config -c ${upstreamStage}/hypr/hyprland.lua
+    touch "$out"
+  '';
+
+  hyprland-repo-ownership = assert ownership;
+  assert lib.all (name: builtins.hasAttr "hypr/${name}.conf" homeConfig.xdg.configFile) ["hypridle" "hyprlock" "hyprpaper"];
+  assert !darwin.config.wayland.windowManager.hyprland.enable;
+  assert lib.all (name: !(lib.hasPrefix "hypr/" name) && name != "dotfiles/hyprland.json") (builtins.attrNames darwin.config.xdg.configFile);
+  assert if sourceReady
+  then nativeOwnership synthetic
+  else
+    homeConfig.wayland.windowManager.hyprland.configType
+    == "hyprlang"
+    && !(homeConfig.xdg.configFile ? "hypr/hyprland.lua");
+    pkgs.runCommand "hyprland-repo-ownership" {
+      nativeBuildInputs = [pkgs.jq lua];
+      XDG_CONFIG_HOME = syntheticStage;
+      HOME = "/tmp/hyprland-fixture";
+    } (
+      if sourceReady
+      then ''
+        jq -e --arg monitor '${syntheticMonitor}' \
+          --argjson theme '${builtins.toJSON {inherit (homeConfig.dotfiles.palette) blue flamingo surface2;}}' '
+          .monitors == [$monitor] and .theme == $theme and
+          .paths.fuzzelCache == "/tmp/hyprland-fixture/.config/fuzzel/cache"' \
+          "$XDG_CONFIG_HOME/dotfiles/hyprland.json"
+        lua - ${checkDir} "$XDG_CONFIG_HOME/hypr" <<'LUA'
+        package.path = arg[1] .. "/?.lua;" .. package.path
+        local directory = arg[2]
+        local file = assert(io.open(directory .. "/hyprland.lua"))
+        local state = require("capture").run(file:read("*a"), directory)
+        file:close()
+        local records = require("records")
+        assert(#records.diff_monitors(state.monitors, {"${syntheticMonitor}"}) == 0,
+          "synthetic monitor did not reach the native config")
+        local found = false
+        for _, bind in ipairs(state.binds) do
+          local dispatcher = assert(records.legacy_dispatcher(bind.dispatcher))
+          if dispatcher.dispatcher == "exec" and dispatcher.arg == "fuzzel --cache /tmp/hyprland-fixture/.config/fuzzel/cache" then
+            found = true
+          end
+        end
+        assert(found, "synthetic Home cache path did not reach the native config")
+        LUA
+        touch "$out"
+      ''
+      else ''
+        grep -Fq 'monitor=${syntheticMonitor}' "$XDG_CONFIG_HOME/hypr/hyprland.conf"
+        grep -Fq 'fuzzel --cache /tmp/hyprland-fixture/.config/fuzzel/cache' "$XDG_CONFIG_HOME/hypr/hyprland.conf"
+        touch "$out"
+      ''
+    );
+
+  hyprland-production-parity =
+    if !sourceReady
+    then missingSource "hyprland-production-parity"
+    else
+      pkgs.runCommand "hyprland-production-parity" {
+        nativeBuildInputs = [lua];
+        XDG_CONFIG_HOME = productionStage;
+        HOME = production.config.home.homeDirectory;
+      } ''
+        lua ${checkDir}/parity-test.lua ${root} \
+          "$XDG_CONFIG_HOME/hypr/hyprland.lua" \
+          ${pkgs.dbus}/bin/dbus-update-activation-environment
+        touch "$out"
+      '';
+  hyprland-production-parser =
+    if !sourceReady
+    then missingSource "hyprland-production-parser"
+    else
+      pkgs.runCommand "hyprland-production-parser" {
+        XDG_CONFIG_HOME = productionStage;
+        HOME = production.config.home.homeDirectory;
+      } ''
+        ${parserSetup}
+        ${hyprland}/bin/Hyprland --verify-config -c "$XDG_CONFIG_HOME/hypr/hyprland.lua"
+        touch "$out"
+      '';
 }

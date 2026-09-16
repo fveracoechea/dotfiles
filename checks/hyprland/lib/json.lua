@@ -116,6 +116,9 @@ local type_func_map = {
 }
 
 encode = function(val, stack)
+  if val == json.null then
+    return "null"
+  end
   local t = type(val)
   local f = type_func_map[t]
   if f then
@@ -144,15 +147,11 @@ end
 
 local space_chars = create_set(" ", "\t", "\r", "\n")
 local delim_chars = create_set(" ", "\t", "\r", "\n", "]", "}", ",")
-local escape_chars = create_set("\\", "/", '"', "b", "f", "n", "r", "t", "u")
 local literals = create_set("true", "false", "null")
 
--- One local deviation from upstream rxi/json.lua v0.1.2, documented for the
--- bridge decision (issue 30): JSON null decodes to the json.null sentinel
--- instead of nil, so schema validation can distinguish an explicit null from
--- a missing field or a trailing element. Upstream maps null to nil, which
--- silently drops array elements and hides required-field nulls. Everything
--- else is verbatim upstream.
+-- Local changes to rxi/json.lua v0.1.2: preserve null; enforce JSON number,
+-- comma and string grammar; validate UTF-8 and surrogate pairs; reject
+-- duplicate object keys and non-finite numbers. See ../README.md.
 json.null = setmetatable({}, {
   __tostring = function()
     return "json.null"
@@ -187,77 +186,52 @@ local function decode_error(str, idx, msg)
   error(string.format("%s at line %d col %d", msg, line_count, col_count))
 end
 
-local function codepoint_to_utf8(n)
-  -- http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=iws-appendixa
-  local f = math.floor
-  if n <= 0x7f then
-    return string.char(n)
-  elseif n <= 0x7ff then
-    return string.char(f(n / 64) + 192, n % 64 + 128)
-  elseif n <= 0xffff then
-    return string.char(f(n / 4096) + 224, f(n % 4096 / 64) + 128, n % 64 + 128)
-  elseif n <= 0x10ffff then
-    return string.char(f(n / 262144) + 240, f(n % 262144 / 4096) + 128, f(n % 4096 / 64) + 128, n % 64 + 128)
-  end
-  error(string.format("invalid unicode codepoint '%x'", n))
-end
-
-local function parse_unicode_escape(s)
-  local n1 = tonumber(s:sub(3, 6), 16)
-  local n2 = tonumber(s:sub(9, 12), 16)
-  -- Surrogate pair?
-  if n2 then
-    return codepoint_to_utf8((n1 - 0xd800) * 0x400 + (n2 - 0xdc00) + 0x10000)
-  else
-    return codepoint_to_utf8(n1)
-  end
-end
-
 local function parse_string(str, i)
-  local has_unicode_escape = false
-  local has_surrogate_escape = false
-  local has_escape = false
-  local last
-  for j = i + 1, #str do
-    local x = str:byte(j)
-
-    if x < 32 then
+  local out, j = {}, i + 1
+  local function read_hex(at)
+    local hex = str:sub(at, at + 3)
+    if not hex:match "^%x%x%x%x$" then
+      decode_error(str, at, "invalid unicode escape")
+    end
+    return tonumber(hex, 16)
+  end
+  while j <= #str do
+    local byte = str:byte(j)
+    if byte < 32 then
       decode_error(str, j, "control character in string")
     end
-
-    if last == 92 then -- "\\" (escape char)
-      if x == 117 then -- "u" (unicode escape sequence)
-        local hex = str:sub(j + 1, j + 5)
-        if not hex:find "%x%x%x%x" then
-          decode_error(str, j, "invalid unicode escape in string")
+    if byte == 34 then
+      return table.concat(out), j + 1
+    elseif byte == 92 then
+      local escape = str:sub(j, j + 1)
+      if escape == "\\u" then
+        local cp = read_hex(j + 2)
+        j = j + 6
+        if cp >= 0xd800 and cp <= 0xdbff then
+          if str:sub(j, j + 1) ~= "\\u" then
+            decode_error(str, j, "missing low surrogate")
+          end
+          local low = read_hex(j + 2)
+          if low < 0xdc00 or low > 0xdfff then
+            decode_error(str, j, "invalid low surrogate")
+          end
+          cp = 0x10000 + (cp - 0xd800) * 0x400 + low - 0xdc00
+          j = j + 6
+        elseif cp >= 0xdc00 and cp <= 0xdfff then
+          decode_error(str, j - 6, "unexpected low surrogate")
         end
-        if hex:find "^[dD][89aAbB]" then
-          has_surrogate_escape = true
-        else
-          has_unicode_escape = true
-        end
+        out[#out + 1] = utf8.char(cp)
       else
-        local c = string.char(x)
-        if not escape_chars[c] then
-          decode_error(str, j, "invalid escape char '" .. c .. "' in string")
+        local decoded = escape_char_map_inv[escape]
+        if not decoded then
+          decode_error(str, j, "invalid escape")
         end
-        has_escape = true
+        out[#out + 1] = decoded
+        j = j + 2
       end
-      last = nil
-    elseif x == 34 then -- '"' (end of string)
-      local s = str:sub(i + 1, j - 1)
-      if has_surrogate_escape then
-        s = s:gsub("\\u[dD][89aAbB]..\\u....", parse_unicode_escape)
-      end
-      if has_unicode_escape then
-        s = s:gsub("\\u....", parse_unicode_escape)
-      end
-      if has_escape then
-        s = s:gsub("\\.", escape_char_map_inv)
-      end
-      return s, j + 1
     else
-      last = x
+      out[#out + 1] = str:sub(j, j)
+      j = j + 1
     end
   end
   decode_error(str, i, "expected closing quote for string")
@@ -266,8 +240,34 @@ end
 local function parse_number(str, i)
   local x = next_char(str, i, delim_chars)
   local s = str:sub(i, x - 1)
+  local pos = s:sub(1, 1) == "-" and 2 or 1
+  local function digits()
+    local start = pos
+    while s:sub(pos, pos):match "^[0-9]$" do
+      pos = pos + 1
+    end
+    return pos > start
+  end
+  local valid
+  if s:sub(pos, pos) == "0" then
+    pos = pos + 1
+    valid = true
+  else
+    valid = digits()
+  end
+  if s:sub(pos, pos) == "." then
+    pos = pos + 1
+    valid = digits() and valid
+  end
+  if s:sub(pos, pos):match "^[eE]$" then
+    pos = pos + 1
+    if s:sub(pos, pos):match "^[+-]$" then
+      pos = pos + 1
+    end
+    valid = digits() and valid
+  end
   local n = tonumber(s)
-  if not n then
+  if not valid or pos <= #s or not n or math.abs(n) == math.huge then
     decode_error(str, i, "invalid number '" .. s .. "'")
   end
   return n, x
@@ -308,6 +308,9 @@ local function parse_array(str, i)
     if chr ~= "," then
       decode_error(str, i, "expected ']' or ','")
     end
+    if str:sub(next_char(str, i, space_chars, true), next_char(str, i, space_chars, true)) == "]" then
+      decode_error(str, i, "trailing comma")
+    end
   end
   return res, i
 end
@@ -337,6 +340,9 @@ local function parse_object(str, i)
     -- Read value
     val, i = parse(str, i)
     -- Set
+    if res[key] ~= nil then
+      decode_error(str, i, "duplicate object key")
+    end
     res[key] = val
     -- Next token
     i = next_char(str, i, space_chars, true)
@@ -347,6 +353,9 @@ local function parse_object(str, i)
     end
     if chr ~= "," then
       decode_error(str, i, "expected '}' or ','")
+    end
+    if str:sub(next_char(str, i, space_chars, true), next_char(str, i, space_chars, true)) == "}" then
+      decode_error(str, i, "trailing comma")
     end
   end
   return res, i
@@ -384,6 +393,10 @@ end
 function json.decode(str)
   if type(str) ~= "string" then
     error("expected argument of type string, got " .. type(str))
+  end
+  local valid, at = utf8.len(str)
+  if not valid then
+    decode_error(str, at, "invalid UTF-8")
   end
   local res, idx = parse(str, next_char(str, 1, space_chars, true))
   idx = next_char(str, idx, space_chars, true)

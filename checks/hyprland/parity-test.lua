@@ -1,6 +1,6 @@
 -- Production semantic parity gate. Run under Lua 5.5:
 --
---   lua parity-test.lua <repo-root>
+--   lua parity-test.lua <repo-root> <staged-hyprland.lua> <dbus-executable>
 --
 -- Execute the production config/hypr entry under the recorder stub, and
 -- compare the records against the live baseline capture: every bind (ordered,
@@ -40,10 +40,19 @@ if not entry then
 end
 entry:close()
 
-package.path = production .. "/?.lua;" .. production .. "/lib/?.lua;" .. package.path
+local staged_entry, dbus_executable = arg[2], arg[3]
+if not staged_entry or not dbus_executable then
+  die "staged Home Manager hyprland.lua and dbus executable arguments are required"
+end
+local staged_directory = staged_entry:match "^(.*)/[^/]+$"
+if not staged_directory then
+  die "staged entry must include its directory"
+end
+
+package.path = here .. "/?.lua;" .. package.path
 
 local records = require "records"
-local stub = require "hl-stub"
+local capture = require "capture"
 local json = require "lib.json"
 
 local baseline = root .. "/docs/research/hyprland-live-baseline"
@@ -75,11 +84,7 @@ if not xdg or xdg == "" then
   )
 end
 
-local state = stub.run {
-  function()
-    dofile(entry_path)
-  end,
-}
+local state = capture.run(read(staged_entry), staged_directory, "@" .. staged_entry)
 
 local failures = 0
 local checks = 0
@@ -176,6 +181,9 @@ do
 
   d = records.diff_window_rules(state.window_rules, records.conf_lines(conf_text, "windowrule"))
   report(#d == 0, "window rule records match the captured windowrule= lines", d)
+
+  d = records.diff_startup(state, conf_text, dbus_executable)
+  report(#d == 0, "startup and shutdown commands match the captured config", d)
 end
 
 print(

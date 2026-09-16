@@ -132,7 +132,11 @@ local function reject_extra(args, allowed, label)
 end
 
 local DISPATCHER_TO_LEGACY = {
-  ["window.close"] = function()
+  ["window.close"] = function(args)
+    local ok, err = reject_extra(args, {}, "window.close")
+    if not ok then
+      return nil, err
+    end
     return "killactive", ""
   end,
   ["window.float"] = function(args)
@@ -164,8 +168,7 @@ local DISPATCHER_TO_LEGACY = {
     if not ok then
       return nil, err
     end
-    ok, err =
-      reject_extra(args, { internal = true, client = true, action = true, window = true }, "window.fullscreen_state")
+    ok, err = reject_extra(args, { internal = true, client = true, action = true }, "window.fullscreen_state")
     if not ok then
       return nil, err
     end
@@ -189,11 +192,11 @@ local DISPATCHER_TO_LEGACY = {
     if not ok then
       return nil, err
     end
-    ok, err = reject_extra(args, { x = true, y = true, relative = true, window = true }, "window.resize")
+    ok, err = reject_extra(args, { x = true, y = true, relative = true }, "window.resize")
     if not ok then
       return nil, err
     end
-    if not args.relative then
+    if args.relative ~= true then
       return nil, "window.resize needs relative=true to mean resizeactive"
     end
     return "resizeactive", tostring(args.x) .. " " .. tostring(args.y)
@@ -206,6 +209,16 @@ local DISPATCHER_TO_LEGACY = {
     return "mouse", "movewindow"
   end,
   ["window.move"] = function(args)
+    if args.out_of_group ~= nil then
+      local ok, err = reject_extra(args, { out_of_group = true }, "window.move")
+      if not ok then
+        return nil, err
+      end
+      if args.out_of_group ~= true then
+        return nil, "out_of_group must be true"
+      end
+      return "moveoutofgroup", ""
+    end
     local ok, err = reject_extra(args, { workspace = true, follow = true }, "window.move")
     if not ok then
       return nil, err
@@ -226,7 +239,7 @@ local DISPATCHER_TO_LEGACY = {
     return "togglegroup", ""
   end,
   ["focus"] = function(args)
-    local ok, err = reject_extra(args, { direction = true, workspace = true, on_current_monitor = true }, "focus")
+    local ok, err = reject_extra(args, { direction = true, workspace = true }, "focus")
     if not ok then
       return nil, err
     end
@@ -242,9 +255,17 @@ local DISPATCHER_TO_LEGACY = {
     return nil, "focus without direction or workspace has no legacy arg form"
   end,
   ["exec_cmd"] = function(args)
+    local ok, err = reject_extra(args, { [1] = true }, "exec_cmd")
+    if not ok then
+      return nil, err
+    end
     return "exec", args[1]
   end,
   ["send_shortcut"] = function(args)
+    local allowed, extra = reject_extra(args, { mods = true, key = true, window = true }, "send_shortcut")
+    if not allowed then
+      return nil, extra
+    end
     local ok, err = require_keys(args, { "mods", "key", "window" })
     if not ok then
       return nil, err
@@ -252,6 +273,10 @@ local DISPATCHER_TO_LEGACY = {
     return "sendshortcut", args.mods .. ", " .. args.key .. ", " .. args.window
   end,
   ["layout"] = function(args)
+    local ok, err = reject_extra(args, { [1] = true }, "layout")
+    if not ok then
+      return nil, err
+    end
     return "layoutmsg", args[1]
   end,
 }
@@ -260,6 +285,34 @@ function records.legacy_dispatcher(dsp)
   local convert = DISPATCHER_TO_LEGACY[dsp.path]
   if not convert then
     return nil, "no verified legacy mapping for dispatcher path '" .. tostring(dsp.path) .. "'"
+  end
+  local types = {
+    mode = "string",
+    action = "string",
+    internal = "number",
+    client = "number",
+    x = "number",
+    y = "number",
+    relative = "boolean",
+    workspace = "string",
+    follow = "boolean",
+    out_of_group = "boolean",
+    direction = "string",
+    mods = "string",
+    key = "string",
+    window = "string",
+    [1] = "string",
+  }
+  for key, value in pairs(dsp.args) do
+    if types[key] and type(value) ~= types[key] then
+      return nil, "invalid type for dispatcher field '" .. tostring(key) .. "'"
+    end
+    if type(value) == "number" and (value ~= value or math.abs(value) == math.huge) then
+      return nil, "dispatcher numbers must be finite"
+    end
+  end
+  if dsp.args.direction and not ({ l = true, r = true, u = true, d = true })[dsp.args.direction] then
+    return nil, "unsupported direction"
   end
   local name, arg = convert(dsp.args)
   if not name then
@@ -375,7 +428,7 @@ records.OPTION_NORMALIZERS = {
   ["binds.drag_threshold"] = normalize_identity,
   ["binds.allow_workspace_cycles"] = normalize_bool_as_int,
   ["xwayland.force_zero_scaling"] = normalize_bool_as_int,
-  ["ecosystem.no_update_news"] = normalize_identity,
+  ["ecosystem.no_update_news"] = normalize_bool_as_int,
 }
 
 -- True when the dotted Lua path names an option this gate knows. Mirrors
@@ -548,6 +601,7 @@ end
 -- captured hyprlang config, in file order.
 function records.conf_lines(conf_text, prefix)
   local out = {}
+  prefix = prefix:gsub("(%W)", "%%%1")
   for line in conf_text:gmatch "[^\n]+" do
     local value = line:match("^" .. prefix .. "%s*=%s*(.+)$")
     if value then
@@ -570,6 +624,19 @@ function records.diff_workspace_rules(lua_rules, baseline_rules)
     elseif base == nil then
       table.insert(failures, "workspace rules: extra record at position " .. i)
     else
+      for key in pairs(lua_rule) do
+        if key ~= "workspace" and key ~= "persistent" and key ~= "enabled" then
+          table.insert(failures, "workspace rules: unsupported Lua field " .. tostring(key))
+        end
+      end
+      for key in pairs(base) do
+        if key ~= "workspaceString" and key ~= "persistent" then
+          table.insert(failures, "workspace rules: unsupported baseline field " .. tostring(key))
+        end
+      end
+      if lua_rule.enabled ~= nil and lua_rule.enabled ~= true then
+        table.insert(failures, "workspace rules: enabled must be true or omitted")
+      end
       local lua_string = tostring(lua_rule.workspace)
       if lua_string ~= base.workspaceString then
         table.insert(
@@ -577,7 +644,7 @@ function records.diff_workspace_rules(lua_rules, baseline_rules)
           string.format("workspace rules: entry %d: %q != %q", i, lua_string, base.workspaceString)
         )
       end
-      if (lua_rule.persistent and true or false) ~= (base.persistent and true or false) then
+      if type(lua_rule.persistent) ~= "boolean" or lua_rule.persistent ~= base.persistent then
         table.insert(failures, "workspace rules: entry " .. i .. ": persistent flag differs")
       end
     end
@@ -724,7 +791,7 @@ function records.diff_monitors(lua_monitors, conf_lines)
               )
             end
           elseif line_value ~= nil then
-            if monitor_value(line_value) ~= MONITOR_DEFAULTS[field] then
+            if monitor_value(line_value) ~= monitor_value(MONITOR_DEFAULTS[field]) then
               table.insert(
                 failures,
                 string.format(
@@ -736,7 +803,7 @@ function records.diff_monitors(lua_monitors, conf_lines)
                 )
               )
             end
-          elseif lua_value ~= nil and monitor_value(lua_value) ~= MONITOR_DEFAULTS[field] then
+          elseif lua_value ~= nil and monitor_value(lua_value) ~= monitor_value(MONITOR_DEFAULTS[field]) then
             table.insert(
               failures,
               string.format(
@@ -900,6 +967,47 @@ function records.diff_window_rules(lua_rules, conf_lines)
         if seen_match[prop] == nil then
           table.insert(failures, "window rules: entry " .. i .. ": record has extra match:" .. tostring(prop))
         end
+      end
+    end
+  end
+  return failures
+end
+
+function records.diff_startup(state, conf_text, dbus_executable)
+  local failures = {}
+  local seen = {}
+  for _, event in ipairs(state.events) do
+    if event ~= "hyprland.start" and event ~= "hyprland.shutdown" then
+      table.insert(failures, "unsupported event registration: " .. event)
+    end
+    seen[event] = true
+  end
+  if #state.exec > 0 then
+    table.insert(failures, "config-level commands are not exec-once commands")
+  end
+  for event, prefix in pairs { ["hyprland.start"] = "exec-once", ["hyprland.shutdown"] = "exec-shutdown" } do
+    local expected = records.conf_lines(conf_text, prefix)
+    if #expected > 0 and not seen[event] then
+      table.insert(failures, "missing event: " .. event)
+    end
+    if dbus_executable then
+      local redacted = "/nix/store/<hash>/bin/dbus-update-activation-environment"
+      for i, command in ipairs(expected) do
+        if command:sub(1, #redacted + 1) == redacted .. " " then
+          expected[i] = dbus_executable .. command:sub(#redacted + 1)
+        end
+      end
+    end
+    local actual = state.lifecycle and state.lifecycle[event]
+    if not actual then
+      table.insert(failures, "lifecycle callbacks were not captured: " .. event)
+    else
+      for _, failure in
+        ipairs(records.diff_ordered(expected, actual, function(a, b)
+          return a == b
+        end, event))
+      do
+        table.insert(failures, failure)
       end
     end
   end

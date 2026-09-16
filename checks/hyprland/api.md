@@ -93,9 +93,31 @@ a legacy equivalent are rejected, not guessed.
 
 Unsupported by this mapping (rejected): `window.fullscreen_state`
 without internal/client or with action toggle/unset, `window.move`
-spatial/monitor/group forms, `focus` monitor/window/urgent selectors,
+spatial/monitor/group forms except `out_of_group=true`, `focus` monitor/window/urgent selectors,
 `send_shortcut` without a window, any field the table above does not
 list for a constructor.
+
+### Recorder restrictions
+
+The table above describes supported legacy equivalents, not all raw API forms.
+`window.move{out_of_group=true}` additionally maps to `moveoutofgroup`, empty
+argument. Source: `LuaBindingsDispatchers.cpp:870-875` and
+`DispatcherTranslator.cpp:734-739`. A coverage test checks every dispatcher
+name in the current captured binds against a supported constructor.
+
+The recorder rejects all window selectors except the required selector in
+`send_shortcut`. It also rejects `focus.on_current_monitor`, execution-rule
+arguments to `exec_cmd`, extra positional arguments, ambiguous move forms,
+and unsupported field names or types. `relative` must be boolean true for
+resize. Workspace selectors use strings; directions use `l`, `r`, `u`, `d`.
+
+Only single-key binds, keycodes, special keys, and catchall are recorded.
+Chords, function dispatchers, submap reset extensions, and unmodeled bind
+options are rejected. Supported options are `description`/`desc`, `locked`,
+`release`, `repeating`, `non_consuming`, `auto_consuming`, and `long_press`.
+Flag values must be booleans. Release or long-press cannot combine with repeat.
+Input tables are copied when recorded, as the real parser consumes their
+values at the call rather than observing subsequent Lua mutations.
 
 ## Options
 
@@ -148,6 +170,10 @@ content, xdg_tag, namespace. Effects not in the static list go through
 the dynamic effect registry; the stub does not model those and rejects
 them.
 
+Repeated nonempty names are rejected. The real API reuses a named rule object
+(`LuaBindingsConfigRules.cpp:1089-1096`); the recorder compares independent
+rules and does not model updates to existing objects.
+
 ## Workspace rules
 
 `hl.workspace_rule{ workspace = "...", ... }`: `workspace` is required
@@ -156,6 +182,10 @@ monitor, default, persistent, gaps_in, gaps_out, float_gaps,
 border_size, no_border, no_rounding, decorate, no_shadow,
 on_created_empty, default_name, layout, animation, plus `layout_opts`.
 
+The parity comparator supports only the captured `workspace` and `persistent`
+fields, with `enabled` omitted or true. Other Lua or baseline fields fail
+rather than being ignored. This is a deliberate subset of the raw API.
+
 ## env, startup, events
 
 - `hl.env(name, value, dbus?)` sets the variable immediately
@@ -163,7 +193,13 @@ on_created_empty, default_name, layout, animation, plus `layout_opts`.
 - **There is no `exec-once` API on the Lua surface.** The only internal
   `addExecOnce` callers reachable from config are the legacy handlers
   and `hlEnv`'s dbus path. The port must express startup through
-  `hl.on("hyprland.start", ...)` (a known event) or a config-level
-  `hl.exec_cmd` spawn; the parity gate records both.
+  `hl.on("hyprland.start", ...)` (a known event). Config-level commands
+  are recorded but fail parity because they also execute on reload.
 - `hl.on(event, fn)` with the event set from `knownEvents()`; unknown
   names are config errors.
+
+The production capture runs only start and shutdown callbacks, permits only
+commands in those callbacks, and rejects other events at comparison time.
+The read-only Lua loader and command recording contract are in README.md.
+The third `hl.env` argument and second `hl.exec_cmd` argument are unsupported
+in capture, rather than silently ignored.

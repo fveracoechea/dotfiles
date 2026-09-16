@@ -128,18 +128,24 @@
 
     # Hyprland gates. The parser check uses the System-owned Release Channel
     # compositor (ADR-0007); everything else runs on the Latest Channel tools.
+    # The Darwin ownership fixture evaluates the repo module on the other
+    # supported system (eval only, nothing builds).
     hyprlandChecks = system:
       import ./checks/hyprland.nix {
-        inherit lib inputs system;
+        inherit lib inputs;
         pkgs = latestPkgsFor system;
         pkgs-stable = stablePkgsFor system;
+        pkgs-darwin = latestPkgsFor "aarch64-darwin";
+        pkgs-stable-darwin = stablePkgsFor "aarch64-darwin";
+        dotfilesPkgs = dotfilesPkgsFor system;
+        dotfilesPkgs-darwin = dotfilesPkgsFor "aarch64-darwin";
       };
   in {
     inherit homeManagerModules nixosModules darwinModules;
 
     checks = builtins.listToAttrs (map (system: {
         name = system;
-        value = (neovimChecks system) // (hyprlandChecks system);
+        value = (neovimChecks system) // lib.optionalAttrs (system == "x86_64-linux") (hyprlandChecks system);
       })
       supportedSystems);
 
@@ -185,10 +191,12 @@
               # the intentional channel split. See ADR-0007.
               home.enableNixpkgsReleaseCheck = false;
             };
-            home-manager.extraSpecialArgs = specialArgs // {
-              inherit pkgs-stable;
-              lib = homeManagerLib;
-            };
+            home-manager.extraSpecialArgs =
+              specialArgs
+              // {
+                inherit pkgs-stable;
+                lib = homeManagerLib;
+              };
           }
         ];
       };
@@ -229,10 +237,12 @@
               # the intentional channel split. See ADR-0007.
               home.enableNixpkgsReleaseCheck = false;
             };
-            home-manager.extraSpecialArgs = specialArgs // {
-              inherit pkgs-stable;
-              lib = homeManagerLib;
-            };
+            home-manager.extraSpecialArgs =
+              specialArgs
+              // {
+                inherit pkgs-stable;
+                lib = homeManagerLib;
+              };
           }
         ];
       };

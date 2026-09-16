@@ -8,7 +8,7 @@
 --     first, mods resolve through the IKeyboard.hpp bit values, code:N and
 --     mouse:* / switch:* / mouse_down-style keys are recognized, catchall is
 --     only legal inside a submap, and the dispatcher must be a dispatcher
---     object or a function.
+--     object with a verified legacy mapping. Function dispatchers are unsupported.
 --   - hl.dsp only exposes the dispatcher constructors with a verified legacy
 --     mapping in records.lua. Any other path raises an error, so a config
 --     cannot silently call an API shape nobody verified.
@@ -21,6 +21,23 @@
 local records = require "records"
 
 local stub = {}
+
+local function snapshot(value, active)
+  if type(value) ~= "table" then
+    return value
+  end
+  active = active or {}
+  if active[value] or getmetatable(value) then
+    error("recorder requires plain acyclic tables", 3)
+  end
+  active[value] = true
+  local out = {}
+  for k, v in pairs(value) do
+    out[k] = snapshot(v, active)
+  end
+  active[value] = nil
+  return out
+end
 
 local MOD_BITS = {
   SHIFT = 1,
@@ -99,31 +116,36 @@ local function parse_key_string(keys)
   local keycode = 0
   local mods_ended = false
 
-  for chunk in keys:gmatch "[^%s]+" do
-    for part in chunk:gmatch "[^+]+" do
-      local bit = MOD_BITS[part]
-      if bit then
-        if mods_ended then
-          error("hl.bind: Modifiers must come first in the list: '" .. keys .. "'", 3)
-        end
-        modmask = modmask | bit
+  for chunk in (keys .. "+"):gmatch "(.-)%+" do
+    local part = chunk:match "^%s*(.-)%s*$"
+    if part == "" or part:find "%s" then
+      error("hl.bind: expected plus-separated keys", 3)
+    end
+    local bit = MOD_BITS[part]
+    if bit then
+      if mods_ended then
+        error("hl.bind: Modifiers must come first in the list: '" .. keys .. "'", 3)
+      end
+      modmask = modmask | bit
+    else
+      if key then
+        error("hl.bind: multi-key chords are unsupported", 3)
+      end
+      mods_ended = true
+      if part:match "^code:%d+$" then
+        keycode = tonumber(part:sub(6))
+        key = part
+      elseif
+        part:match "^mouse:%d+$"
+        or part:match "^switch:.+$"
+        or part == "mouse_down"
+        or part == "mouse_up"
+        or part == "mouse_left"
+        or part == "mouse_right"
+      then
+        key = part
       else
-        mods_ended = true
-        if part:match "^code:%d+$" then
-          keycode = tonumber(part:sub(6))
-          key = part
-        elseif
-          part:match "^mouse:%d+$"
-          or part:match "^switch:.+$"
-          or part == "mouse_down"
-          or part == "mouse_up"
-          or part == "mouse_left"
-          or part == "mouse_right"
-        then
-          key = part
-        else
-          key = part
-        end
+        key = part
       end
     end
   end
@@ -135,10 +157,15 @@ local function parse_key_string(keys)
 end
 
 local function make_dispatcher(path, args)
+  local descriptor = { path = path, args = snapshot(args) }
+  local mapped, err = records.legacy_dispatcher(descriptor)
+  if not mapped then
+    error("hl.dsp." .. path .. ": " .. err, 3)
+  end
   -- Callable table: the stub needs to tag dispatcher objects with their
   -- identity, and plain Lua functions cannot carry fields.
   local obj = setmetatable({
-    __hl_dispatcher = { path = path, args = args },
+    __hl_dispatcher = descriptor,
   }, {
     __call = function()
       error("dispatcher objects cannot be called directly; use hl.dispatch(dispatcher)", 2)
@@ -151,7 +178,10 @@ local function make_dispatcher(path, args)
 end
 
 local function table_ctor(path)
-  return function(args)
+  return function(args, ...)
+    if select("#", ...) > 0 then
+      error("hl.dsp." .. path .. ": extra arguments are unsupported", 2)
+    end
     -- Real constructors read optional fields from arg 1; calling with no
     -- arguments is legal (e.g. hl.dsp.window.close()).
     if args ~= nil and type(args) ~= "table" then
@@ -162,7 +192,10 @@ local function table_ctor(path)
 end
 
 local function str_ctor(path)
-  return function(str)
+  return function(str, ...)
+    if select("#", ...) > 0 then
+      error("hl.dsp." .. path .. ": extra arguments are unsupported", 2)
+    end
     if type(str) ~= "string" or str == "" then
       error("hl.dsp." .. path .. ": expected a non-empty string", 2)
     end
@@ -179,26 +212,27 @@ function stub.new()
     window_rules = {},
     workspace_rules = {},
     events = {},
+    callbacks = {},
     exec = {},
     current_submap = "",
   }
 
   local hl = {}
+  local rule_names = {}
 
   -- LuaBindingsToplevel.cpp hlBind
   function hl.bind(keys, dsp, opts)
     if type(keys) ~= "string" then
       error("hl.bind: bad argument 1: expected a key string", 2)
     end
-    local is_dispatcher = type(dsp) == "function"
-      or (
-        type(dsp) == "table"
-        and type(getmetatable(dsp)) == "table"
-        and getmetatable(dsp).__call ~= nil
-        and dsp.__hl_dispatcher ~= nil
-      )
+    local is_dispatcher = (
+      type(dsp) == "table"
+      and type(getmetatable(dsp)) == "table"
+      and getmetatable(dsp).__call ~= nil
+      and dsp.__hl_dispatcher ~= nil
+    )
     if not is_dispatcher then
-      error("hl.bind: dispatcher must be a dispatcher (e.g. hl.dsp.window.close()) or a lua function", 2)
+      error("hl.bind: only verified dispatcher objects are supported, not Lua callbacks", 2)
     end
 
     local modmask, key, keycode, catch_all = parse_key_string(keys)
@@ -223,29 +257,49 @@ function stub.new()
         non_consuming = false,
         auto_consuming = false,
       },
-      dispatcher = dsp.__hl_dispatcher,
+      dispatcher = snapshot(dsp.__hl_dispatcher),
     }
     if type(opts) == "table" then
+      local allowed = {
+        locked = "boolean",
+        release = "boolean",
+        repeating = "boolean",
+        non_consuming = "boolean",
+        auto_consuming = "boolean",
+        long_press = "boolean",
+        description = "string",
+        desc = "string",
+      }
+      for name, value in pairs(opts) do
+        if type(value) ~= allowed[name] then
+          error("hl.bind: unsupported option or type: " .. tostring(name), 2)
+        end
+      end
       record.flags.locked = opts.locked == true
       record.flags.release = opts.release == true
       record.flags["repeat"] = opts.repeating == true
       record.flags.non_consuming = opts.non_consuming == true
       record.flags.auto_consuming = opts.auto_consuming == true
       record.flags.longPress = opts.long_press == true
-      if opts.long_press == true and opts.repeating == true then
+      if (opts.long_press == true or opts.release == true) and opts.repeating == true then
         error("hl.bind: long_press / release is incompatible with repeat", 2)
       end
       if opts.description or opts.desc then
         record.description = opts.description or opts.desc
         record.has_description = true
       end
+    elseif opts ~= nil then
+      error("hl.bind: options must be a table", 2)
     end
     table.insert(state.binds, record)
-    return record
+    return snapshot(record)
   end
 
   -- LuaBindingsToplevel.cpp hlDefineSubmap
   function hl.define_submap(name, reset_or_fn, maybe_fn)
+    if maybe_fn ~= nil then
+      error("hl.define_submap: reset extensions are unsupported", 2)
+    end
     if type(name) ~= "string" then
       error("hl.define_submap: bad argument 1: expected a name", 2)
     end
@@ -275,9 +329,19 @@ function stub.new()
         end
         local path = prefix == "" and key or (prefix .. "." .. key)
         if type(value) == "table" and not records.known_option(path) then
+          local known_prefix = false
+          for name in pairs(records.OPTION_NORMALIZERS) do
+            if name:sub(1, #path + 1) == path .. "." then
+              known_prefix = true
+              break
+            end
+          end
+          if not known_prefix then
+            error("hl.config: unsupported option " .. path, 2)
+          end
           walk(path, value)
         else
-          table.insert(state.options, { key = path, value = value })
+          table.insert(state.options, { key = path, value = snapshot(value) })
         end
         ::continue::
       end
@@ -320,7 +384,7 @@ function stub.new()
         error("hl.monitor: unknown field '" .. tostring(key) .. "'", 2)
       end
     end
-    table.insert(state.monitors, rule)
+    table.insert(state.monitors, snapshot(rule))
   end
 
   -- LuaBindingsConfigRules.cpp hlWindowRule: structural keys plus the effect
@@ -392,7 +456,18 @@ function stub.new()
         error("hl.window_rule: unknown field '" .. tostring(key) .. "'", 2)
       end
     end
-    table.insert(state.window_rules, rule)
+    if rule.name ~= nil then
+      if type(rule.name) ~= "string" then
+        error("hl.window_rule: name must be a string", 2)
+      end
+      if rule.name ~= "" then
+        if rule_names[rule.name] then
+          error("hl.window_rule: repeated names are unsupported", 2)
+        end
+        rule_names[rule.name] = true
+      end
+    end
+    table.insert(state.window_rules, snapshot(rule))
   end
 
   -- LuaBindingsConfigRules.cpp hlWorkspaceRule: 'workspace' is required;
@@ -426,7 +501,7 @@ function stub.new()
         error("hl.workspace_rule: unknown field '" .. tostring(key) .. "'", 2)
       end
     end
-    table.insert(state.workspace_rules, rule)
+    table.insert(state.workspace_rules, snapshot(rule))
   end
 
   -- LuaBindingsToplevel.cpp hlOn
@@ -438,6 +513,7 @@ function stub.new()
       error("hl.on: expected a function", 2)
     end
     table.insert(state.events, event)
+    table.insert(state.callbacks, { event = event, fn = fn })
   end
 
   -- LuaBindingsToplevel.cpp hlExecCmd: config-level spawns are recorded so
@@ -487,11 +563,17 @@ end
 -- receives the stub hl table, matching how the port's modules receive it.
 function stub.run(modules)
   local hl, state = stub.new()
+  local previous = _G.hl
   _G.hl = hl
-  for _, fn in ipairs(modules) do
-    fn(hl)
+  local ok, err = pcall(function()
+    for _, fn in ipairs(modules) do
+      fn(hl)
+    end
+  end)
+  _G.hl = previous
+  if not ok then
+    error(err, 0)
   end
-  _G.hl = nil
   return state
 end
 
