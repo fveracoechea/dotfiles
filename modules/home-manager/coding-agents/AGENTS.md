@@ -7,7 +7,6 @@
   - run a long-lived process, such as a localhost dev server, in a new pane
   - give each parallel task or sub-agent its own Herdr worktree
 - Talk in ASD-STE100 Simplified Technical English.
-- Read every CONTEXT.md in the repo and use its ubiquitous language.
 - Start a bug fix by reproducing it end to end, the way a user hits it. Change code only after the reproduction is red.
 - Treat lint errors, failing tests, and flaky tests as blockers. Fix them before you report the task done.
 - Write commit messages with no Co-Authored-By trailer.
