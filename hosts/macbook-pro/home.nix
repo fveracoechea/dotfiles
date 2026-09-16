@@ -25,6 +25,8 @@
   };
 
   home.packages = with pkgs; [
+    # Atlassian Command Line Interface: Jira and Compass from the terminal.
+    acli
     redis
   ];
 
