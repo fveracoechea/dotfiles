@@ -17,8 +17,8 @@ All wired into `checks` in `flake.nix` and run by `nix flake check`:
 | `hyprland-semantic-fixture` | the comparator pipeline in fixture mode: positive records, 10 negative bind mutations, typed options, disk evidence, and strict-mapping rejections |
 | `hyprland-parser-fixture` | real `Hyprland --verify-config` at the pinned 0.55.4: valid fixture must parse; invalid-dispatcher and invalid-syntax fixtures must fail |
 | `hyprland-repo-ownership` | Real repo module: companion and System package ownership, synthetic Home and monitor data, inert Darwin evaluation, and correct config-file ownership before and after the port |
-| `hyprland-production-parity` | runs the staged Home Manager entry and production modules in the recording environment, then compares supported records and lifecycle commands against the baseline. **Red until the port ticket lands** |
-| `hyprland-production-parser` | parses the actual staged Home Manager entry, native modules, and generated JSON with Hyprland 0.55.4. **Red until the port ticket lands** |
+| `hyprland-production-parity` | runs the staged Home Manager entry and production modules in the recording environment, then compares supported records and lifecycle commands against the baseline, with the approved shutdown exception below |
+| `hyprland-production-parser` | parses the actual staged Home Manager entry, native modules, and generated JSON with Hyprland 0.55.4 |
 
 The parser check uses the Release Channel compositor (`pkgs-stable.hyprland`, ADR-0007); the rest runs on the Latest Channel tools. Tests run on Lua 5.5, the interpreter version Hyprland 0.55.4 embeds.
 
@@ -44,6 +44,9 @@ The parity gate executes the production entry and compares against
    `entry` requires `bridge` first and applies modules in the fixed order
    from the seam decision. The recorder runs the Home Manager entry, not
    a replacement that skips its hooks.
+   A final `require("lifecycle")` line in `extraConfig` loads user startup
+   after Home Manager registers its hooks. The ownership check permits only
+   that exact loader line, not arbitrary generated compositor settings.
 2. `config/hypr/bridge.lua` loads `dotfiles/hyprland.json` from
    `$XDG_CONFIG_HOME` and validates before anything applies. The gate
    runs with `XDG_CONFIG_HOME` pointing at the real Home Manager sources,
@@ -97,12 +100,30 @@ lua checks/hyprland/parity-test.lua REPO_ROOT STAGED_HYPRLAND_LUA DBUS_EXECUTABL
   Callbacks may only issue commands. `hl.exec_cmd` and `os.execute` record
   strings without spawning processes. Simulated `os.execute` returns `true, "exit", 0`.
 - Start and shutdown command lists compare exactly against `exec-once` and
-  `exec-shutdown` in the captured config. Missing, changed, reordered, or extra
+  `exec-shutdown` in the captured config, with the one approved exception below.
+  Missing, changed, reordered, or extra
   commands fail. Config-level commands and other event registrations fail.
   More than one callback for a lifecycle event is allowed so Home Manager
   hooks and user startup modules can register separately.
 - `semantic-test.lua` also runs `lifecycle-test.lua`. No separate test wiring
   is needed for the controlled execution and lifecycle mutation tests.
+
+## Approved shutdown exception
+
+The user approved keeping the pinned Home Manager Lua shutdown hook in
+[Port the compositor configuration to native Lua](https://github.com/fveracoechea/dotfiles/issues/37).
+The captured hyprlang command, `systemctl --user stop hyprland-session.target`,
+spawned asynchronously. Home Manager's Lua hook calls
+`os.execute("systemctl --user stop hyprland-session.target && sleep 0.1")`.
+It waits for the stop command and, if that succeeds, waits another 0.1 seconds.
+This is an accepted behavior change, not exact lifecycle parity.
+
+The comparator replaces only the single exact captured shutdown command with
+that exact pinned Lua command. It does not edit the captured baseline, strip
+suffixes, or relax startup order. Mutation tests reject a missing or changed
+wait, another target, another shell operator, reordered or extra commands,
+duplicate shutdown callbacks, a changed baseline command, and startup suffixes.
+Source references and the loader-order reason are in `api.md`.
 
 ## Honest limits
 

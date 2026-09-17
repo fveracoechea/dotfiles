@@ -69,7 +69,8 @@
       name = lib.removePrefix "${lib.removePrefix "${home.config.home.homeDirectory}/" home.config.xdg.configHome}/" file.target;
       path = file.source;
     }) (lib.filterAttrs (_: file: file.enable) home.config.xdg.configFile));
-  productionStage = assert nativeOwnership production; stage production;
+  productionStage = assert production.config.wayland.windowManager.hyprland.extraConfig == ''require("lifecycle")'';
+  assert nativeOwnership production; stage production;
   syntheticStage = stage synthetic;
 
   nativeOwnership = home: let
@@ -79,7 +80,11 @@
     cfg.configType
     == "lua"
     && cfg.settings == {}
-    && cfg.extraConfig == ""
+    && (
+      cfg.extraConfig
+      == ""
+      || (cfg.extraConfig == ''require("lifecycle")'' && cfg.extraLuaFiles ? lifecycle && !cfg.extraLuaFiles.lifecycle.autoLoad)
+    )
     && files ? "hypr/hyprland.lua"
     && !(files ? "hypr/hyprland.conf")
     && builtins.attrNames (lib.filterAttrs (_: file: file.autoLoad) cfg.extraLuaFiles) == ["entry"];

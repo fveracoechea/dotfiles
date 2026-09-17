@@ -183,7 +183,7 @@ do
   report(#d == 0, "window rule records match the captured windowrule= lines", d)
 
   d = records.diff_startup(state, conf_text, dbus_executable)
-  report(#d == 0, "startup and shutdown commands match the captured config", d)
+  report(#d == 0, "startup matches the capture; shutdown matches the approved Home Manager exception", d)
 end
 
 print(

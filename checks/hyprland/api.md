@@ -203,3 +203,28 @@ commands in those callbacks, and rejects other events at comparison time.
 The read-only Lua loader and command recording contract are in README.md.
 The third `hl.env` argument and second `hl.exec_cmd` argument are unsupported
 in capture, rather than silently ignored.
+
+### Home Manager lifecycle order and approved exception
+
+At pinned Home Manager revision `2c0350c759688177331b8f5242311fae8877bdb3`,
+[`modules/services/window-managers/hyprland/lib.nix:239-245`](https://github.com/nix-community/home-manager/blob/2c0350c759688177331b8f5242311fae8877bdb3/modules/services/window-managers/hyprland/lib.nix#L239-L245)
+renders module imports before startup hooks and `extraConfig` after them.
+The native `entry` therefore applies configuration only. A final exact
+`require("lifecycle")` loader in `extraConfig` registers Ultrashell startup
+after Home Manager's environment/session-target hook. Settings remain empty.
+
+Hyprland 0.55.4 `LuaBindingsToplevel.cpp:326-350` accepts an event and a
+callback with no priority argument. `LuaEventHandler.cpp:160-168` appends
+subscriptions; lines 31-70 invoke callbacks in registration order.
+`supplementary/executor/Executor.cpp:39-50,172-213` shows the old startup
+list and the asynchronous spawn implementation. The preserved startup order
+is command launch order, not a guarantee that systemd setup completes first.
+
+The old shutdown list also spawned commands asynchronously,
+`Executor.cpp:62-67`. The pinned Home Manager `renderShutdownHook` instead
+uses `os.execute("systemctl --user stop hyprland-session.target && sleep 0.1")`.
+This waits for the stop command and then, on success, another 0.1 seconds.
+The user explicitly approved this exception in issue 37 with "Yes, keep the
+hook." The comparator permits only this exact expected shutdown change;
+the old captured config stays unchanged. The recorder proves command strings
+and order, not process completion or successful target shutdown.

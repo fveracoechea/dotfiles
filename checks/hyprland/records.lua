@@ -987,6 +987,14 @@ function records.diff_startup(state, conf_text, dbus_executable)
   end
   for event, prefix in pairs { ["hyprland.start"] = "exec-once", ["hyprland.shutdown"] = "exec-shutdown" } do
     local expected = records.conf_lines(conf_text, prefix)
+    -- Approved in issue 37: retain the pinned Home Manager Lua shutdown hook.
+    if
+      event == "hyprland.shutdown"
+      and #expected == 1
+      and expected[1] == "systemctl --user stop hyprland-session.target"
+    then
+      expected[1] = "systemctl --user stop hyprland-session.target && sleep 0.1"
+    end
     if #expected > 0 and not seen[event] then
       table.insert(failures, "missing event: " .. event)
     end

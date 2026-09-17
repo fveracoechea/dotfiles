@@ -14,7 +14,7 @@ return function(here, root, report)
       hl.exec_cmd("/nix/store/<hash>/bin/dbus-update-activation-environment --systemd DISPLAY HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE && systemctl --user stop hyprland-session.target && systemctl --user start hyprland-session.target")
     end)
     hl.on("hyprland.shutdown", function()
-      hl.exec_cmd("systemctl --user stop hyprland-session.target")
+      os.execute("systemctl --user stop hyprland-session.target && sleep 0.1")
     end)
     require("entry")
   ]]
@@ -22,7 +22,31 @@ return function(here, root, report)
     return capture.run(text, here .. "/fixtures/lifecycle")
   end
   local state = run(source)
-  report(#records.diff_startup(state, conf) == 0, "staged HM entry plus module startup matches baseline")
+  report(#records.diff_startup(state, conf) == 0, "HM-shaped entry matches baseline with approved shutdown exception")
+  for _, command in ipairs {
+    "systemctl --user stop hyprland-session.target",
+    "systemctl --user stop hyprland-session.target && sleep 0.2",
+    "systemctl --user stop hyprland-session.target ; sleep 0.1",
+    "systemctl --user stop other.target && sleep 0.1",
+    "systemctl --user stop hyprland-session.target && sleep 0.1 && true",
+    "sleep 0.1 && systemctl --user stop hyprland-session.target",
+  } do
+    local mutation = source:gsub("systemctl %-%-user stop hyprland%-session%.target && sleep 0%.1", function()
+      return command
+    end)
+    report(#records.diff_startup(run(mutation), conf) > 0, "unapproved shutdown command rejected: " .. command)
+  end
+  local changed_baseline = conf:gsub(
+    "exec%-shutdown = systemctl %-%-user stop hyprland%-session%.target",
+    "exec-shutdown = systemctl --user stop other.target"
+  )
+  report(#records.diff_startup(state, changed_baseline) > 0, "shutdown exception requires the exact captured command")
+  local extra_shutdown = source
+    .. '\nhl.on("hyprland.shutdown", function() os.execute("systemctl --user stop hyprland-session.target && sleep 0.1") end)'
+  report(#records.diff_startup(run(extra_shutdown), conf) > 0, "duplicate approved shutdown command rejected")
+  local changed_startup = run(source)
+  changed_startup.lifecycle["hyprland.start"][2] = "ultrashell && sleep 0.1"
+  report(#records.diff_startup(changed_startup, conf) > 0, "shutdown exception does not strip startup suffixes")
   local supported = run [[
     hl.config { general = { layout = "dwindle" } }
     hl.bind("SUPER + J", hl.dsp.window.close())
@@ -43,7 +67,7 @@ return function(here, root, report)
     'require("entry")\n' .. source,
     'hl.on("hyprland.start", function() end)\nhl.on("hyprland.shutdown", function() end)',
     source:gsub('require%("entry"%)', ""),
-    source:gsub('systemctl %-%-user stop hyprland%-session.target"', 'wrong-command"'),
+    source:gsub("systemctl %-%-user stop hyprland%-session%.target && sleep 0%.1", "wrong-command"),
     source .. '\nhl.exec_cmd("unexpected-config-spawn")',
     source .. '\nhl.on("window.open", function() end)',
     source .. '\nhl.on("hyprland.start", function() hl.exec_cmd("extra") end)',
