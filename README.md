@@ -62,7 +62,7 @@ When a release lands, move all three release refs together:
 
 - **[Hyprland](https://hyprland.org/)**: Dynamic tiling Wayland compositor
 - **[Ultrashell](https://github.com/fveracoechea/ultrashell)**: Feature-rich status bar
-- **[SDDM](https://github.com/sddm/sddm)**: Display manager (NixOS)
+- **[Ly](https://github.com/fairyglade/ly)**: Display manager for the UWSM-managed Hyprland session and the Steam Session on NixOS
 - **[Ghostty](https://mitchellh.com/ghostty)**: Fast, GPU-accelerated terminal emulator
 
 ### Development Environment
@@ -110,7 +110,8 @@ dotfiles.git.enable = false;  # opt out of one member
 
 ### Cross-Layer
 
-Apps that span both NixOS and Home Manager (e.g. Hyprland) get two switches with the same name in separate eval contexts — both must be enabled:
+Apps that span both NixOS and Home Manager, such as Hyprland, get two switches with the same name in separate evaluation contexts.
+Both must be enabled:
 
 ```nix
 # configuration.nix (NixOS)
@@ -118,8 +119,17 @@ dotfiles.hyprland.enable = true;
 
 # home.nix (Home Manager)
 dotfiles.hyprland.enable = true;
-dotfiles.hyprland.monitors = [ "DP-1, 5120x1440@119.98Hz, auto, auto, bitdepth, 8, cm, auto" ];
+dotfiles.hyprland.monitors = [
+  "DP-1, 5120x1440@119.98Hz, auto, auto, bitdepth, 8, cm, auto"
+  "HDMI-A-1, disable"
+];
 ```
+
+This example matches `nixos-desktop`; other hosts must supply their own monitor specs.
+Hyprland's native settings live in `config/hypr/` and use store-backed installation, like Neovim.
+Home Manager generates only the session hooks and loader in `hyprland.lua`, plus a narrow JSON data bridge for monitors, Theme colors, and the Fuzzel cache path.
+Rebuild and activation install source edits and trigger internal reload hooks; there is no public reload helper.
+See the [Hyprland migration guide](docs/hyprland-summary.md) for ownership, checks, and the user-only activation, live smoke, and saved-path rollback procedure.
 
 ### Flake Exports
 
@@ -156,6 +166,10 @@ External consumer example:
 ```
 
 ## Installation
+
+System builds and activation are user-only operations.
+For the Hyprland language migration, follow the [migration test and recovery procedure](docs/hyprland-summary.md#user-only-activation-and-recovery) before a permanent `switch`.
+It saves the active System path before `test`; `nixos-rebuild test --rollback` does not necessarily select that pre-test state.
 
 1. **Clone the repository:**
    ```bash
@@ -196,11 +210,13 @@ External consumer example:
 │   ├── darwin/              # macOS-specific modules
 │   └── home-manager/        # User environment modules
 ├── packages/                # Custom packages (locally-built + wrapped from inputs)
+├── config/                  # Store-backed native app configuration, including hypr/ and nvim/
 └── flake.nix               # Main flake configuration
 ```
 
 ## Documentation
 
+- [Hyprland configuration and migration](docs/hyprland-summary.md): native Lua ownership, verification, user-only activation, live tests, and rollback.
 - **[Architecture Decision Records](docs/adr/)** — decisions on module structure, theming, macOS package split, the `dotfiles.*` enable namespace, and the nixpkgs channel split.
 - **[CONTEXT.md](CONTEXT.md)** — domain glossary for the repository.
 
