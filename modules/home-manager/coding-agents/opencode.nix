@@ -38,12 +38,12 @@
 
       settings = {
         autoupdate = false;
-        model = "openrouter/z-ai/glm-5.3-flash";
+        model = "openai/gpt-6-astra";
 
         agent = {
           build = {
-            model = "openrouter/z-ai/glm-5.3-flash";
-            variant = "high";
+            model = "openai/gpt-6-astra";
+            variant = "medium";
           };
         };
 
@@ -51,6 +51,13 @@
         permission."*" = "allow";
 
         provider = {
+          openai = {
+            models."gpt-6-astra" = {
+              options.reasoningEffort = "medium";
+              variants.medium.reasoningEffort = "medium";
+            };
+          };
+
           openrouter = {
             models."z-ai/glm-5.3-flash" = {
               options.reasoning.effort = "high";
