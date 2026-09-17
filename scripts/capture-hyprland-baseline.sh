@@ -44,7 +44,10 @@ readonly UNIT_PATTERN='hypr|uwsm'
 readonly STORE_PATH_RE='/nix/store/[a-z0-9]+-[^/]+/'
 readonly HYPRLAND_VERSION='0.55.4'
 readonly HYPRLAND_TAG='v0.55.4'
-readonly BIND_FLAGS='locked mouse release repeat longPress non_consuming auto_consuming has_description modmask submap key keycode catch_all dispatcher arg description'
+readonly BIND_FLAGS=(
+  locked mouse release repeat longPress non_consuming auto_consuming has_description
+  modmask submap key keycode catch_all dispatcher arg description
+)
 
 die() {
   echo "error: $*" >&2
@@ -165,7 +168,7 @@ validate() {
     'type == "array" and length >= 1 and all(.[]; has("name") and (has("id") | not) and (has("serial") | not) and (has("description") | not))' \
     "$dir/hyprctl/monitors.json" || fail=1
   check "binds.json entries carry every flag, dispatcher, key, modmask, description, arg" \
-    "type == \"array\" and length > 0 and all(.[]; $(printf 'has("%s") and ' $BIND_FLAGS)true)" \
+    "type == \"array\" and length > 0 and all(.[]; $(printf 'has("%s") and ' "${BIND_FLAGS[@]}")true)" \
     "$dir/hyprctl/binds.json" || fail=1
   check "workspacerules.json entries carry workspaceString" \
     'type == "array" and length > 0 and all(.[]; has("workspaceString"))' \

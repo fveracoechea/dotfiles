@@ -1,4 +1,9 @@
-{lib, config, pkgs, ...}: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   options.dotfiles.fonts.enable = lib.mkEnableOption "font packages and fontconfig";
 
   config = lib.mkIf config.dotfiles.fonts.enable {
