@@ -55,14 +55,15 @@ The parity gate executes the production entry and compares against
    contract; the port copies it (it already requires the decoder by its
    production module name `lib.json`).
    An empty monitor array is valid and creates no monitor declarations.
-   JSON null and nonempty objects remain invalid monitor values.
-   The vendored decoder does not distinguish empty arrays from empty objects, so an empty object is also accepted; no decoder shape extension is introduced here.
+   JSON null and all objects, including empty objects, are invalid monitor values.
 3. `config/hypr/lib/json.lua` is the vendored rxi/json.lua v0.1.2 with
    documented changes in this directory's `lib/json.lua`. Preserve the
    MIT header. Null uses a sentinel and round-trips as null. The decoder
    rejects trailing commas, non-JSON number forms, invalid escapes,
    invalid UTF-8, unpaired surrogates, duplicate object keys, and numeric
    overflow. Valid surrogate pairs and escaped backslashes decode correctly.
+   A private weak-key map preserves decoded array/object types without changing their fields or metatables.
+   `json.is_array` identifies decoded arrays; encoding preserves decoded container types, including empty objects.
 4. Modules use only the recorder subset documented in `api.md`.
    Binds compare positionally against all 46 baseline records. Options
    compare the exact captured 23-option set. Workspace rules compare the

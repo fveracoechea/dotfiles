@@ -268,7 +268,7 @@ in {
           "$XDG_CONFIG_HOME/hypr/hyprland.lua" \
           ${pkgs.dbus}/bin/dbus-update-activation-environment
         mkdir -p "$TMPDIR/bridge/dotfiles"
-        for fixture in missing malformed missing-theme-color null-monitors; do
+        for fixture in missing malformed missing-theme-color null-monitors object-monitors; do
           if [ "$fixture" != missing ]; then
             cp --remove-destination ${checkDir}/fixtures/bridge/"$fixture.json" "$TMPDIR/bridge/dotfiles/hyprland.json"
           fi

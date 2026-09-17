@@ -23,6 +23,11 @@
 --
 
 local json = { _version = "0.1.2" }
+local container_types = setmetatable({}, { __mode = "k" })
+
+function json.is_array(value)
+  return container_types[value] == "array"
+end
 
 -------------------------------------------------------------------------------
 -- Encode
@@ -64,7 +69,7 @@ local function encode_table(val, stack)
 
   stack[val] = true
 
-  if rawget(val, 1) ~= nil or next(val) == nil then
+  if json.is_array(val) or (container_types[val] == nil and (rawget(val, 1) ~= nil or next(val) == nil)) then
     -- Treat as array -- check keys are valid and it is not sparse
     local n = 0
     for k in pairs(val) do
@@ -149,7 +154,7 @@ local space_chars = create_set(" ", "\t", "\r", "\n")
 local delim_chars = create_set(" ", "\t", "\r", "\n", "]", "}", ",")
 local literals = create_set("true", "false", "null")
 
--- Local changes to rxi/json.lua v0.1.2: preserve null; enforce JSON number,
+-- Local changes to rxi/json.lua v0.1.2: preserve null and container types; enforce JSON number,
 -- comma and string grammar; validate UTF-8 and surrogate pairs; reject
 -- duplicate object keys and non-finite numbers. See ../README.md.
 json.null = setmetatable({}, {
@@ -284,6 +289,7 @@ end
 
 local function parse_array(str, i)
   local res = {}
+  container_types[res] = "array"
   local n = 1
   i = i + 1
   while 1 do
@@ -317,6 +323,7 @@ end
 
 local function parse_object(str, i)
   local res = {}
+  container_types[res] = "object"
   i = i + 1
   while 1 do
     local key, val

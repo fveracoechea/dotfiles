@@ -64,6 +64,7 @@ expect_reject("missing-theme-color.json", "missing one theme color")
 expect_reject("missing-paths.json", "missing paths")
 expect_reject("missing-fuzzel-cache.json", "missing fuzzelCache")
 expect_reject("wrong-type-monitors.json", "monitors not an array")
+expect_reject("object-monitors.json", "empty monitor object")
 expect_reject("sparse-monitors.json", "sparse monitor object")
 expect_reject("malformed.json", "malformed JSON")
 expect_reject("null-color.json", "null theme color")
@@ -117,6 +118,37 @@ do
   assert_true(json.decode '"\\\\u0041"' == "\\u0041", "escaped backslash is not a unicode escape")
   assert_true(json.decode('"' .. utf8.char(0x1f600) .. '"') == utf8.char(0x1f600), "raw UTF-8 preserved")
   assert_true(json.encode(json.null) == "null", "null sentinel round trips")
+end
+
+print "== decoded container types =="
+do
+  local json = require "lib.json"
+  for _, case in ipairs {
+    { "[]", true },
+    { "{}", false },
+    { "[null]", true },
+    { '{"1":"monitor"}', false },
+    { '[{},[],null,{"items":[]}]', true },
+    { '{"items":[{},[],null]}', false },
+  } do
+    local value = json.decode(case[1])
+    assert_true(json.is_array(value) == case[2], "decoded container type: " .. case[1])
+    assert_true(getmetatable(value) == nil, "decoded container remains a plain table: " .. case[1])
+    assert_true(json.encode(value) == case[1], "container shape round trips: " .. case[1])
+  end
+  assert_true(not json.is_array(json.null) and json.decode "null" == json.null, "null is not an array")
+  assert_true(not json.is_array {} and not json.is_array "[]", "only decoded arrays have array metadata")
+  assert_true(json.encode {} == "[]", "encoding an untyped empty table keeps upstream behavior")
+  assert_true(json.encode { json.null } == "[null]", "untyped arrays retain null values")
+  local array, object = json.decode "[]", json.decode "{}"
+  collectgarbage "collect"
+  assert_true(json.is_array(array) and json.encode(object) == "{}", "live containers retain types after collection")
+
+  local production = assert(io.open(root .. "/config/hypr/lib/json.lua"))
+  local reference = assert(io.open(here .. "/lib/json.lua"))
+  assert_true(production:read "*a" == reference:read "*a", "production and reference decoders are identical")
+  production:close()
+  reference:close()
 end
 do
   -- The vendored decoder preserves JSON null

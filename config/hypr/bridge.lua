@@ -9,7 +9,7 @@ local function reject(message)
 end
 
 local function valid_monitors(value)
-  if type(value) ~= "table" or value == json.null then
+  if not json.is_array(value) then
     return "monitors must be an array of strings"
   end
   local count, last = 0, 0
