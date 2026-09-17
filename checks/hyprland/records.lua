@@ -655,7 +655,7 @@ end
 -- Monitor spec grammar, verified against the pinned source: legacy lines are
 -- "NAME, MODE, POSITION, SCALE, [key, value]*" (ConfigManager.cpp
 -- handleMonitor) with short forms "NAME, disable|disabled",
--- "NAME, transform, N", "NAME, addreserved, T, R, B, L". The Lua side is the
+-- "NAME, transform, N", "NAME, addreserved, T, B, L, R". The Lua side is the
 -- typed hl.monitor table (MONITOR_FIELDS in LuaBindingsConfigRules.cpp).
 -- parse_monitor_spec returns the spec fields the line explicitly states, or
 -- nil plus an error for unknown syntax.
@@ -681,9 +681,9 @@ function records.parse_monitor_spec(line)
     return spec
   elseif second == "addreserved" then
     if #tokens ~= 6 then
-      return nil, "addreserved short form needs top right bottom left"
+      return nil, "addreserved short form needs top bottom left right"
     end
-    spec.reserved = tokens[3] .. " " .. tokens[4] .. " " .. tokens[5] .. " " .. tokens[6]
+    spec.reserved = tokens[3] .. " " .. tokens[6] .. " " .. tokens[4] .. " " .. tokens[5]
     return spec
   end
 

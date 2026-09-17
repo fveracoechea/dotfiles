@@ -1,6 +1,7 @@
 local settings = {}
 
 function settings.apply(data)
+  local declared_outputs = {}
   for _, spec in ipairs(data.monitors) do
     local fields = {}
     for field in (spec .. ","):gmatch "(.-)," do
@@ -9,6 +10,26 @@ function settings.apply(data)
     local monitor = { output = fields[1] }
     if fields[2] == "disable" or fields[2] == "disabled" then
       monitor.disabled = true
+    elseif fields[2] == "transform" then
+      monitor.transform = assert(tonumber(fields[3]), "invalid monitor transform")
+      assert(
+        monitor.transform % 1 == 0 and monitor.transform >= 0 and monitor.transform <= 7,
+        "invalid monitor transform"
+      )
+      if not declared_outputs[monitor.output] then
+        monitor = nil
+      end
+    elseif fields[2] == "addreserved" then
+      monitor.reserved = {
+        top = assert(tonumber(fields[3]), "invalid reserved top"),
+        bottom = assert(tonumber(fields[4]), "invalid reserved bottom"),
+        left = assert(tonumber(fields[5]), "invalid reserved left"),
+        right = assert(tonumber(fields[6]), "invalid reserved right"),
+      }
+      -- Legacy addreserved without an earlier output rule adds only a default rule.
+      if not declared_outputs[monitor.output] then
+        monitor.reserved = nil
+      end
     else
       monitor.mode = fields[2]
       monitor.position = fields[3]
@@ -22,7 +43,10 @@ function settings.apply(data)
         monitor[key] = numeric[key] and assert(tonumber(value), "invalid monitor number: " .. value) or value
       end
     end
-    hl.monitor(monitor)
+    if monitor then
+      hl.monitor(monitor)
+      declared_outputs[monitor.output] = true
+    end
   end
 
   hl.config {

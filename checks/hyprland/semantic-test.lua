@@ -655,6 +655,57 @@ end
 
 dofile(here .. "/lifecycle-test.lua")(here, root, report)
 
+print "== native monitor short forms =="
+do
+  local spec = assert(records.parse_monitor_spec "DP-1, addreserved, 10, 20, 30, 40")
+  report(spec.reserved == "10 40 20 30", "legacy reserved spec normalizes to top/right/bottom/left")
+  local capture = require "capture"
+  local transform = capture.run(
+    [[require("modules.settings").apply {
+      monitors = {"DP-1, preferred, auto, 1.25", "DP-1, transform, 1"}
+    }]],
+    root .. "/config/hypr"
+  )
+  local rule = transform.monitors[2] or {}
+  report(#transform.errors == 0 and #transform.monitors == 2, "transform short form applies after a full monitor spec")
+  report(
+    rule.output == "DP-1" and rule.transform == 1 and rule.mode == nil and rule.position == nil and rule.scale == nil,
+    "transform update does not reset mode, position, or scale"
+  )
+
+  local reserved = capture.run(
+    [[require("modules.settings").apply {
+      monitors = {"DP-1, preferred, auto, 1.25", "DP-1, addreserved, 10, 20, 30, 40"}
+    }]],
+    root .. "/config/hypr"
+  )
+  rule = reserved.monitors[2] or {}
+  local gap = rule.reserved or {}
+  report(#reserved.errors == 0 and #reserved.monitors == 2, "addreserved short form applies after a full monitor spec")
+  report(
+    rule.output == "DP-1"
+      and gap.top == 10
+      and gap.bottom == 20
+      and gap.left == 30
+      and gap.right == 40
+      and rule.mode == nil
+      and rule.position == nil
+      and rule.scale == nil,
+    "reserved update preserves legacy top/bottom/left/right order without resetting monitor fields"
+  )
+  local orphaned = capture.run(
+    [[require("modules.settings").apply {
+      monitors = {"DP-2, transform, 1", "DP-3, addreserved, 10, 20, 30, 40"}
+    }]],
+    root .. "/config/hypr"
+  )
+  rule = orphaned.monitors[1] or {}
+  report(
+    #orphaned.errors == 0 and #orphaned.monitors == 1 and rule.output == "DP-3" and rule.reserved == nil,
+    "legacy orphan short forms ignore transform and add only the default output for reserved area"
+  )
+end
+
 print(
   failures == 0 and "== semantic tests: all " .. checks .. " checks pass =="
     or "== semantic tests: " .. failures .. " failure(s) of " .. checks .. " =="

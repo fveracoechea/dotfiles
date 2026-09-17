@@ -374,6 +374,7 @@ function stub.new()
       scale = true,
       disabled = true,
       transform = true,
+      reserved = true,
       mirror = true,
       bitdepth = true,
       cm = true,

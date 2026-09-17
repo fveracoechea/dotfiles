@@ -9,7 +9,7 @@ local function reject(message)
 end
 
 local function valid_monitors(value)
-  if type(value) ~= "table" then
+  if type(value) ~= "table" or value == json.null then
     return "monitors must be an array of strings"
   end
   local count, last = 0, 0
@@ -25,9 +25,6 @@ local function valid_monitors(value)
     end
     count = count + 1
     last = math.max(last, index)
-  end
-  if count == 0 then
-    return "monitors must not be empty"
   end
   if last ~= count then
     return "monitors must not have gaps"

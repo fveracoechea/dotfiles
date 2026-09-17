@@ -5,6 +5,7 @@ local capture = {}
 
 function capture.run(source, directory, chunkname)
   local hl, state = stub.new()
+  state.errors = {}
   local phase = "config"
   state.lifecycle = { ["hyprland.start"] = {}, ["hyprland.shutdown"] = {} }
   local function copy_table(value)
@@ -119,7 +120,12 @@ function capture.run(source, directory, chunkname)
       return loaded[name]
     end
     loaded[name] = true
-    local value = run_file(directory .. "/" .. name:gsub("%.", "/") .. ".lua")
+    local ok, value = pcall(run_file, directory .. "/" .. name:gsub("%.", "/") .. ".lua")
+    if not ok then
+      -- Hyprland 0.55.4 safeLuaRequire records execution errors and caches {}.
+      table.insert(state.errors, tostring(value))
+      value = {}
+    end
     loaded[name] = value == nil and true or value
     return loaded[name]
   end

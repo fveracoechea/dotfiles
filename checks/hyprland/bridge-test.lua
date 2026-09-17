@@ -11,7 +11,8 @@ local function script_dir()
 end
 
 local here = script_dir()
-package.path = here .. "/?.lua;" .. here .. "/lib/?.lua;" .. package.path
+local root = (arg and arg[1]) or here .. "/../.."
+package.path = root .. "/config/hypr/?.lua;" .. here .. "/?.lua;" .. package.path
 
 local bridge = require "bridge"
 
@@ -51,13 +52,17 @@ do
   end
 end
 
+do
+  local data = bridge.load(fixture "empty-monitors.json")
+  assert_true(data ~= nil and next(data.monitors) == nil, "empty monitor array accepted without invented specs")
+end
+
 print "== bridge rejections (no defaults) =="
 expect_reject("missing-monitors.json", "missing monitors")
 expect_reject("missing-theme.json", "missing theme")
 expect_reject("missing-theme-color.json", "missing one theme color")
 expect_reject("missing-paths.json", "missing paths")
 expect_reject("missing-fuzzel-cache.json", "missing fuzzelCache")
-expect_reject("empty-monitors.json", "empty monitors array")
 expect_reject("wrong-type-monitors.json", "monitors not an array")
 expect_reject("sparse-monitors.json", "sparse monitor object")
 expect_reject("malformed.json", "malformed JSON")

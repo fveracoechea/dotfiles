@@ -6,3 +6,5 @@ require("modules.env").apply()
 require("modules.bindings").apply(data)
 require("modules.windowrules").apply()
 require("modules.theme").apply(data)
+
+return true

@@ -55,6 +55,10 @@
     homeDirectory = "/tmp/hyprland-fixture";
     monitors = [syntheticMonitor];
   };
+  monitorUpdates = repoHome {
+    monitors = [syntheticMonitor "DP-9, transform, 1" "DP-9, addreserved, 10, 20, 30, 40"];
+  };
+  emptyMonitors = repoHome {monitors = [];};
   darwin = repoHome {
     homePkgs = pkgs-darwin;
     releasePkgs = pkgs-stable-darwin;
@@ -263,6 +267,17 @@ in {
         lua ${checkDir}/parity-test.lua ${root} \
           "$XDG_CONFIG_HOME/hypr/hyprland.lua" \
           ${pkgs.dbus}/bin/dbus-update-activation-environment
+        mkdir -p "$TMPDIR/bridge/dotfiles"
+        for fixture in missing malformed missing-theme-color null-monitors; do
+          if [ "$fixture" != missing ]; then
+            cp --remove-destination ${checkDir}/fixtures/bridge/"$fixture.json" "$TMPDIR/bridge/dotfiles/hyprland.json"
+          fi
+          XDG_CONFIG_HOME="$TMPDIR/bridge" lua ${checkDir}/startup-validation-test.lua \
+            ${root} ${productionStage}/hypr/hyprland.lua invalid
+        done
+        cp --remove-destination ${checkDir}/fixtures/bridge/empty-monitors.json "$TMPDIR/bridge/dotfiles/hyprland.json"
+        XDG_CONFIG_HOME="$TMPDIR/bridge" lua ${checkDir}/startup-validation-test.lua \
+          ${root} ${productionStage}/hypr/hyprland.lua empty
         touch "$out"
       '';
   hyprland-production-parser =
@@ -274,7 +289,10 @@ in {
         HOME = production.config.home.homeDirectory;
       } ''
         ${parserSetup}
-        ${hyprland}/bin/Hyprland --verify-config -c "$XDG_CONFIG_HOME/hypr/hyprland.lua"
+        for configHome in ${productionStage} ${stage monitorUpdates} ${stage emptyMonitors}; do
+          export XDG_CONFIG_HOME="$configHome"
+          ${hyprland}/bin/Hyprland --verify-config -c "$XDG_CONFIG_HOME/hypr/hyprland.lua"
+        done
         touch "$out"
       '';
 }

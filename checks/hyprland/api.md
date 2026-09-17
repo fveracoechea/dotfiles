@@ -154,9 +154,16 @@ values at the call rather than observing subsequent Lua mutations.
 errors. The legacy spec grammar it must match:
 `NAME, MODE, POSITION, SCALE, [key, value]*` or the short forms
 `NAME, disable|disabled`, `NAME, transform, N`,
-`NAME, addreserved, T, R, B, L` (legacy ConfigManager.cpp
+`NAME, addreserved, T, B, L, R` (legacy ConfigManager.cpp
 `handleMonitor`); key set: mirror, bitdepth, cm, sdrsaturation,
 sdrbrightness, transform, vrr, icc.
+
+The legacy `ConfigManager.cpp:1292-1332` short forms update an existing output rule.
+Without an earlier rule, `transform` does nothing and `addreserved` adds a default output rule without a reserved area.
+Lines 1312-1313 map the legacy top/bottom/left/right arguments to the reserved-area constructor's top/right/bottom/left order.
+The Lua `hl.monitor` implementation copies the existing rule before applying specified fields, `LuaBindingsConfigRules.cpp:1022-1026`.
+Native short forms therefore pass only `output` and the changed field, not replacement mode, position, or scale values.
+The recorder accepts the source-verified `reserved` field for these focused native tests; the baseline comparator still rejects monitor fields outside its declared subset.
 
 ## Window rules
 
@@ -228,3 +235,12 @@ The user explicitly approved this exception in issue 37 with "Yes, keep the
 hook." The comparator permits only this exact expected shutdown change;
 the old captured config stays unchanged. The recorder proves command strings
 and order, not process completion or successful target shutdown.
+
+### Failed require calls
+
+Hyprland 0.55.4 `lua/ConfigManager.cpp:108-169` wraps `require` with `safeLuaRequire`.
+Module execution errors are recorded as config errors; the wrapper returns and caches an empty table instead of aborting the parent file.
+The native entry returns `true` only after validation and module application.
+The post-hook lifecycle module requires that exact success value before registering Ultrashell.
+The recorder models the swallowed execution error and cached table, and the production parity gate rejects recorded errors.
+Tests run the actual generated entry with missing, malformed, and invalid bridge data and assert that only Home Manager's hooks register.

@@ -85,6 +85,7 @@ if not xdg or xdg == "" then
 end
 
 local state = capture.run(read(staged_entry), staged_directory, "@" .. staged_entry)
+assert(#state.errors == 0, table.concat(state.errors, "\n"))
 
 local failures = 0
 local checks = 0

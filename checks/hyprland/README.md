@@ -54,6 +54,9 @@ The parity gate executes the production entry and compares against
    reference loader in `checks/hyprland/bridge.lua` is the executable
    contract; the port copies it (it already requires the decoder by its
    production module name `lib.json`).
+   An empty monitor array is valid and creates no monitor declarations.
+   JSON null and nonempty objects remain invalid monitor values.
+   The vendored decoder does not distinguish empty arrays from empty objects, so an empty object is also accepted; no decoder shape extension is introduced here.
 3. `config/hypr/lib/json.lua` is the vendored rxi/json.lua v0.1.2 with
    documented changes in this directory's `lib/json.lua`. Preserve the
    MIT header. Null uses a sentinel and round-trips as null. The decoder
@@ -107,6 +110,10 @@ lua checks/hyprland/parity-test.lua REPO_ROOT STAGED_HYPRLAND_LUA DBUS_EXECUTABL
   hooks and user startup modules can register separately.
 - `semantic-test.lua` also runs `lifecycle-test.lua`. No separate test wiring
   is needed for the controlled execution and lifecycle mutation tests.
+- The loader records and caches swallowed module execution errors as Hyprland's `safeLuaRequire` does.
+  The production gate requires no recorded errors for valid data.
+  Separate invalid-data runs use the actual generated entry and assert that the upstream hooks remain, but user startup does not register.
+  A subsequent empty-array run verifies successful configuration without invented monitor declarations.
 
 ## Approved shutdown exception
 
