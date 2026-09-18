@@ -39,7 +39,7 @@
       };
 
       xdg.configFile."hunk/config.toml".source = tomlFormat.generate "hunk-config" {
-        theme = "auto";
+        theme = "catppuccin-mocha";
         mode = "auto";
         line_numbers = true;
         warp_lines = false;
