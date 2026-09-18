@@ -20,3 +20,21 @@ Create a GitHub issue.
 ## When a skill says "fetch the relevant ticket"
 
 Run `gh issue view <number> --comments`.
+
+## Wayfinding operations
+
+Use GitHub's native sub-issue and issue dependency relationships. Do not encode
+these relationships in issue bodies.
+
+- **Add a child issue**: get the child's numeric database ID with
+  `gh api repos/{owner}/{repo}/issues/<child> --jq .id`, then run
+  `gh api --method POST repos/{owner}/{repo}/issues/<map>/sub_issues -F sub_issue_id=<database-id>`.
+- **Add a blocking edge**: get the blocking issue's numeric database ID with
+  `gh api repos/{owner}/{repo}/issues/<blocking> --jq .id`, then
+  run `gh api --method POST repos/{owner}/{repo}/issues/<blocked>/dependencies/blocked_by -F issue_id=<database-id>`.
+- **Load a map and its children**: run
+  `gh issue view <map> --json number,title,body,url,subIssues,subIssuesSummary`.
+- **Find the frontier**: query the map's open children with GraphQL. A child is
+  on the frontier when it has no open `blockedBy` issues and no assignee.
+- **Claim a ticket**: run `gh issue edit <ticket> --add-assignee @me` before
+  reading or working beyond the map's low-resolution context.

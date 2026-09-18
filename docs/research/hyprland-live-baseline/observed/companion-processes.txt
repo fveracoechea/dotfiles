@@ -1,0 +1,4 @@
+      1 .ghostty-wrappe
+      1 hypridle
+      1 hyprpaper
+      1 .ultrashell-wra

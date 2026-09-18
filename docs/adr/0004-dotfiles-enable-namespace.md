@@ -18,7 +18,17 @@ This trade-off favors discoverability and uniform host API over the minimal-mach
 
 ## Package plumbing
 
-`customUtils` (palette + monitors catalog) is replaced by `config.dotfiles.palette` (hardcoded catppuccin-mocha attrset, multi-theme support deferred) and `config.dotfiles.monitors` (host-declared list of monitor spec strings). `customPkgs` is renamed to `dotfilesPkgs` and extended to wrap non-nixpkgs flake inputs (hyprland, tmux-powerkit) so modules never touch `inputs` or `system` directly for packages. No overlays.
+The namespace refactor replaced `customUtils`, which held the palette and monitor catalog, with `config.dotfiles.palette` and `config.dotfiles.hyprland.monitors`.
+The palette is a fixed Catppuccin Mocha attribute set, with multi-theme support deferred.
+The monitor option is a host-declared list of spec strings.
+The native Hyprland migration keeps those inputs in Nix and sends them through the [JSON bridge](../hyprland-summary.md#bridge-and-lifecycle); compositor settings remain hand-written Lua.
+The earlier upstream-option override guidance does not authorize adding generated Hyprland settings.
+
+The refactor also renamed `customPkgs` to `dotfilesPkgs` and wrapped non-nixpkgs inputs so package consumers did not need direct access to `inputs` or `system`.
+The original Hyprland input wrapper is historical.
+[ADR-0007](0007-split-nixpkgs-channels-by-package-owner.md) moved the compositor to the System's Release Channel package and removed that input.
+Current input wrappers in `packages/default.nix` are `herdr`, `tmux-powerkit`, and `ultrashell`.
+No overlays are used for this package wiring.
 
 ## Flake exports
 

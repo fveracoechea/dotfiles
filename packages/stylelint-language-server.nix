@@ -1,6 +1,4 @@
-{
-  pkgs,
-}: let
+{pkgs}: let
   lockFile = ./stylelint-language-server-lock.json;
 in
   pkgs.buildNpmPackage {

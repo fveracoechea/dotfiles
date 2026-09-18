@@ -1,0 +1,5 @@
+{
+  "monitors": ["DP-1, preferred"],
+  "theme": { "blue": null, "flamingo": "#f2cdcd", "surface2": "#585b70" },
+  "paths": { "fuzzelCache": "/home/fveracoechea/.cache/fuzzel" }
+}

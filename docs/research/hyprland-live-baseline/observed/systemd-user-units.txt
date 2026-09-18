@@ -1,0 +1,4 @@
+hypridle.service active running
+hyprpaper.service active running
+xdg-desktop-portal-hyprland.service active running
+hyprland-session.target active active

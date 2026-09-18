@@ -1,0 +1,4 @@
+{
+  "monitors": ["DP-1, preferred"],
+  "theme": { "blue": "#89b4fa", "flamingo": "#f2cdcd", "surface2": "#585b70" }
+}

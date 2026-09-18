@@ -1,0 +1,4 @@
+{
+  "theme": { "blue": "#89b4fa", "flamingo": "#f2cdcd", "surface2": "#585b70" },
+  "paths": { "fuzzelCache": "/home/fveracoechea/.cache/fuzzel" }
+}

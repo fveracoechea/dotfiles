@@ -1,0 +1,4 @@
+{
+  "monitors": ["DP-1, preferred"],
+  "paths": { "fuzzelCache": "/home/fveracoechea/.cache/fuzzel" }
+}

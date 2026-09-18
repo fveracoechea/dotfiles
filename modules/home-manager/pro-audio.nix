@@ -1,4 +1,9 @@
-{lib, config, pkgs, ...}: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   options.dotfiles.pro-audio.enable = lib.mkEnableOption "pro audio DAWs and plugins";
 
   config = lib.mkIf config.dotfiles.pro-audio.enable {
