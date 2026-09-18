@@ -12,7 +12,7 @@ require("bufferline").setup {
     show_close_icon = false,
     close_icon = "",
     buffer_close_icon = "",
-    separator_style = "slant",
+    separator_style = "thin",
     always_show_bufferline = true,
     offsets = {
       {

@@ -19,8 +19,8 @@
         theme = "Catppuccin Mocha";
         shell-integration = "zsh";
 
-        background-opacity = 0.9;
-        background-blur = true;
+        background-opacity = 0.8;
+        background-blur = 60;
 
         window-padding-color = "background";
         window-padding-x = 6;
