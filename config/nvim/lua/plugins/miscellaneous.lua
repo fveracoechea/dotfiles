@@ -2,7 +2,7 @@ require("todo-comments").setup()
 
 require("herdr-nvim").setup {
   prefix = "<leader>h",
-  clear_after_send = false,
+  clear_after_send = true,
 }
 
 require("ts_context_commentstring").setup {
