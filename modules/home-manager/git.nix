@@ -8,9 +8,21 @@
 
   config = let
     tomlFormat = pkgs.formats.toml {};
+
+    # gh hides its token in the keyring, so `hunk gh` never sees it. The guard
+    # keeps that keyring read off the hot `hunk pager` path.
+    hunk = pkgs.symlinkJoin {
+      name = "hunk-${pkgs.hunk.version}";
+      paths = [pkgs.hunk];
+      nativeBuildInputs = [pkgs.makeWrapper];
+      postBuild = ''
+        wrapProgram $out/bin/hunk \
+          --run 'if [ "$1" = "gh" ] && [ -z "$GH_TOKEN" ] && [ -z "$GITHUB_TOKEN" ]; then export GH_TOKEN=$(${pkgs.gh}/bin/gh auth token 2>/dev/null); fi'
+      '';
+    };
   in
     lib.mkIf config.dotfiles.git.enable {
-      home.packages = with pkgs; [hunk gh];
+      home.packages = [hunk pkgs.gh];
 
       xdg.configFile."hunk/extensions/hunk-diff-context".source = pkgs.fetchFromGitHub {
         owner = "astwys";
