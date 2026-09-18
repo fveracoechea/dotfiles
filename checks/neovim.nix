@@ -12,6 +12,7 @@
 
   home = hmLib.homeManagerConfiguration {
     pkgs = pkgs';
+    extraSpecialArgs.dotfilesPkgs = flake.dotfilesPkgs.${system};
     modules = [
       {
         home.username = "neovim-test";
@@ -84,6 +85,24 @@
             if not ok then io.stderr:write('$m: ' .. tostring(err) .. '\n'); vim.cmd('cquit 1') end" \
           +qa || { echo "FAIL: $m" >&2; code=1; }
       done
+
+      "$nvimBin" --headless -u NONE \
+        +"let &runtimepath = '$configDir,' . &runtimepath" \
+        +"lua local ok, err = pcall(function()
+          require('config.options')
+          require('config.keymaps')
+          require('plugins.miscellaneous')
+          assert(vim.fn.exists(':Herdr') == 2)
+          assert(require('herdr-nvim').config.clear_after_send == false)
+          for _, suffix in ipairs({ 'c', 'l', 's', 'S' }) do
+            local mapping = vim.fn.maparg(vim.g.mapleader .. 'h' .. suffix, 'n', false, true)
+            assert(mapping.desc:match('herdr%-nvim'), 'Missing Herdr mapping: ' .. suffix)
+            assert(#vim.fn.maparg(vim.g.mapleader .. 'a' .. suffix, 'n') == 0)
+          end
+          assert(#vim.fn.maparg(vim.g.mapleader .. 'hc', 'x') > 0)
+        end)
+        if not ok then io.stderr:write(tostring(err) .. '\n'); vim.cmd('cquit 1') end" \
+        +qa || { echo "FAIL: Herdr annotation mappings" >&2; code=1; }
 
       if [ "$code" -eq 0 ]; then
         echo "all modules loaded successfully" > "$out"

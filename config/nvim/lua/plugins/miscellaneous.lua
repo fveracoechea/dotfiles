@@ -1,5 +1,10 @@
 require("todo-comments").setup()
 
+require("herdr-nvim").setup {
+  prefix = "<leader>h",
+  clear_after_send = false,
+}
+
 require("ts_context_commentstring").setup {
   enable_autocmd = false,
 }

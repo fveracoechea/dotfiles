@@ -60,6 +60,7 @@
           ++ global-packages;
 
         plugins = with pkgs.vimPlugins; [
+          dotfilesPkgs.herdr-nvim
           nvim-treesitter.withAllGrammars
           todo-comments-nvim
           plenary-nvim
