@@ -176,10 +176,12 @@
               # the intentional channel split. See ADR-0007.
               home.enableNixpkgsReleaseCheck = false;
             };
-            home-manager.extraSpecialArgs = specialArgs // {
-              inherit pkgs-stable;
-              lib = homeManagerLib;
-            };
+            home-manager.extraSpecialArgs =
+              specialArgs
+              // {
+                inherit pkgs-stable;
+                lib = homeManagerLib;
+              };
           }
         ];
       };
@@ -220,10 +222,12 @@
               # the intentional channel split. See ADR-0007.
               home.enableNixpkgsReleaseCheck = false;
             };
-            home-manager.extraSpecialArgs = specialArgs // {
-              inherit pkgs-stable;
-              lib = homeManagerLib;
-            };
+            home-manager.extraSpecialArgs =
+              specialArgs
+              // {
+                inherit pkgs-stable;
+                lib = homeManagerLib;
+              };
           }
         ];
       };
