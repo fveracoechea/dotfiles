@@ -38,6 +38,9 @@
         workspaceFollowFocus = false;
         screenPreferences.wallpaper = [];
 
+        frameEnabled = true;
+        frameMode = "connected";
+
         clipboardEnterToPaste = true;
         clipboardUseOverlayLayer = false;
 
