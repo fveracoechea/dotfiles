@@ -40,6 +40,8 @@
 
         frameEnabled = true;
         frameMode = "connected";
+        fontScale = 1.1;
+        textRenderType = 1;
 
         clipboardEnterToPaste = true;
         clipboardUseOverlayLayer = false;
