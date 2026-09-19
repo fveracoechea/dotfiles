@@ -51,7 +51,7 @@
 
   smokeTest =
     pkgs'.runCommand "neovim-config-smoke-test" {
-      nativeBuildInputs = [testNvim];
+      nativeBuildInputs = [testNvim pkgs'.git];
       nvimBin = "${testNvim}/bin/nvim";
       configDir = configDir;
     } ''
@@ -93,7 +93,7 @@
           require('config.keymaps')
           require('plugins.miscellaneous')
           assert(vim.fn.exists(':Herdr') == 2)
-          assert(require('herdr-nvim').config.clear_after_send == false)
+          assert(require('herdr-nvim').config.clear_after_send == true)
           for _, suffix in ipairs({ 'c', 'l', 's', 'S' }) do
             local mapping = vim.fn.maparg(vim.g.mapleader .. 'h' .. suffix, 'n', false, true)
             assert(mapping.desc:match('herdr%-nvim'), 'Missing Herdr mapping: ' .. suffix)
