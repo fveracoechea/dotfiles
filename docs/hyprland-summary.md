@@ -14,9 +14,9 @@ This document summarizes the Hyprland window manager configuration defined in `m
 | `windowrules.nix` | Window rules for floating, borders, idle inhibition |
 | `theme.nix` | Catppuccin Mocha color theme for borders |
 | `hypridle.nix` | Idle / lock / suspend management |
-| `hyprlock.nix` | Lock screen appearance |
 | `hyprpaper.nix` | Wallpaper configuration |
 | `hyprcursor.nix` | Cursor theme configuration |
+| `dms.nix` | DankMaterialShell service, theme, launcher, clipboard, notifications, and lock screen |
 
 ---
 
@@ -24,12 +24,12 @@ This document summarizes the Hyprland window manager configuration defined in `m
 
 **Layout:** Dwindle layout with `preserve_split` and `force_split = 2`.
 
-**Monitor:** Uses `customUtils.monitors.samsung-odyssey`.
+**Monitor:** Uses the host's `dotfiles.hyprland.monitors` list.
 
 **General:**
 
 - Border size: `3`
-- Gaps: `10` inner; `10,20,20,20` outer
+- Gaps: `10` inner; `10,18,18,18` outer
 - Rounding: `8`
 - `resize_on_border = true`
 - `single_window_aspect_ratio = "16 9"`
@@ -44,8 +44,7 @@ This document summarizes the Hyprland window manager configuration defined in `m
 
 **Startup:**
 
-- `ultrashell` (status bar)
-- `hyprdim --fade 25`
+- The Home Manager systemd service starts DankMaterialShell with the Hyprland session.
 
 **Persistent workspaces:** 1–5
 
@@ -88,7 +87,10 @@ Modifier key: `SUPER`
 |-----|--------|
 | `SUPER + B` | Google Chrome |
 | `SUPER + S` | Ghostty terminal |
-| `SUPER + A` | Fuzzel application launcher |
+| `SUPER + A` | DMS application launcher |
+| `SUPER + O` | Handy transcription |
+| `SUPER + V` | DMS clipboard history |
+| `SUPER + SHIFT + V` | Paste the current clipboard value |
 
 ### Mouse
 
@@ -161,14 +163,14 @@ The `theme.nix` converts hex colors to `rgb(...)` strings using a small helper.
 
 ---
 
-## Hyprlock
+## DMS lock screen
 
 - Enabled
 - Wallpaper: `assets/wallpapers/dark-forrest-ultrawide.png`
-- Profile image: `assets/face.jpg`
-- Shows clock and date labels
-- Password field with Catppuccin-themed colors
-- `disable_loading_bar = true`
+- Profile image: `assets/face.jpg` through `~/.face`
+- Uses DMS password authentication
+- Hides weather and media details
+- Uses the Catppuccin custom theme
 
 ---
 
@@ -184,7 +186,7 @@ The `theme.nix` converts hex colors to `rgb(...)` strings using a small helper.
 
 | Timeout | Action |
 |---------|--------|
-| 15 min | Lock screen (`hyprlock`) |
+| 15 min | Lock screen (`dms ipc call lock lock`) |
 | 30 min | Suspend (`systemctl suspend`) |
 
 `ignore_dbus_inhibit = false`.
@@ -207,19 +209,12 @@ Installed alongside Hyprland:
 | Package | Description |
 |---------|-------------|
 | `mpv` | Media player |
-| `ultrashell` | Status bar |
-| `hyprdim` | Dim inactive windows |
+| `dms-shell` | Desktop shell, launcher, notifications, clipboard, and lock screen |
+| `quickshell` | DMS QtQuick shell runtime from the Latest Channel |
 | `hyprpaper` | Wallpaper utility |
 | `hyprshot` | Screenshot utility |
 | `hyprpicker` | Color picker |
 | `hyprcursor` | Cursor theme utility |
-
-### Helper scripts
-
-| Script | Action |
-|--------|--------|
-| `set-screen-share-resolution` | Switches monitor to `samsung-odyssey-qhd` resolution |
-| `unset-screen-share-resolution` | Restores `samsung-odyssey` resolution |
 
 ---
 

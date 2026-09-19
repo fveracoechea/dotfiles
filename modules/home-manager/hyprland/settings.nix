@@ -32,10 +32,6 @@ in {
           animate_mouse_windowdragging = true;
         };
 
-        exec-once = [
-          "ultrashell"
-        ];
-
         general = {
           layout = "dwindle";
           border_size = 3;

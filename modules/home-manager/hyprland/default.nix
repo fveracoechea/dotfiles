@@ -6,10 +6,10 @@
     ./packages.nix
     ./windowrules.nix
     ./hypridle.nix
-    ./hyprlock.nix
     ./hyprpaper.nix
     ./hyprcursor.nix
     ./theme.nix
+    ./dms.nix
   ];
 
   options.dotfiles.hyprland = {

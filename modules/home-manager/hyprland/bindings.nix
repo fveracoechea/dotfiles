@@ -18,7 +18,7 @@
         terminal = "ghostty";
         workspaces = [1 2 3 4 5 6 7 8 9];
         browser = "google-chrome-stable";
-        search = "fuzzel --cache ${config.home.homeDirectory}/.config/fuzzel/cache";
+        search = "dms ipc call spotlight toggle";
         handy = "handy --toggle-transcription";
 
         openapp = key: app: "SUPER, ${key}, Open ${app}, exec, ${app}";
@@ -63,7 +63,8 @@
 
           # UNIVERSAL CLIPBOARD
           "SUPER, C, Copy, sendshortcut, CTRL, INSERT, activewindow"
-          "SUPER, V, Paste, sendshortcut, SHIFT, INSERT, activewindow"
+          "SUPER, V, Open clipboard history, exec, dms ipc call clipboard toggle"
+          "SUPER SHIFT, V, Paste, sendshortcut, SHIFT, INSERT, activewindow"
         ]
         # Switch workspaces with SUPER + [1-9]
         ++ (map (i: "SUPER, ${toString i}, Switch to workspace ${toString i}, workspace, ${toString i}") workspaces)

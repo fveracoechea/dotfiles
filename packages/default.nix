@@ -11,5 +11,4 @@
 
   herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
   tmux-powerkit = inputs.tmux-powerkit.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  ultrashell = inputs.ultrashell.packages.${pkgs.stdenv.hostPlatform.system}.default;
 }

@@ -17,6 +17,12 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
 
+    dms.url = "github:AvengeMedia/DankMaterialShell/stable";
+    dms.inputs.nixpkgs.follows = "nixpkgs-latest";
+
+    catppuccin-dms.url = "github:catppuccin/dankmaterialshell";
+    catppuccin-dms.flake = false;
+
     musnix.url = "github:musnix/musnix";
     musnix.inputs.nixpkgs.follows = "nixpkgs-stable";
 
@@ -27,9 +33,6 @@
     # nix-darwin asserts that the two branches correspond.
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs-stable-darwin";
-
-    ultrashell.url = "github:fveracoechea/ultrashell";
-    ultrashell.inputs.nixpkgs.follows = "nixpkgs-stable";
 
     tmux-powerkit.url = "github:fabioluciano/tmux-powerkit";
     tmux-powerkit.inputs.nixpkgs.follows = "nixpkgs-latest";
@@ -99,9 +102,13 @@
     # not re-declare them. Third-party modules are imported here because
     # `imports` cannot read module arguments.
     homeManagerModules.default = {
-      _module.args = {inherit codingAgentSources;};
+      _module.args = {
+        inherit codingAgentSources;
+        dmsThemeSource = inputs.catppuccin-dms;
+      };
       imports = [
         ./modules/home-manager/default.nix
+        inputs.dms.homeModules.dank-material-shell
         inputs.spicetify-nix.homeManagerModules.default
       ];
     };

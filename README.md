@@ -61,7 +61,7 @@ When a release lands, move all three release refs together:
 ### Window Management & Desktop
 
 - **[Hyprland](https://hyprland.org/)**: Dynamic tiling Wayland compositor
-- **[Ultrashell](https://github.com/fveracoechea/ultrashell)**: Feature-rich status bar
+- **[DankMaterialShell](https://danklinux.com/)**: Desktop shell, launcher, notifications, clipboard, and lock screen
 - **[SDDM](https://github.com/sddm/sddm)**: Display manager (NixOS)
 - **[Ghostty](https://mitchellh.com/ghostty)**: Fast, GPU-accelerated terminal emulator
 
