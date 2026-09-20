@@ -13,6 +13,7 @@
       mesa-demos
       protonup-rs
       amdgpu_top
+      lutris
     ];
 
     dotfiles.mangohud.enable = lib.mkDefault true;
