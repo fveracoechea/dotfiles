@@ -45,6 +45,10 @@
 
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
+
+    dev-manager-desktop.url = "github:webosbrew/dev-manager-desktop";
+    dev-manager-desktop.inputs.nixpkgs.follows = "nixpkgs-latest";
+    dev-manager-desktop.inputs.nixpkgs-x86-darwin.follows = "nixpkgs-stable-darwin";
   };
 
   outputs = {

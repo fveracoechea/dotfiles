@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A developer-focused comparison of Quickshell desktop shells for Hyprland and NixOS, with Catppuccin Mocha support.">
+  <title>Quickshell shortlist for NixOS</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --base: #1e1e2e;
+      --mantle: #181825;
+      --crust: #11111b;
+      --surface-0: #313244;
+      --surface-1: #45475a;
+      --overlay: #6c7086;
+      --subtext: #a6adc8;
+      --text: #cdd6f4;
+      --lavender: #b4befe;
+      --blue: #89b4fa;
+      --green: #a6e3a1;
+      --yellow: #f9e2af;
+      --peach: #fab387;
+      --red: #f38ba8;
+      --mauve: #cba6f7;
+      --content: 1180px;
+      --rail: 310px;
+      --line: 1px solid var(--surface-1);
+      --code: "Iosevka", "JetBrains Mono", "Cascadia Code", monospace;
+      --body: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--base);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      opacity: 0.24;
+      pointer-events: none;
+      background-image:
+        linear-gradient(var(--surface-0) 1px, transparent 1px),
+        linear-gradient(90deg, var(--surface-0) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, black, transparent 72vh);
+    }
+
+    a {
+      color: var(--blue);
+      text-underline-offset: 0.24em;
+      text-decoration-thickness: 1px;
+    }
+
+    a:hover {
+      color: var(--lavender);
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 4px;
+    }
+
+    code,
+    .mono {
+      font-family: var(--code);
+    }
+
+    code {
+      padding: 0.12em 0.34em;
+      color: var(--green);
+      background: var(--mantle);
+      border: 1px solid var(--surface-0);
+    }
+
+    .site-header {
+      border-bottom: var(--line);
+      background: color-mix(in srgb, var(--crust) 88%, transparent);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      width: min(calc(100% - 40px), var(--content));
+      min-height: 62px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      color: var(--text);
+      font-family: var(--code);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .brand span {
+      color: var(--mauve);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-family: var(--code);
+      font-size: 0.82rem;
+    }
+
+    .nav-links a {
+      color: var(--subtext);
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      width: min(calc(100% - 40px), var(--content));
+      margin: 0 auto;
+      padding: clamp(64px, 10vw, 126px) 0 72px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      gap: clamp(42px, 8vw, 104px);
+      align-items: end;
+    }
+
+    .hero h1 {
+      max-width: 760px;
+      margin: 0;
+      font-family: var(--code);
+      font-size: clamp(2.7rem, 7vw, 6.8rem);
+      line-height: 0.94;
+      letter-spacing: -0.075em;
+      text-wrap: balance;
+    }
+
+    .hero h1 .prompt {
+      color: var(--mauve);
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      margin: 30px 0 0;
+      color: var(--subtext);
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+    }
+
+    .terminal {
+      overflow: hidden;
+      border: var(--line);
+      background: var(--crust);
+      box-shadow: 14px 14px 0 var(--surface-0);
+    }
+
+    .terminal-bar {
+      padding: 10px 14px;
+      color: var(--overlay);
+      border-bottom: var(--line);
+      font-family: var(--code);
+      font-size: 0.74rem;
+    }
+
+    .terminal pre {
+      min-height: 215px;
+      margin: 0;
+      padding: 22px;
+      overflow: auto;
+      color: var(--subtext);
+      font-family: var(--code);
+      font-size: 0.83rem;
+      line-height: 1.8;
+    }
+
+    .terminal .cmd {
+      color: var(--text);
+    }
+
+    .terminal .ok {
+      color: var(--green);
+    }
+
+    .terminal .warn {
+      color: var(--yellow);
+    }
+
+    .workspace {
+      width: min(calc(100% - 40px), var(--content));
+      margin: 0 auto 96px;
+      display: grid;
+      grid-template-columns: var(--rail) minmax(0, 1fr);
+      gap: clamp(42px, 7vw, 88px);
+      align-items: start;
+    }
+
+    .rail {
+      position: sticky;
+      top: 30px;
+      border-top: 5px solid var(--green);
+      background: var(--mantle);
+    }
+
+    .rail-inner {
+      padding: 24px;
+      border: var(--line);
+      border-top: 0;
+    }
+
+    .rail h2 {
+      margin: 0 0 10px;
+      font-family: var(--code);
+      font-size: 1.35rem;
+      line-height: 1.2;
+    }
+
+    .rail p {
+      margin: 0;
+      color: var(--subtext);
+      font-size: 0.94rem;
+    }
+
+    .rail dl {
+      margin: 24px 0 0;
+    }
+
+    .rail dl div {
+      padding: 12px 0;
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 12px;
+      border-top: 1px solid var(--surface-0);
+    }
+
+    .rail dt {
+      color: var(--overlay);
+      font-family: var(--code);
+      font-size: 0.75rem;
+    }
+
+    .rail dd {
+      margin: 0;
+      font-size: 0.86rem;
+    }
+
+    .rail-action {
+      width: 100%;
+      margin-top: 22px;
+      padding: 12px 14px;
+      display: block;
+      color: var(--crust);
+      background: var(--green);
+      border: 0;
+      font-family: var(--code);
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .rail-action:hover {
+      color: var(--crust);
+      background: var(--lavender);
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    .section {
+      padding: 0 0 72px;
+      scroll-margin-top: 30px;
+    }
+
+    .section + .section {
+      padding-top: 72px;
+      border-top: var(--line);
+    }
+
+    .section h2 {
+      max-width: 760px;
+      margin: 0 0 20px;
+      font-family: var(--code);
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      line-height: 1.04;
+      letter-spacing: -0.045em;
+    }
+
+    .section-intro {
+      max-width: 720px;
+      margin: 0 0 34px;
+      color: var(--subtext);
+      font-size: 1.07rem;
+    }
+
+    .status-line {
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      padding: 5px 9px;
+      color: var(--subtext);
+      border: 1px solid var(--surface-1);
+      font-family: var(--code);
+      font-size: 0.72rem;
+    }
+
+    .tag.good {
+      color: var(--green);
+      border-color: color-mix(in srgb, var(--green) 48%, var(--surface-1));
+    }
+
+    .tag.caution {
+      color: var(--yellow);
+      border-color: color-mix(in srgb, var(--yellow) 48%, var(--surface-1));
+    }
+
+    .verdict {
+      margin: 32px 0;
+      padding: 20px 22px;
+      border-left: 5px solid var(--mauve);
+      background: var(--mantle);
+    }
+
+    .verdict strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--mauve);
+      font-family: var(--code);
+    }
+
+    .verdict p {
+      margin: 0;
+    }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-top: var(--line);
+      border-left: var(--line);
+    }
+
+    .evidence {
+      min-height: 170px;
+      padding: 22px;
+      border-right: var(--line);
+      border-bottom: var(--line);
+    }
+
+    .evidence h3 {
+      margin: 0 0 9px;
+      color: var(--lavender);
+      font-family: var(--code);
+      font-size: 0.96rem;
+    }
+
+    .evidence p {
+      margin: 0;
+      color: var(--subtext);
+      font-size: 0.93rem;
+    }
+
+    .risk {
+      color: var(--yellow);
+    }
+
+    .matrix-wrap {
+      overflow-x: auto;
+      border: var(--line);
+    }
+
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      background: var(--mantle);
+    }
+
+    th,
+    td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--surface-0);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--lavender);
+      font-family: var(--code);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    tbody th {
+      color: var(--text);
+      font-size: 0.83rem;
+    }
+
+    td {
+      color: var(--subtext);
+      font-size: 0.9rem;
+    }
+
+    tr:last-child th,
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .yes {
+      color: var(--green);
+    }
+
+    .partial {
+      color: var(--yellow);
+    }
+
+    .no {
+      color: var(--red);
+    }
+
+    .video-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .video {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.78fr) minmax(0, 1.22fr);
+      min-height: 190px;
+      color: inherit;
+      border: var(--line);
+      background: var(--mantle);
+      text-decoration: none;
+    }
+
+    .video-image {
+      position: relative;
+      min-height: 190px;
+      overflow: hidden;
+      background: var(--crust);
+    }
+
+    .video-image img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      filter: saturate(0.82) contrast(1.05);
+      transition: transform 180ms ease;
+    }
+
+    .video:hover .video-image img {
+      transform: scale(1.025);
+    }
+
+    .play {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: 54px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      color: var(--crust);
+      background: var(--mauve);
+      transform: translate(-50%, -50%);
+      font-family: var(--code);
+      font-weight: 900;
+    }
+
+    .video-copy {
+      padding: 24px;
+      align-self: center;
+    }
+
+    .video-copy h3 {
+      margin: 0 0 8px;
+      color: var(--text);
+      font-family: var(--code);
+      font-size: 1.12rem;
+      line-height: 1.35;
+    }
+
+    .video-copy p {
+      margin: 0;
+      color: var(--subtext);
+      font-size: 0.92rem;
+    }
+
+    .video-copy .source {
+      margin-top: 14px;
+      color: var(--blue);
+      font-family: var(--code);
+      font-size: 0.76rem;
+    }
+
+    .steps {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: steps;
+      border-top: var(--line);
+    }
+
+    .steps li {
+      position: relative;
+      padding: 22px 16px 22px 72px;
+      border-bottom: var(--line);
+      counter-increment: steps;
+    }
+
+    .steps li::before {
+      position: absolute;
+      top: 20px;
+      left: 12px;
+      color: var(--mauve);
+      content: counter(steps, decimal-leading-zero);
+      font-family: var(--code);
+      font-weight: 800;
+    }
+
+    .steps strong {
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--code);
+    }
+
+    .steps p {
+      margin: 0;
+      color: var(--subtext);
+    }
+
+    .sources {
+      columns: 2;
+      column-gap: 36px;
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .sources li {
+      margin: 0 0 10px;
+      break-inside: avoid;
+    }
+
+    footer {
+      padding: 30px 20px;
+      color: var(--overlay);
+      border-top: var(--line);
+      background: var(--crust);
+      font-family: var(--code);
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .terminal {
+        max-width: 600px;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .rail {
+        position: static;
+      }
+
+      .rail dl {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 22px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .nav {
+        padding: 12px 0;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .nav-links {
+        gap: 10px 16px;
+      }
+
+      .hero,
+      .workspace {
+        width: min(calc(100% - 28px), var(--content));
+      }
+
+      .hero {
+        padding-top: 54px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.55rem, 15vw, 4.5rem);
+      }
+
+      .terminal {
+        box-shadow: 8px 8px 0 var(--surface-0);
+      }
+
+      .rail dl,
+      .evidence-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .video {
+        grid-template-columns: 1fr;
+      }
+
+      .video-image {
+        min-height: 210px;
+      }
+
+      .sources {
+        columns: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .video-image img {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Page navigation">
+      <a class="brand" href="#top"><span>~/</span>shell-shortlist</a>
+      <div class="nav-links">
+        <a href="#shortlist">shortlist</a>
+        <a href="#comparison">comparison</a>
+        <a href="#videos">videos</a>
+        <a href="#trial">trial plan</a>
+      </div>
+    </nav>
+  </header>
+
+  <div id="top" class="hero">
+    <div>
+      <h1><span class="prompt">$</span> replace ultrashell</h1>
+      <p class="hero-copy">
+        A short list of maintained desktop shells for a Hyprland workstation on NixOS.
+        The hard requirements are Quickshell, multiple themes, Catppuccin Mocha, and no
+        interference with terminals, editors, project shells, or keyboard-driven work.
+      </p>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">selection.log</div>
+      <pre><span class="cmd">$ choose-shell \
+  --hyprland \
+  --nixos-26.05 \
+  --quickshell \
+  --theme catppuccin-mocha \
+  --developer-workstation</span>
+
+<span class="ok">best match: dms-shell</span>
+runner-up: caelestia-shell
+<span class="warn">outside strict brief: noctalia v5</span></pre>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <aside class="rail" aria-labelledby="recommendation-title">
+      <div class="rail-inner">
+        <h2 id="recommendation-title">Start with DMS</h2>
+        <p>
+          DankMaterialShell has the cleanest route into this repository. NixOS 26.05
+          supplies the package, module, and Quickshell 0.3.0. The official Catppuccin
+          port includes Mocha and accent selection.
+        </p>
+
+        <dl>
+          <div>
+            <dt>fit</dt>
+            <dd>Strict match</dd>
+          </div>
+          <div>
+            <dt>nix</dt>
+            <dd>Native 26.05 module</dd>
+          </div>
+          <div>
+            <dt>theme</dt>
+            <dd>Official Catppuccin port</dd>
+          </div>
+          <div>
+            <dt>risk</dt>
+            <dd>App theming can own too much</dd>
+          </div>
+        </dl>
+
+        <a class="rail-action" href="#trial">Read the trial plan</a>
+      </div>
+    </aside>
+
+    <main>
+      <section id="shortlist" class="section">
+        <h2>The shortlist</h2>
+        <p class="section-intro">
+          These are shell products with releases, packaging, documentation, and active
+          contributors. Personal dotfile collections are excluded because adopting one
+          would make you its maintainer.
+        </p>
+
+        <article id="dms">
+          <div class="status-line">
+            <span class="tag good">recommended</span>
+            <span class="tag good">Quickshell</span>
+            <span class="tag good">Hyprland</span>
+            <span class="tag good">NixOS 26.05</span>
+            <span class="tag good">Catppuccin Mocha</span>
+          </div>
+          <h2>DankMaterialShell</h2>
+          <p class="section-intro">
+            DMS is the best balanced replacement for Ultrashell. It is a full shell with
+            a bar, launcher, notifications, clipboard, lock screen, quick settings,
+            monitor controls, system monitoring, and a plugin system. The current project
+            supports both Hyprland configuration formats.
+          </p>
+
+          <div class="verdict">
+            <strong>Why it fits development work</strong>
+            <p>
+              The launcher, clipboard history, focused-workspace controls, Do Not Disturb,
+              and system monitors reduce context switching. The shell does not need to own
+              your terminal, editor, language tools, or per-project <code>nix develop</code>
+              environments.
+            </p>
+          </div>
+
+          <div class="evidence-grid">
+            <div class="evidence">
+              <h3>Nix integration</h3>
+              <p>
+                NixOS 26.05 has <code>programs.dms-shell</code>, including a systemd user
+                service and a configurable <code>quickshell.package</code>. This matches the
+                repository's stable Hyprland and Quickshell ownership policy.
+              </p>
+            </div>
+            <div class="evidence">
+              <h3>Catppuccin</h3>
+              <p>
+                <a href="https://github.com/catppuccin/dankmaterialshell">catppuccin/dankmaterialshell</a>
+                provides Mocha, Macchiato, Frappé, Latte, and accent choices through one
+                custom theme file.
+              </p>
+            </div>
+            <div class="evidence">
+              <h3>Maintenance signal</h3>
+              <p>
+                The project had about 8,100 GitHub stars, more than 100 listed contributors,
+                and a release on 17 September 2026 when this report was checked.
+              </p>
+            </div>
+            <div class="evidence">
+              <h3 class="risk">Boundary to enforce</h3>
+              <p>
+                Disable dynamic application theming at first. Keep Ghostty, Neovim, tmux,
+                GTK, and Qt under the existing Nix modules. Let DMS own only its shell UI
+                until each extra template has a clear owner.
+              </p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="caelestia" class="section">
+        <div class="status-line">
+          <span class="tag">runner-up</span>
+          <span class="tag good">Quickshell</span>
+          <span class="tag good">Hyprland-first</span>
+          <span class="tag good">Catppuccin Mocha built in</span>
+          <span class="tag caution">own Quickshell input</span>
+        </div>
+        <h2>Caelestia Shell</h2>
+        <p class="section-intro">
+          Caelestia is the strongest choice if visual craft and direct Hyprland integration
+          matter more than package simplicity. It has a launcher, command actions, Vim-style
+          launcher keys, notifications, performance views, a lock screen, and a mature CLI.
+        </p>
+
+        <div class="verdict">
+          <strong>Choose it for a Hyprland-only workstation</strong>
+          <p>
+            Caelestia directly uses Quickshell's Hyprland services and global shortcuts.
+            Its CLI includes Catppuccin Mocha as a stock scheme, plus Frappé, Macchiato,
+            Latte, Gruvbox, Nord, Rosé Pine, and dynamic wallpaper colors.
+          </p>
+        </div>
+
+        <div class="evidence-grid">
+          <div class="evidence">
+            <h3>Developer controls</h3>
+            <p>
+              The launcher can run applications, calculations, shell actions, wallpaper
+              changes, and theme changes. Its configuration exposes Vim keybindings and
+              keeps dangerous session actions disabled by default.
+            </p>
+          </div>
+          <div class="evidence">
+            <h3>Nix integration</h3>
+            <p>
+              The project ships a Home Manager module and systemd user service. It also
+              packages a CLI. Nixpkgs unstable has both <code>caelestia-shell</code> and
+              <code>caelestia-cli</code>.
+            </p>
+          </div>
+          <div class="evidence">
+            <h3>Maintenance signal</h3>
+            <p>
+              The shell had about 12,400 GitHub stars, 88 listed contributors, and a release
+              on 18 September 2026 when this report was checked.
+            </p>
+          </div>
+          <div class="evidence">
+            <h3 class="risk">Repository mismatch</h3>
+            <p>
+              NixOS 26.05 does not package Caelestia. Its flake pins a separate upstream
+              Quickshell revision, while this repository deliberately couples Quickshell to
+              stable Hyprland. That is a real maintenance cost, not an install detail.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="noctalia" class="section">
+        <div class="status-line">
+          <span class="tag caution">conditional option</span>
+          <span class="tag good">Hyprland</span>
+          <span class="tag good">NixOS</span>
+          <span class="tag good">Catppuccin</span>
+          <span class="tag caution">not Quickshell in v5</span>
+        </div>
+        <h2>Noctalia is the exception</h2>
+        <p class="section-intro">
+          Noctalia v5.1 is worth considering only if Quickshell becomes optional. The current
+          shell is a native Wayland and OpenGL ES application. It has no Qt or GTK dependency.
+          NixOS 26.05 still packages the older Quickshell-based v4.7.6, but that is not the
+          project's current architecture.
+        </p>
+
+        <div class="verdict">
+          <strong>Best ownership model, wrong framework</strong>
+          <p>
+            Noctalia v5 explicitly avoids taking over compositor settings and dotfiles.
+            It has TOML configuration, a built-in Catppuccin palette, templates, plugins,
+            and a broad set of shell functions. It may be the better long-term shell if the
+            framework requirement was only a proxy for quality and maintainability.
+          </p>
+        </div>
+      </section>
+
+      <section id="comparison" class="section">
+        <h2>Workstation comparison</h2>
+        <p class="section-intro">
+          "Developer-friendly" means predictable keyboard use, clear config ownership,
+          reliable multi-monitor behavior, and no hidden writes to editor or terminal files.
+        </p>
+
+        <div class="matrix-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Decision</th>
+                <th scope="col">DMS</th>
+                <th scope="col">Caelestia</th>
+                <th scope="col">Noctalia v5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Current Quickshell base</th>
+                <td class="yes">Yes</td>
+                <td class="yes">Yes</td>
+                <td class="no">No</td>
+              </tr>
+              <tr>
+                <th scope="row">Hyprland depth</th>
+                <td class="yes">Full integration</td>
+                <td class="yes">Hyprland-first</td>
+                <td class="yes">Native backend</td>
+              </tr>
+              <tr>
+                <th scope="row">NixOS 26.05 route</th>
+                <td class="yes">Package and NixOS module</td>
+                <td class="partial">Use project flake</td>
+                <td class="partial">Stable package is legacy v4</td>
+              </tr>
+              <tr>
+                <th scope="row">Catppuccin Mocha</th>
+                <td class="yes">Official Catppuccin port</td>
+                <td class="yes">Built into its CLI</td>
+                <td class="yes">Built-in palette</td>
+              </tr>
+              <tr>
+                <th scope="row">Config ownership</th>
+                <td class="partial">Good if app theming stays off</td>
+                <td class="partial">Choose GUI or Home Manager</td>
+                <td class="yes">Core is deliberately non-invasive</td>
+              </tr>
+              <tr>
+                <th scope="row">Developer workflow</th>
+                <td class="yes">Launcher, clipboard, DND, monitors</td>
+                <td class="yes">Command launcher, Vim keys, CLI</td>
+                <td class="yes">Launcher, clipboard, plugins, IPC</td>
+              </tr>
+              <tr>
+                <th scope="row">Fit for this repository</th>
+                <td class="yes">Best</td>
+                <td class="partial">Good with version-policy work</td>
+                <td class="no">Fails the Quickshell requirement</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="videos" class="section">
+        <h2>Watch before installing</h2>
+        <p class="section-intro">
+          These videos show the actual interaction model. Installation commands in videos
+          can age quickly. Use each project's current Nix documentation for installation.
+        </p>
+
+        <div class="video-list">
+          <a class="video" href="https://www.youtube.com/watch?v=mtrRsKETneY">
+            <div class="video-image">
+              <img src="https://i.ytimg.com/vi/mtrRsKETneY/hqdefault.jpg" alt="DankMaterialShell running on a Hyprland desktop" loading="lazy">
+              <span class="play" aria-hidden="true">play</span>
+            </div>
+            <div class="video-copy">
+              <h3>Dank Material Shell on a NixOS Hyprland config</h3>
+              <p>
+                The most relevant trial video. It installs the Home Manager module over an
+                existing Hyprland setup instead of replacing all dotfiles.
+              </p>
+              <p class="source">TheBlackDon on YouTube</p>
+            </div>
+          </a>
+
+          <a class="video" href="https://www.youtube.com/watch?v=1ILZevPGgJw">
+            <div class="video-image">
+              <img src="https://i.ytimg.com/vi/1ILZevPGgJw/hqdefault.jpg" alt="DankMaterialShell desktop suite overview" loading="lazy">
+              <span class="play" aria-hidden="true">play</span>
+            </div>
+            <div class="video-copy">
+              <h3>The Dank Material Shell desktop suite</h3>
+              <p>
+                A broad tour of the launcher, clipboard, monitoring, settings, themes, and
+                multi-monitor workflow. The demo uses Niri, but the shell behavior transfers.
+              </p>
+              <p class="source">DistroTube on YouTube</p>
+            </div>
+          </a>
+
+          <a class="video" href="https://www.youtube.com/watch?v=m9iUbZBEqmY">
+            <div class="video-image">
+              <img src="https://i.ytimg.com/vi/m9iUbZBEqmY/hqdefault.jpg" alt="Caelestia Shell 2.0 on Hyprland" loading="lazy">
+              <span class="play" aria-hidden="true">play</span>
+            </div>
+            <div class="video-copy">
+              <h3>Caelestia Shell 2.0 with Hyprland</h3>
+              <p>
+                A visual tour of the command launcher, panels, performance view, settings,
+                and Hyprland Lua integration. The installation shown is for Arch, not NixOS.
+              </p>
+              <p class="source">Ksk Royal on YouTube</p>
+            </div>
+          </a>
+
+          <a class="video" href="https://www.youtube.com/watch?v=2uwlIwzfDB4">
+            <div class="video-image">
+              <img src="https://i.ytimg.com/vi/2uwlIwzfDB4/hqdefault.jpg" alt="Noctalia version 5 shell review" loading="lazy">
+              <span class="play" aria-hidden="true">play</span>
+            </div>
+            <div class="video-copy">
+              <h3>Noctalia v5 full feature review</h3>
+              <p>
+                Use this to decide whether the Quickshell requirement is essential. It covers
+                the native rewrite, theming, bar controls, templates, and multi-monitor setup.
+              </p>
+              <p class="source">TheBlackDon on YouTube</p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section id="trial" class="section">
+        <h2>A low-risk trial</h2>
+        <p class="section-intro">
+          Trial the shell as one bounded component. Do not adopt its full dotfiles, greeter,
+          idle stack, or application templates at the same time.
+        </p>
+
+        <ol class="steps">
+          <li>
+            <strong>Install DMS from the release channel.</strong>
+            <p>
+              Use the NixOS 26.05 module and its <code>pkgs.quickshell</code>. Do not add a
+              second Quickshell flake while the compositor remains version-coupled.
+            </p>
+          </li>
+          <li>
+            <strong>Run it beside the existing config for one session.</strong>
+            <p>
+              Stop Ultrashell, start DMS, and leave Hyprland bindings, hyprlock, hypridle,
+              hyprpaper, notifications, and application themes unchanged for the first pass.
+            </p>
+          </li>
+          <li>
+            <strong>Apply only Catppuccin Mocha.</strong>
+            <p>
+              Load the official DMS Catppuccin JSON. Keep dynamic app theming disabled so
+              the shell cannot rewrite editor, terminal, GTK, or Qt configuration.
+            </p>
+          </li>
+          <li>
+            <strong>Test the real workday.</strong>
+            <p>
+              Check multi-monitor resume, workspace switching, full-screen apps, screen
+              sharing, notification focus, clipboard use, terminal spawning, and a long
+              development session. Remove Ultrashell only after that path is stable.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="section" aria-labelledby="sources-title">
+        <h2 id="sources-title">Primary sources</h2>
+        <p class="section-intro">
+          Versions and activity were checked on 19 September 2026. Repository popularity is
+          context, not proof of quality.
+        </p>
+        <ul class="sources">
+          <li><a href="https://github.com/AvengeMedia/DankMaterialShell">DankMaterialShell repository</a></li>
+          <li><a href="https://danklinux.com/docs/dankmaterialshell/nixos">DMS NixOS documentation</a></li>
+          <li><a href="https://github.com/catppuccin/dankmaterialshell">Official Catppuccin for DMS</a></li>
+          <li><a href="https://github.com/caelestia-dots/shell">Caelestia Shell repository</a></li>
+          <li><a href="https://github.com/caelestia-dots/cli">Caelestia CLI and built-in schemes</a></li>
+          <li><a href="https://github.com/noctalia-dev/noctalia">Noctalia v5 repository</a></li>
+          <li><a href="https://noctalia.dev/blog/announcing-noctalia-v5">Noctalia v5 architecture announcement</a></li>
+          <li><a href="https://search.nixos.org/packages">Nixpkgs package index</a></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    Local report for <code>/home/fveracoechea/dotfiles</code>. No system configuration was changed.
+  </footer>
+</body>
+</html>

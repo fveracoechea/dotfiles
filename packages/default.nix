@@ -5,7 +5,7 @@
   pkgs,
   inputs,
 }: {
-  dev-manager-desktop = pkgs.callPackage ./dev-manager-desktop.nix {};
+  dev-manager-desktop = inputs.dev-manager-desktop.packages.${pkgs.stdenv.hostPlatform.system}.default;
   herdr-nvim = pkgs.callPackage ./herdr-nvim.nix {};
   stylelint-language-server = pkgs.callPackage ./stylelint-language-server.nix {};
 

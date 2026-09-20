@@ -60,6 +60,29 @@
         "type": "github"
       }
     },
+    "dev-manager-desktop": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-latest"
+        ],
+        "nixpkgs-x86-darwin": [
+          "nixpkgs-stable-darwin"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789517030,
+        "narHash": "sha256-sE5C0VIOz2F30gpa9lyBfcm6vym5KaFRdZYdo0JhF3Y=",
+        "owner": "webosbrew",
+        "repo": "dev-manager-desktop",
+        "rev": "1e39b9004695f005de6fbdc400db91520579d7e8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "webosbrew",
+        "repo": "dev-manager-desktop",
+        "type": "github"
+      }
+    },
     "dms": {
       "inputs": {
         "dank-qml-common": "dank-qml-common",
@@ -318,6 +341,7 @@
     "root": {
       "inputs": {
         "catppuccin-dms": "catppuccin-dms",
+        "dev-manager-desktop": "dev-manager-desktop",
         "dms": "dms",
         "figma-plugin": "figma-plugin",
         "herdr": "herdr",
