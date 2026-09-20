@@ -11,7 +11,7 @@
   config = lib.mkIf config.dotfiles.gaming.enable {
     home.packages = with pkgs; [
       mesa-demos
-      protonup-ng
+      protonup-rs
       amdgpu_top
     ];
 

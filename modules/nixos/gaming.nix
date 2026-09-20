@@ -40,7 +40,7 @@
             "--rt" # Real time scheduling
             "-W 2560"
             "-H 1440"
-            "-r 90" # Refresh rate
+            "-r 120" # Refresh rate
             "-f" # Fullscreen
             "-O HDMI-A-1" # Output display (dummy plug, sunshine capture target)
           ];

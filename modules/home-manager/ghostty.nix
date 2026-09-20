@@ -20,7 +20,7 @@
         shell-integration = "zsh";
 
         background-opacity = 0.8;
-        background-blur = 60;
+        background-blur = 80;
 
         window-padding-color = "background";
         window-padding-x = 6;
