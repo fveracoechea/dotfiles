@@ -46,6 +46,11 @@
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
 
+    # Owns the `pr-review` and `no-slop` skills. It ships TypeScript sources
+    # with no flake, so this input is a plain source tree.
+    operator.url = "github:fveracoechea/operator";
+    operator.flake = false;
+
     dev-manager-desktop.url = "github:webosbrew/dev-manager-desktop";
     dev-manager-desktop.inputs.nixpkgs.follows = "nixpkgs-latest";
     dev-manager-desktop.inputs.nixpkgs-x86-darwin.follows = "nixpkgs-stable-darwin";
@@ -99,7 +104,7 @@
     });
 
     codingAgentSources = {
-      inherit (inputs) figma-plugin herdr hunk;
+      inherit (inputs) figma-plugin herdr hunk operator;
     };
 
     # Aggregates close over this flake's own inputs, so consumer flakes do

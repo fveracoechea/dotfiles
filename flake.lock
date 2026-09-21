@@ -338,6 +338,22 @@
         "type": "github"
       }
     },
+    "operator": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790020633,
+        "narHash": "sha256-X49Y2/nRaZjEEbs2hi/UrL4OAHLTgnPXJYKUXmTfffY=",
+        "owner": "fveracoechea",
+        "repo": "operator",
+        "rev": "c7e0f6f527faac4bdd1bbdd4bf0fe72b9c41cd1d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fveracoechea",
+        "repo": "operator",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "catppuccin-dms": "catppuccin-dms",
@@ -352,6 +368,7 @@
         "nixpkgs-latest": "nixpkgs-latest",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-stable-darwin": "nixpkgs-stable-darwin",
+        "operator": "operator",
         "spicetify-nix": "spicetify-nix",
         "tmux-powerkit": "tmux-powerkit"
       }

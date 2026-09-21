@@ -60,9 +60,9 @@
       skills = {
         herdr = "${codingAgentSources.herdr}/skills/herdr";
         hunk-review = "${codingAgentSources.hunk}/packages/hunk/skills/hunk-review";
+        no-slop = "${codingAgentSources.operator}/skills/no-slop";
+        pr-review = "${codingAgentSources.operator}/skills/pr-review";
         frontend-design = ../../../.agents/skills/frontend-design;
-        pr-review = ../../../.agents/skills/pr-review;
-        unslop = ../../../.agents/skills/unslop;
       };
 
       plugins = {
