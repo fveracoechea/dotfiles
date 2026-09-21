@@ -21,10 +21,6 @@
 
       context = ./AGENTS.md;
 
-      commands = {
-        create-pr = ./command/create-pr.md;
-      };
-
       tui = {
         theme = "system";
       };
