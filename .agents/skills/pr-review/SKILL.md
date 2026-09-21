@@ -22,6 +22,7 @@ A blocker is a defect that the author fixes before the pull request merges, and 
 
 Run `gh pr view <number> --repo <owner>/<repo> --json headRefOid,baseRefName`.
 The value of `headRefOid` becomes the `commit_id` of the review.
+Run `gh pr checkout <number>`, because `code-review` diffs the local `HEAD`.
 Invoke `code-review` and give it `baseRefName` as its fixed point.
 
 ### 2. Verify every claim against its source
