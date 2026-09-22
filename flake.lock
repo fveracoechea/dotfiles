@@ -341,11 +341,11 @@
     "operator": {
       "flake": false,
       "locked": {
-        "lastModified": 1790020633,
-        "narHash": "sha256-X49Y2/nRaZjEEbs2hi/UrL4OAHLTgnPXJYKUXmTfffY=",
+        "lastModified": 1790086998,
+        "narHash": "sha256-xDIzaGWOSrSstqynmsa+sqIdj++aSdyCYa1Hu1Xqjxw=",
         "owner": "fveracoechea",
         "repo": "operator",
-        "rev": "c7e0f6f527faac4bdd1bbdd4bf0fe72b9c41cd1d",
+        "rev": "d26b7a3dea3a77f32d6cd338bc4c3d234f9b6028",
         "type": "github"
       },
       "original": {
