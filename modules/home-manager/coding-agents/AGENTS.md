@@ -12,4 +12,4 @@
 - Write commit messages with no Co-Authored-By trailer.
 - Separate thoughts with a period or a comma. Never an em dash.
 
-Read ~/OPINIONS.md before doing: design decisions, code review, architecture choice, or tooling recommendation.
+Read ~/OPINIONS.md before doing: design decisions, code review, architecture choice, a module or component boundary, or tooling recommendation.

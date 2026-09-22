@@ -44,7 +44,9 @@ A compact map of what I believe about building software. Each rule carries its r
 
 - A feature is a deep module with one interface object and one or two entry points. A second export is a second interface, and the module stops being deep.
 - Structure by feature or capability, never by technical layer. A `server/` folder is the wrong axis in an isomorphic framework. The server-client seam is per file.
-- A module ships a finished use case, not parts. A caller that assembles parts holds the module's state switches.
+- A capability module ships a finished use case, not parts. It owns the state rules, the link policy, and the UI together, and a caller that assembles parts holds the module's state switches.
+- Moving exports to a new file, or grouping helpers under one name, adds no depth. The interface is deeper only when the caller has less to know.
+- Shared policy lives in one implementation that the link and the imperative action both call. Search preservation, push or replace, scroll behaviour, and current-item resolution written twice answer differently.
 - A factory whose arguments are all static imports exists only for a test. Declare the object directly and fake at the module boundary.
 - Membership passes the deletion test. Machinery whose deletion costs nothing is not ported.
 - One concept, one rendering, app-wide. Two files that agree on a signature and disagree on the answer typecheck perfectly.
@@ -65,7 +67,9 @@ A compact map of what I believe about building software. Each rule carries its r
 
 ## Client state and loading
 
-- The query cache is the state. A store or context holding server-derived truth beside it is a second source of truth, which is how mismatches are born.
+- The query cache is the state, and the URL keeps what the URL owns. A store or context holding a copy beside either is a second source of truth, which is how mismatches are born.
+- A context derives values and exposes actions and link options. A persistent copy, or an effect that synchronises one source to the other, is that second source again.
+- Transient interaction state, such as a drag preview, stays local to the interaction that owns it.
 - Identity lives in the query key. An imperative invalidation is a side effect that must fire from one place and never be missed.
 - Polling is the wrong trigger for a once-a-day event. Window focus plus a slow visible-tab interval catches it.
 - A data transform is a named, tested selector in its own module, typed against wire shapes. Nothing inline in `select`.
@@ -80,6 +84,7 @@ A compact map of what I believe about building software. Each rule carries its r
 ## Web fundamentals
 
 - Use the web platform, even inside React.
+- A navigation abstraction keeps the real link href and the browser's own modified-click behaviour. The link path and the imperative path follow one history policy, so push or replace does not depend on which one the operator hits.
 - Progressive enhancement and server-side rendering make apps resilient and accessible.
 - Web standard APIs over npm libraries. No utility library for a handful of small helpers.
 - Dates render on the viewer's clock and zone. The server never evaluates a date on the viewer's behalf.
@@ -88,8 +93,11 @@ A compact map of what I believe about building software. Each rule carries its r
 
 - Most effects are unnecessary. Derive during render, put interaction logic in the handler, fetch through the query layer, and use `useSyncExternalStore` for the outside world.
 - A needed effect is a named function declaration.
-- Compose parts instead of adding a mode. A boolean prop that selects what renders is a mode, and three of them make eight states.
-- A growing feature becomes a compound component. The provider is the only place that reads state, so parts never know their source.
+- Compose parts instead of adding a mode. A boolean prop that selects what renders is a mode, and three of them make eight states. A boolean that reports one state or attribute is not a mode.
+- Shared state between parts justifies a compound component. File size and dot notation do not, and one fixed, tightly coupled control does not split into parts that no caller asks for.
+- The compound namespace ships its provider beside its parts, and the provider wraps its consumers and nothing else. The provider is the only place that reads the state source, so parts never know it.
+- A part reads a narrow context of state, actions, and meta through `use()`. Shared state never travels down through a layout frame and a prop on each part, but per-item identity stays a prop.
+- A capability keeps its internal compounds private and exposes the finished UI. An app caller that assembles the capability's provider and parts holds its implementation. A reusable design-system compound is different: its parts are the public interface.
 - The React Compiler memoises. Manual `useMemo`, `useCallback`, or `React.memo` is a lint error that gets fixed, never suppressed.
 - Function declarations over named const arrows. Arrows are for one-off inline callbacks.
 - No unsafe type assertions. `satisfies`, predicates that check what they claim, and a typed `reduce` replace the cast.
