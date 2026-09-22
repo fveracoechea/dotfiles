@@ -45,6 +45,8 @@ A compact map of what I believe about building software. Each rule carries its r
 - A feature is a deep module with one interface object and one or two entry points. A second export is a second interface, and the module stops being deep.
 - Structure by feature or capability, never by technical layer. A `server/` folder is the wrong axis in an isomorphic framework. The server-client seam is per file.
 - A capability module ships a finished use case, not parts. It owns the state rules, the link policy, and the UI together, and a caller that assembles parts holds the module's state switches.
+- A helper is a module that was not named. When a second caller wants the behaviour, the answer is the capability that owns it, not a function they both import.
+- Build from the use case down. Name the interface and write the call site first, because code written from the bottom up produces helpers that no module owns.
 - Moving exports to a new file, or grouping helpers under one name, adds no depth. The interface is deeper only when the caller has less to know.
 - Shared policy lives in one implementation that the link and the imperative action both call. Search preservation, push or replace, scroll behaviour, and current-item resolution written twice answer differently.
 - A factory whose arguments are all static imports exists only for a test. Declare the object directly and fake at the module boundary.
@@ -165,6 +167,7 @@ A compact map of what I believe about building software. Each rule carries its r
 - The PR body says where to start reading, what looks wrong and is not, what was verified with exact commands, where it departs from the spec, and what is not done here.
 - Name out-of-scope items and their tickets instead of fixing them in passing.
 - Verify claims against reality. Run the command against a real ref, read the upstream source, and say plainly what is still unproven.
+- A review judges where the change landed before it judges the lines. Correct code in the wrong module is a finding, and the diff is the cheapest moment to move it.
 - Review comments are short and friendly, with blockers separated from nice-to-haves, and read like a person wrote them.
 - ASD-STE100 Simplified Technical English. One sentence per line in markdown. No em dash.
 - Commit messages carry the why. No agent co-author.
@@ -176,6 +179,7 @@ A compact map of what I believe about building software. Each rule carries its r
 - Headings are the rule index. A separate rules list is a copy that drifts.
 - A skill owns one seam and names its neighbours. The package skill covers the API, the team skill covers the conventions on top.
 - Every skill has one home. Author it instead of shadowing a vendored copy.
+- An agent resolves a skill name personal before project, so a personal install of a team-managed skill shadows it everywhere with no warning. Install personally only what no project owns.
 - Write to the portable frontmatter floor. A field one agent silently drops makes a skill look correct in both and behave differently.
 - Ask before acting. A question is not an instruction. Show findings before posting anything.
 - Mark facts verified or unverified. Settled decisions stay settled.
