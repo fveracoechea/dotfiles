@@ -15,6 +15,8 @@
 
         model = "claude-opus-5-5";
         effortLevel = "high";
+        # Newer models ignore the top-level effortLevel, so pin it per model.
+        modelSettings."claude-opus-5-5".effortLevel = "high";
 
         statusLine = {
           type = "command";
