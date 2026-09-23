@@ -13,7 +13,7 @@
       settings = {
         theme = "dark-ansi";
 
-        model = "claude-opus-5";
+        model = "claude-opus-5-5";
         effortLevel = "high";
 
         statusLine = {
