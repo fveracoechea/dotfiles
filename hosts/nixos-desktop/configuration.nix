@@ -3,6 +3,8 @@
     ./hardware-configuration.nix
   ];
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   dotfiles = {
     bootloader.enable = true;
     display-manager.enable = true;
