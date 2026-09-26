@@ -3,7 +3,7 @@
     ./hardware-configuration.nix
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_7_2;
 
   dotfiles = {
     bootloader.enable = true;
