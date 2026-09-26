@@ -35,12 +35,12 @@
 
       settings = {
         autoupdate = false;
-        model = "openai/gpt-6-astra";
+        model = "openai/gpt-6-sol";
 
         agent = {
           build = {
-            model = "openai/gpt-6-astra";
-            variant = "medium";
+            model = "openai/gpt-6-sol";
+            variant = "high";
           };
         };
 
@@ -49,9 +49,9 @@
 
         provider = {
           openai = {
-            models."gpt-6-astra" = {
-              options.reasoningEffort = "medium";
-              variants.medium.reasoningEffort = "medium";
+            models."gpt-6-sol" = {
+              options.reasoningEffort = "high";
+              variants.high.reasoningEffort = "high";
             };
           };
 
