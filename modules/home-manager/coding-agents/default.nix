@@ -21,5 +21,5 @@
     ];
   };
 
-  imports = [./opencode.nix ./claude-code.nix ./herdr.nix];
+  imports = [./opencode.nix ./claude-code.nix ./herdr.nix ./hunk.nix];
 }
