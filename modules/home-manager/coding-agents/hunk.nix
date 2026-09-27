@@ -2,13 +2,16 @@
   lib,
   config,
   pkgs,
+  codingAgentSources,
   ...
 }: let
+  hunkPackage = codingAgentSources.hunk.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
   # gh hides its token in the keyring, so `hunk gh` never sees it. The guard
   # keeps that keyring read off the hot `hunk pager` path.
   hunk = pkgs.symlinkJoin {
-    name = "hunk-${pkgs.hunk.version}";
-    paths = [pkgs.hunk];
+    name = "hunk-${hunkPackage.version}";
+    paths = [hunkPackage];
     nativeBuildInputs = [pkgs.makeWrapper];
     postBuild = ''
       wrapProgram $out/bin/hunk \
