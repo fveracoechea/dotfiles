@@ -15,6 +15,7 @@
       vaapi_strict_rc_buffer = enabled
       encoder = vaapi
       capture = kms
+      system_tray = disabled
     '';
 
     xdg.configFile."sunshine/apps.json".text = builtins.toJSON {

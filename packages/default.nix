@@ -7,6 +7,7 @@
 }: {
   dev-manager-desktop = inputs.dev-manager-desktop.packages.${pkgs.stdenv.hostPlatform.system}.default;
   herdr-nvim = pkgs.callPackage ./herdr-nvim.nix {};
+  railway = pkgs.callPackage ./railway.nix {};
   stylelint-language-server = pkgs.callPackage ./stylelint-language-server.nix {};
 
   herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
