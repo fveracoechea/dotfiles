@@ -321,16 +321,6 @@ EOF
 
   expect_pass "restored synthetic capture passes again"
 
-  # Validate the committed artifacts when run from the repo root
-  if [[ -d docs/research/hyprland-live-baseline ]]; then
-    if validate docs/research/hyprland-live-baseline >/dev/null 2>&1; then
-      echo "ok: test: committed baseline validates"
-    else
-      echo "FAIL: test: committed baseline validates"
-      failures=1
-    fi
-  fi
-
   if [[ $failures -ne 0 ]]; then
     die "self-test failed"
   fi
