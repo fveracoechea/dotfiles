@@ -114,6 +114,7 @@
       _module.args = {
         inherit codingAgentSources;
         dmsThemeSource = inputs.catppuccin-dms;
+        dmsSource = inputs.dms;
       };
       imports = [
         ./modules/home-manager/default.nix
@@ -141,12 +142,19 @@
         inherit lib inputs system;
         pkgs = latestPkgsFor system;
       };
+
+    hyprlandChecks = system:
+      import ./checks/hyprland.nix {
+        inherit lib inputs;
+        pkgs = latestPkgsFor system;
+        pkgs-stable = stablePkgsFor system;
+      };
   in {
     inherit homeManagerModules nixosModules darwinModules;
 
     checks = builtins.listToAttrs (map (system: {
         name = system;
-        value = neovimChecks system;
+        value = (neovimChecks system) // lib.optionalAttrs (system == "x86_64-linux") (hyprlandChecks system);
       })
       supportedSystems);
 

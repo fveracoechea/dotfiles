@@ -1,4 +1,9 @@
-{lib, config, pkgs, ...}: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   options.dotfiles.bat.enable = lib.mkEnableOption "bat (cat clone with syntax highlighting)";
 
   config = lib.mkIf config.dotfiles.bat.enable {

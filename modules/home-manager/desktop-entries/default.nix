@@ -1,4 +1,8 @@
-{lib, config, ...}: {
+{
+  lib,
+  config,
+  ...
+}: {
   options.dotfiles.desktop-entries.enable = lib.mkEnableOption "custom XDG desktop entries";
 
   config = lib.mkIf config.dotfiles.desktop-entries.enable {

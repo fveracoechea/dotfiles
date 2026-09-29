@@ -1,75 +1,65 @@
 {
   lib,
   config,
+  pkgs,
+  pkgs-stable,
   ...
 }: let
-  persistentWorkspaces = [1 2 3 4 5];
+  luaFiles = {
+    settings = {
+      content = pkgs.replaceVars ../../../config/hypr/settings.lua {
+        catppuccinMocha = "${pkgs.catppuccin-hyprland}/share/themes/catppuccin-hyprland-themes/catppuccin-mocha.lua";
+      };
+      autoLoad = false;
+    };
+    bindings = {
+      content = ../../../config/hypr/bindings.lua;
+      autoLoad = false;
+    };
+    windowrule = {
+      content = ../../../config/hypr/windowrule.lua;
+      autoLoad = false;
+    };
+  };
+  reload = ''
+    (
+      export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+      if instances=$(${pkgs-stable.hyprland}/bin/hyprctl -j instances); then
+        if signatures=$(printf '%s' "$instances" | ${pkgs.jq}/bin/jq -r '.[].instance'); then
+          while IFS= read -r instance; do
+            [ -n "$instance" ] || continue
+            if ! ${pkgs-stable.hyprland}/bin/hyprctl -i "$instance" reload; then
+              printf 'Hyprland reload failed for %s\n' "$instance" >&2
+            fi
+          done <<< "$signatures"
+        else
+          printf 'Cannot read Hyprland instance signatures\n' >&2
+        fi
+      else
+        printf 'Cannot enumerate Hyprland instances\n' >&2
+      fi
+    )
+  '';
 in {
   config = lib.mkIf config.dotfiles.hyprland.enable {
     wayland.windowManager.hyprland = {
       enable = true;
-      systemd.enable = true;
-      # set the Hyprland and XDPH packages to null to use the ones from the NixOS module
+      systemd.enable = false;
       package = null;
       portalPackage = null;
+      configType = "lua";
+      settings = {};
+      extraConfig = builtins.readFile ../../../config/hypr/entry.lua;
+      extraLuaFiles = luaFiles;
+    };
 
-      # Set explicitly, not left to the default: the module flips its default
-      # to "lua" at `home.stateVersion` 26.05, and the compositor is held at
-      # 0.55.4 for hyprlang. A stray `hyprland.lua` also wins over
-      # `hyprland.conf`, so the two must never disagree.
-      configType = "hyprlang";
-
-      settings = {
-        monitor = config.dotfiles.hyprland.monitors;
-
-        cursor = {
-          enable_hyprcursor = false;
-        };
-
-        misc = {
-          vrr = 2;
-          animate_manual_resizes = true;
-          animate_mouse_windowdragging = true;
-        };
-
-        general = {
-          layout = "dwindle";
-          border_size = 3;
-          resize_on_border = true;
-          gaps_in = 10;
-          gaps_out = "10,18,18,18";
-        };
-
-        layout = {
-          # Avoid overly wide single-window layouts on wide screens
-          single_window_aspect_ratio = "16 9";
-        };
-
-        dwindle = {
-          # pseudotile = true;
-          preserve_split = true;
-          force_split = 2;
-        };
-
-        decoration = lib.mkForce {
-          rounding = 8;
-          blur.enabled = true;
-        };
-
-        master = {
-          allow_small_split = true;
-          mfact = 0.32;
-          new_on_top = false;
-        };
-
-        binds = {
-          drag_threshold = 10;
-          allow_workspace_cycles = true;
-        };
-
-        workspace =
-          map (i: "${toString i}, persistent:true") persistentWorkspaces;
-      };
+    # Home Manager skips its own config reload when package = null.
+    xdg.configFile."dotfiles/hyprland.stamp" = {
+      text = builtins.hashString "sha256" (builtins.toJSON {
+        entry = builtins.hashFile "sha256" ../../../config/hypr/entry.lua;
+        modules = lib.mapAttrs (_: file: builtins.hashFile "sha256" file.content) luaFiles;
+      });
+      onChange = reload;
     };
   };
 }

@@ -3,14 +3,22 @@
   config,
   pkgs,
   dmsThemeSource,
+  dmsSource,
   ...
 }: {
   config = lib.mkIf config.dotfiles.hyprland.enable {
-    programs.dank-material-shell = let
-      barLengthPadding = 1612; # DO NOT CHANGE
-    in {
+    programs.dank-material-shell = {
       enable = true;
       systemd.enable = true;
+      systemd.target = "wayland-session@hyprland.desktop.target";
+      package = (dmsSource.lib.mkDmsShell pkgs).overrideAttrs (old: {
+        postInstall =
+          old.postInstall
+          + ''
+            chmod -R u+w "$out/share/quickshell/dms/Modules/DankBar"
+            ${pkgs.patch}/bin/patch --directory="$out/share/quickshell/dms" --fuzz=0 -p2 < ${./dms-bar-max-width.patch}
+          '';
+      });
 
       enableSystemMonitoring = true;
       enableVPN = false;
@@ -33,7 +41,7 @@
 
         runUserMatugenTemplates = false;
         widgetBackgroundColor = "s";
-        cornerRadius = 12;
+        cornerRadius = 4;
         clockFormat = "12h";
         useFahrenheit = true;
         m3ElevationEnabled = false;
@@ -109,7 +117,8 @@
             autoHideDelay = 250;
             autoHideStrict = false;
             barInsetPadding = 4;
-            inherit barLengthPadding;
+            barLengthPadding = 0;
+            barMaxLength = 1896;
             batteryColorMode = "theme";
             borderColor = "surfaceText";
             borderEnabled = false;
@@ -282,7 +291,7 @@
         };
         clipboardEnterToPaste = true;
         frameThickness = 8;
-        frameRounding = 8;
+        frameRounding = 4;
         frameBarSize = 45;
         frameCloseGaps = false;
         frameLauncherArcExtender = true;
@@ -311,6 +320,9 @@
       };
     };
 
-    systemd.user.services.dms.Service.Environment = ["DMS_DISABLE_MATUGEN=1"];
+    systemd.user.services.dms = {
+      Unit.Requisite = ["wayland-session@hyprland.desktop.target"];
+      Service.Environment = ["DMS_DISABLE_MATUGEN=1"];
+    };
   };
 }
