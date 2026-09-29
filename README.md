@@ -62,7 +62,7 @@ When a release lands, move all three release refs together:
 
 - **[Hyprland](https://hyprland.org/)**: Dynamic tiling Wayland compositor
 - **[DankMaterialShell](https://danklinux.com/)**: Desktop shell, launcher, notifications, clipboard, and lock screen
-- **[Ly](https://github.com/fairyglade/ly)**: Display manager for the UWSM-managed Hyprland session and the Steam Session on NixOS
+- **[Ly](https://github.com/fairyglade/ly)**: Display manager for UWSM-managed Hyprland and Steam sessions on NixOS
 - **[Ghostty](https://mitchellh.com/ghostty)**: Fast, GPU-accelerated terminal emulator
 
 ### Development Environment
@@ -122,7 +122,7 @@ dotfiles.hyprland.enable = true;
 
 The desktop's monitor settings are in `config/hypr/settings.lua`.
 Hyprland's four native Lua files use store-backed installation, like Neovim.
-Home Manager adds the source of `entry.lua` and its session hooks to `hyprland.lua`.
+Home Manager adds the source of `entry.lua` to `hyprland.lua`.
 Rebuild and activation install source edits and trigger an internal reload hook.
 See the [Hyprland migration guide](docs/hyprland-summary.md) for ownership, checks, and the user-only activation, live smoke, and saved-path rollback procedure.
 

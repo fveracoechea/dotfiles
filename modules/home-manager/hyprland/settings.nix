@@ -44,7 +44,7 @@ in {
   config = lib.mkIf config.dotfiles.hyprland.enable {
     wayland.windowManager.hyprland = {
       enable = true;
-      systemd.enable = true;
+      systemd.enable = false;
       package = null;
       portalPackage = null;
       configType = "lua";

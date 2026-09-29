@@ -6,3 +6,9 @@ end
 dofile(config_home .. "/hypr/settings.lua")
 dofile(config_home .. "/hypr/windowrule.lua")
 dofile(config_home .. "/hypr/bindings.lua")
+
+hl.on("hyprland.start", function()
+  if os.getenv "UWSM_FINALIZE_VARNAMES" then
+    hl.exec_cmd "uwsm finalize HYPRLAND_INSTANCE_SIGNATURE"
+  end
+end)

@@ -12,7 +12,10 @@
       ../modules/home-manager/hyprland
       ../modules/core/palette.nix
       {
-        _module.args.dmsThemeSource = inputs.catppuccin-dms;
+        _module.args = {
+          dmsThemeSource = inputs.catppuccin-dms;
+          dmsSource = inputs.dms;
+        };
         home = {
           username = "hyprland-fixture";
           homeDirectory = "/tmp/hyprland-fixture";
@@ -29,12 +32,21 @@
   }) (lib.filterAttrs (_: file: file.enable) files));
 in {
   hyprland-config = pkgs.runCommand "hyprland-config" {} ''
+    set -e
     export HOME=/tmp/hyprland-fixture
     export XDG_CONFIG_HOME=${stagedHome}/.config
     export XDG_RUNTIME_DIR="$TMPDIR/runtime"
     mkdir -p "$XDG_RUNTIME_DIR"
     test '${pkgs-stable.hyprland.version}' = '0.55.4'
     test -f "$XDG_CONFIG_HOME/hypr/hyprland.lua"
+    if ${pkgs.gnugrep}/bin/grep -q 'hyprland-session.target' "$XDG_CONFIG_HOME/hypr/hyprland.lua"; then
+      printf 'Home Manager still controls the Hyprland session target\n' >&2
+      exit 1
+    fi
+    ${pkgs.gnugrep}/bin/grep -q 'uwsm finalize HYPRLAND_INSTANCE_SIGNATURE' "$XDG_CONFIG_HOME/hypr/hyprland.lua" || exit 1
+    test -f "$XDG_CONFIG_HOME/systemd/user/dms.service" || exit 1
+    ${pkgs.gnugrep}/bin/grep -q '^Requisite=wayland-session@hyprland.desktop.target$' "$XDG_CONFIG_HOME/systemd/user/dms.service" || exit 1
+    ${pkgs.gnugrep}/bin/grep -q '^WantedBy=wayland-session@hyprland.desktop.target$' "$XDG_CONFIG_HOME/systemd/user/dms.service" || exit 1
     test ! -e "$XDG_CONFIG_HOME/hypr/entry.lua"
     test ! -e "$XDG_CONFIG_HOME/hypr/hyprland.conf"
     ${pkgs-stable.hyprland}/bin/Hyprland --verify-config -c "$XDG_CONFIG_HOME/hypr/hyprland.lua"

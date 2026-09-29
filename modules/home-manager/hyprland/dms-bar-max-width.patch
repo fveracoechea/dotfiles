@@ -1,0 +1,9 @@
+--- a/quickshell/Modules/DankBar/DankBarBody.qml
++++ b/quickshell/Modules/DankBar/DankBarBody.qml
+@@ -628,2 +628,5 @@ Item {
+-        const pad = Math.max(0, barConfig?.barLengthPadding ?? 0);
+         const length = isVertical ? height : width;
++        const maxLength = Math.max(0, barConfig?.barMaxLength ?? 0);
++        if (maxLength > 0 && length > 0)
++            return (length - Math.min(length, maxLength)) / 2;
++        const pad = Math.max(0, barConfig?.barLengthPadding ?? 0);

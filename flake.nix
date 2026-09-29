@@ -114,6 +114,7 @@
       _module.args = {
         inherit codingAgentSources;
         dmsThemeSource = inputs.catppuccin-dms;
+        dmsSource = inputs.dms;
       };
       imports = [
         ./modules/home-manager/default.nix

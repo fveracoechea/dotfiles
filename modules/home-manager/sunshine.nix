@@ -9,8 +9,8 @@
   config = lib.mkIf config.dotfiles.sunshine.enable {
     # NOTE: managed declaratively, so the web UI can't persist changes to this file
     # No output_name: name-based selection resolves via Wayland monitor
-    # correlation, but the Steam Session has no reachable Wayland display.
-    # Empty selects the first active KMS plane, which is the Dummy Plug there.
+    # correlation is not reliable in the plain Steam Session.
+    # Empty selects the first active KMS plane, the Dummy Plug in either session.
     xdg.configFile."sunshine/sunshine.conf".text = ''
       vaapi_strict_rc_buffer = enabled
       encoder = vaapi

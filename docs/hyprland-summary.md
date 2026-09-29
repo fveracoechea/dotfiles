@@ -2,7 +2,7 @@
 
 The compositor uses the Hyprland 0.55.4 Lua configuration interface.
 The four sources in [`config/hypr/`](../config/hypr/) are `entry.lua`, `settings.lua`, `windowrule.lua`, and `bindings.lua`.
-Home Manager puts the content of `entry.lua` into its generated `hyprland.lua` alongside the session hooks.
+Home Manager puts the content of `entry.lua` into its generated `hyprland.lua`.
 It installs the other three Lua files beside it, for four installed files in total.
 The System module owns the compositor and portal; Home Manager sets their package options to `null`.
 
@@ -17,7 +17,12 @@ To change monitors, edit `config/hypr/settings.lua` and rebuild.
 The launcher and clipboard bindings call DankMaterialShell.
 
 Home Manager also owns Hypridle, Hyprpaper, cursor settings, and DankMaterialShell.
+UWSM controls the graphical session target; Home Manager does not stop or start it from Hyprland's Lua config.
+When Hyprland starts, `entry.lua` calls `uwsm finalize` so UWSM gets its Wayland display and instance signature.
 DMS runs as a user service and owns the bar, launcher, clipboard history, and lock screen.
+The service starts only after the UWSM Hyprland session target is active.
+The DMS package has a small QML patch that limits the bar to 1896 pixels instead of applying fixed side padding.
+The bar keeps that width at 5120 and 2560 pixels and fills narrower displays.
 Hypridle asks DMS to lock after 15 minutes and suspends after 30 minutes.
 Neither Ultrashell nor Hyprlock is part of this configuration.
 
@@ -81,7 +86,7 @@ hyprctl configerrors -j | jq -e 'all(.[]; . == "")'
 hyprctl binds -j > "$state/binds-after.json"
 hyprctl monitors all -j > "$state/monitors-after.json"
 hyprctl workspacerules -j
-systemctl --user status hyprland-session.target hypridle.service hyprpaper.service dms.service --no-pager
+systemctl --user status wayland-session@hyprland.desktop.target hypridle.service hyprpaper.service dms.service --no-pager
 ```
 
 Confirm version 0.55.4, no config errors, five persistent workspaces, DP-1 at its preferred mode, and HDMI-A-1 disabled.
@@ -99,16 +104,20 @@ Without an idle inhibitor, verify lock at 15 minutes and suspend at 30 minutes.
 
 Run `enable-stream-output` in Hyprland and inspect `hyprctl monitors all -j` for HDMI-A-1 at 3840x2160@120 and position 5120x0.
 Run `disable-stream-output` and confirm it is disabled again.
-Confirm Sunshine and `nixos-fake-graphical-session.target` are inactive in Hyprland:
+Confirm Sunshine and both Steam Session targets are inactive in Hyprland:
 
 ```bash
-systemctl --user show sunshine.service nixos-fake-graphical-session.target -p Id -p ActiveState
+systemctl --user show sunshine.service nixos-fake-graphical-session.target wayland-session@steam-gamescope-uwsm.target -p Id -p ActiveState
 ```
 
-Log out through `uwsm stop`, select the Steam Session in Ly, and wait for Sunshine's configured startup delay.
+Log out through `uwsm stop` and select `Steam (UWSM)` in Ly.
+The plain `Steam` entry remains available during migration.
+Wait for Sunshine's configured startup delay.
+In the Steam Session, check `systemctl --user is-active wayland-session@steam-gamescope-uwsm.target sunshine.service` from a TTY or remote shell.
 Verify Steam Big Picture on the Dummy Plug and connect through Moonlight to test capture and input.
 Inspect the Sunshine service and logs from a user terminal or TTY.
-Exit the Steam Session, return to Hyprland, and confirm Sunshine is inactive, HDMI-A-1 is disabled, and DMS is running.
+Run `uwsm stop` from a TTY or remote shell to exit the UWSM Steam Session, then return to `Hyprland (uwsm-managed)` in Ly.
+Confirm Sunshine is inactive, HDMI-A-1 is disabled, and DMS is running.
 Record pass or failure and the logs in [issue #40](https://github.com/fveracoechea/dotfiles/issues/40).
 
 ### Two-input Multi View
