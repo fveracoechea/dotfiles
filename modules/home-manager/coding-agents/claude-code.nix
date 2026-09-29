@@ -57,6 +57,7 @@
         disableClaudeAiConnectors = true;
         disableArtifact = false;
         disableRemoteControl = true;
+        autoMemoryEnabled = false;
       };
 
       skills = {
