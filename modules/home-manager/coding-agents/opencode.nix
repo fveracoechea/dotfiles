@@ -21,10 +21,6 @@
 
       context = ./AGENTS.md;
 
-      commands = {
-        create-pr = ./command/create-pr.md;
-      };
-
       tui = {
         theme = "system";
       };
@@ -32,17 +28,18 @@
       skills = {
         herdr = "${codingAgentSources.herdr}/skills/herdr";
         hunk-review = "${codingAgentSources.hunk}/packages/hunk/skills/hunk-review";
-        babysit-pr = ../../../.agents/skills/babysit-pr;
+        no-slop = "${codingAgentSources.operator}/skills/no-slop";
+        pr-review = "${codingAgentSources.operator}/skills/pr-review";
         frontend-design = ../../../.agents/skills/frontend-design;
       };
 
       settings = {
         autoupdate = false;
-        model = "openrouter/z-ai/glm-5.3-flash";
+        model = "openai/gpt-6-sol";
 
         agent = {
           build = {
-            model = "openrouter/z-ai/glm-5.3-flash";
+            model = "openai/gpt-6-sol";
             variant = "high";
           };
         };
@@ -51,6 +48,13 @@
         permission."*" = "allow";
 
         provider = {
+          openai = {
+            models."gpt-6-sol" = {
+              options.reasoningEffort = "high";
+              variants.high.reasoningEffort = "high";
+            };
+          };
+
           openrouter = {
             models."z-ai/glm-5.3-flash" = {
               options.reasoning.effort = "high";

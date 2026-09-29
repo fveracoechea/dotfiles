@@ -17,6 +17,12 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
 
+    dms.url = "github:AvengeMedia/DankMaterialShell/stable";
+    dms.inputs.nixpkgs.follows = "nixpkgs-latest";
+
+    catppuccin-dms.url = "github:catppuccin/dankmaterialshell";
+    catppuccin-dms.flake = false;
+
     musnix.url = "github:musnix/musnix";
     musnix.inputs.nixpkgs.follows = "nixpkgs-stable";
 
@@ -27,9 +33,6 @@
     # nix-darwin asserts that the two branches correspond.
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs-stable-darwin";
-
-    ultrashell.url = "github:fveracoechea/ultrashell";
-    ultrashell.inputs.nixpkgs.follows = "nixpkgs-stable";
 
     tmux-powerkit.url = "github:fabioluciano/tmux-powerkit";
     tmux-powerkit.inputs.nixpkgs.follows = "nixpkgs-latest";
@@ -42,6 +45,15 @@
 
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
+
+    # Owns the `pr-review` and `no-slop` skills. It ships TypeScript sources
+    # with no flake, so this input is a plain source tree.
+    operator.url = "github:fveracoechea/operator";
+    operator.flake = false;
+
+    dev-manager-desktop.url = "github:webosbrew/dev-manager-desktop";
+    dev-manager-desktop.inputs.nixpkgs.follows = "nixpkgs-latest";
+    dev-manager-desktop.inputs.nixpkgs-x86-darwin.follows = "nixpkgs-stable-darwin";
   };
 
   outputs = {
@@ -92,16 +104,20 @@
     });
 
     codingAgentSources = {
-      inherit (inputs) figma-plugin herdr hunk;
+      inherit (inputs) figma-plugin herdr hunk operator;
     };
 
     # Aggregates close over this flake's own inputs, so consumer flakes do
     # not re-declare them. Third-party modules are imported here because
     # `imports` cannot read module arguments.
     homeManagerModules.default = {
-      _module.args = {inherit codingAgentSources;};
+      _module.args = {
+        inherit codingAgentSources;
+        dmsThemeSource = inputs.catppuccin-dms;
+      };
       imports = [
         ./modules/home-manager/default.nix
+        inputs.dms.homeModules.dank-material-shell
         inputs.spicetify-nix.homeManagerModules.default
       ];
     };
@@ -126,19 +142,11 @@
         pkgs = latestPkgsFor system;
       };
 
-    # Hyprland gates. The parser check uses the System-owned Release Channel
-    # compositor (ADR-0007); everything else runs on the Latest Channel tools.
-    # The Darwin ownership fixture evaluates the repo module on the other
-    # supported system (eval only, nothing builds).
     hyprlandChecks = system:
       import ./checks/hyprland.nix {
         inherit lib inputs;
         pkgs = latestPkgsFor system;
         pkgs-stable = stablePkgsFor system;
-        pkgs-darwin = latestPkgsFor "aarch64-darwin";
-        pkgs-stable-darwin = stablePkgsFor "aarch64-darwin";
-        dotfilesPkgs = dotfilesPkgsFor system;
-        dotfilesPkgs-darwin = dotfilesPkgsFor "aarch64-darwin";
       };
   in {
     inherit homeManagerModules nixosModules darwinModules;

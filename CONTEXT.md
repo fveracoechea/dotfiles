@@ -8,7 +8,7 @@ Personal NixOS/nix-darwin dotfiles repository using flakes. Manages reproducible
 A physical machine managed by this repository. Each host has its own directory under `hosts/` containing system and user configuration.
 
 **Custom Utils**:
-_Appears in legacy code only._ Previously shared utilities injected into all modules via `specialArgs`, including the color palette and monitor specs. Replaced in the refactor by `config.dotfiles.palette` (a plain attrset option) and `config.dotfiles.hyprland.monitors` (a host-declared list under the hyprland sub-option). The `utils/` directory is deleted.
+_Appears in legacy code only._ Previously shared utilities injected into all modules via `specialArgs`, including the color palette and monitor specs. The refactor replaced them with `config.dotfiles.palette` and a host monitor option. The Lua migration now declares this desktop's monitors in `config/hypr/settings.lua`. The `utils/` directory is deleted.
 _Avoid_: utils, helpers, constants
 
 **Custom Package**:
@@ -67,7 +67,7 @@ A module under `modules/home-manager/` that configures a user-level concern. The
 A module under `modules/nixos/` or `modules/darwin/` that configures an OS-level concern specific to one platform. NixOS modules configure bootloader, services, networking, and hardware. Darwin modules configure macOS system defaults, Homebrew, and shell integration.
 
 **Dotfiles Option**:
-A boolean enable switch under the `dotfiles.*` namespace that activates a personal configuration for an app, service, or grouping of them. Hosts activate modules by setting `dotfiles.<name>.enable = true`. An option may cover a single app (e.g. `dotfiles.ghostty`) or a grouping of several apps under one concern (e.g. `dotfiles.shell` = zsh + tmux + oh-my-posh + bat + btop + yazi + git). Groupings cascade to their members via `mkDefault`, so a host can opt out of any member by setting it to `false` explicitly. Groupings are distinguished from atomics by name only, not by a marker. Some modules expose sub-options under their namespace (e.g. `dotfiles.hyprland.monitors`).
+A boolean enable switch under the `dotfiles.*` namespace that activates a personal configuration for an app, service, or grouping of them. Hosts activate modules by setting `dotfiles.<name>.enable = true`. An option may cover a single app (e.g. `dotfiles.ghostty`) or a grouping of several apps under one concern (e.g. `dotfiles.shell` = zsh + tmux + oh-my-posh + bat + btop + yazi + git). Groupings cascade to their members via `mkDefault`, so a host can opt out of any member by setting it to `false` explicitly. Groupings are distinguished from atomics by name only, not by a marker.
 _Avoid_: bundle, configuration, profile
 
 **Grouping**:

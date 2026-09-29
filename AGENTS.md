@@ -9,6 +9,8 @@ This is a NixOS/nix-darwin dotfiles repository using flakes
 - Test config: `nixos-rebuild test --flake .#nixos-desktop` or `darwin-rebuild check --flake .#macbook-pro`
 - Check flake: `nix flake check`
 - Neovim lua config checks `nix flake check`
+- You can ssh into homelab host machine by doing "ssh homelab" nix config: ~/Code/homelab
+- You can ssh into hostinger VSP machine by doing "ssh hostinger"
 
 ## Agent skills
 

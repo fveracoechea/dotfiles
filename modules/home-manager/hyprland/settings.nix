@@ -6,44 +6,21 @@
   ...
 }: let
   luaFiles = {
-    entry = {
-      content = ../../../config/hypr/entry.lua;
-      autoLoad = true;
-    };
-    lifecycle = {
-      content = ../../../config/hypr/lifecycle.lua;
+    settings = {
+      content = pkgs.replaceVars ../../../config/hypr/settings.lua {
+        catppuccinMocha = "${pkgs.catppuccin-hyprland}/share/themes/catppuccin-hyprland-themes/catppuccin-mocha.lua";
+      };
       autoLoad = false;
     };
-    bridge = {
-      content = ../../../config/hypr/bridge.lua;
+    bindings = {
+      content = ../../../config/hypr/bindings.lua;
       autoLoad = false;
     };
-    "lib.json" = {
-      content = ../../../config/hypr/lib/json.lua;
-      autoLoad = false;
-    };
-    "modules.settings" = {
-      content = ../../../config/hypr/modules/settings.lua;
-      autoLoad = false;
-    };
-    "modules.env" = {
-      content = ../../../config/hypr/modules/env.lua;
-      autoLoad = false;
-    };
-    "modules.bindings" = {
-      content = ../../../config/hypr/modules/bindings.lua;
-      autoLoad = false;
-    };
-    "modules.windowrules" = {
-      content = ../../../config/hypr/modules/windowrules.lua;
-      autoLoad = false;
-    };
-    "modules.theme" = {
-      content = ../../../config/hypr/modules/theme.lua;
+    windowrule = {
+      content = ../../../config/hypr/windowrule.lua;
       autoLoad = false;
     };
   };
-  # Version-Coupled client: reload the System-owned compositor from its channel.
   reload = ''
     (
       export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
@@ -72,27 +49,17 @@ in {
       portalPackage = null;
       configType = "lua";
       settings = {};
-      # Register user startup after Home Manager's systemd start hook.
-      extraConfig = ''require("lifecycle")'';
+      extraConfig = builtins.readFile ../../../config/hypr/entry.lua;
       extraLuaFiles = luaFiles;
     };
 
-    xdg.configFile = {
-      "dotfiles/hyprland.json" = {
-        text = builtins.toJSON {
-          monitors = config.dotfiles.hyprland.monitors;
-          theme = {inherit (config.dotfiles.palette) blue flamingo surface2;};
-          paths.fuzzelCache = "${config.home.homeDirectory}/.config/fuzzel/cache";
-        };
-        onChange = reload;
-      };
-      # With package = null, upstream does not reload changed Lua sources.
-      "dotfiles/hyprland.stamp" = {
-        text = builtins.hashString "sha256" (builtins.toJSON (
-          lib.mapAttrs (_: file: builtins.hashFile "sha256" file.content) luaFiles
-        ));
-        onChange = reload;
-      };
+    # Home Manager skips its own config reload when package = null.
+    xdg.configFile."dotfiles/hyprland.stamp" = {
+      text = builtins.hashString "sha256" (builtins.toJSON {
+        entry = builtins.hashFile "sha256" ../../../config/hypr/entry.lua;
+        modules = lib.mapAttrs (_: file: builtins.hashFile "sha256" file.content) luaFiles;
+      });
+      onChange = reload;
     };
   };
 }

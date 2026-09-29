@@ -1,10 +1,8 @@
-local bridge = require "bridge"
-local data = assert(bridge.load(assert(bridge.default_path())))
+local config_home = os.getenv "XDG_CONFIG_HOME"
+if not config_home or config_home == "" then
+  config_home = assert(os.getenv "HOME") .. "/.config"
+end
 
-require("modules.settings").apply(data)
-require("modules.env").apply()
-require("modules.bindings").apply(data)
-require("modules.windowrules").apply()
-require("modules.theme").apply(data)
-
-return true
+dofile(config_home .. "/hypr/settings.lua")
+dofile(config_home .. "/hypr/windowrule.lua")
+dofile(config_home .. "/hypr/bindings.lua")

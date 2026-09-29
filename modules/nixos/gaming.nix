@@ -8,6 +8,8 @@
   options.dotfiles.gaming.enable = lib.mkEnableOption "gaming suite (steam, gamescope, sunshine, openrgb, AMD tools)";
 
   config = lib.mkIf config.dotfiles.gaming.enable {
+    boot.kernelModules = ["ntsync"];
+
     # Gaming packages take the Latest Channel even though this module sits in
     # the system layer. Routed through package options; GameMode is the one
     # exception: its NixOS module exposes no package option.
@@ -40,7 +42,7 @@
             "--rt" # Real time scheduling
             "-W 2560"
             "-H 1440"
-            "-r 90" # Refresh rate
+            "-r 120" # Refresh rate
             "-f" # Fullscreen
             "-O HDMI-A-1" # Output display (dummy plug, sunshine capture target)
           ];

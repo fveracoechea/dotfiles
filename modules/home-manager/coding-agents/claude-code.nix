@@ -13,8 +13,10 @@
       settings = {
         theme = "dark-ansi";
 
-        model = "claude-opus-5";
+        model = "claude-opus-5-5";
         effortLevel = "high";
+        # Newer models ignore the top-level effortLevel, so pin it per model.
+        modelSettings."claude-opus-5-5".effortLevel = "high";
 
         statusLine = {
           type = "command";
@@ -52,15 +54,16 @@
 
         disableBundledSkills = true;
         disableWorkflows = true;
-        disableRemoteControl = true;
         disableClaudeAiConnectors = true;
         disableArtifact = false;
+        disableRemoteControl = true;
       };
 
       skills = {
         herdr = "${codingAgentSources.herdr}/skills/herdr";
         hunk-review = "${codingAgentSources.hunk}/packages/hunk/skills/hunk-review";
-        babysit-pr = ../../../.agents/skills/babysit-pr;
+        no-slop = "${codingAgentSources.operator}/skills/no-slop";
+        pr-review = "${codingAgentSources.operator}/skills/pr-review";
         frontend-design = ../../../.agents/skills/frontend-design;
       };
 

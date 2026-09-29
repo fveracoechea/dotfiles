@@ -61,7 +61,7 @@ When a release lands, move all three release refs together:
 ### Window Management & Desktop
 
 - **[Hyprland](https://hyprland.org/)**: Dynamic tiling Wayland compositor
-- **[Ultrashell](https://github.com/fveracoechea/ultrashell)**: Feature-rich status bar
+- **[DankMaterialShell](https://danklinux.com/)**: Desktop shell, launcher, notifications, clipboard, and lock screen
 - **[Ly](https://github.com/fairyglade/ly)**: Display manager for the UWSM-managed Hyprland session and the Steam Session on NixOS
 - **[Ghostty](https://mitchellh.com/ghostty)**: Fast, GPU-accelerated terminal emulator
 
@@ -77,7 +77,6 @@ When a release lands, move all three release refs together:
 
 - **[Volta](https://volta.sh/)**: JavaScript toolchain manager
 - **[Bat](https://github.com/sharkdp/bat)**: Enhanced `cat` with syntax highlighting
-- **[Fuzzel](https://codeberg.org/dnkl/fuzzel)**: Application launcher for Wayland
 - **[Karabiner Elements](https://karabiner-elements.pqrs.org/)**: Keyboard customization (macOS)
 
 ## Theming
@@ -96,7 +95,7 @@ Single-app modules that configure one application:
 ```nix
 dotfiles.git.enable = true;
 dotfiles.neovim.enable = true;
-dotfiles.fuzzel.enable = true;
+dotfiles.hyprland.enable = true;
 ```
 
 ### Groupings
@@ -119,16 +118,12 @@ dotfiles.hyprland.enable = true;
 
 # home.nix (Home Manager)
 dotfiles.hyprland.enable = true;
-dotfiles.hyprland.monitors = [
-  "DP-1, 5120x1440@119.98Hz, auto, auto, bitdepth, 8, cm, auto"
-  "HDMI-A-1, disable"
-];
 ```
 
-This example matches `nixos-desktop`; other hosts must supply their own monitor specs.
-Hyprland's native settings live in `config/hypr/` and use store-backed installation, like Neovim.
-Home Manager generates only the session hooks and loader in `hyprland.lua`, plus a narrow JSON data bridge for monitors, Theme colors, and the Fuzzel cache path.
-Rebuild and activation install source edits and trigger internal reload hooks; there is no public reload helper.
+The desktop's monitor settings are in `config/hypr/settings.lua`.
+Hyprland's four native Lua files use store-backed installation, like Neovim.
+Home Manager adds the source of `entry.lua` and its session hooks to `hyprland.lua`.
+Rebuild and activation install source edits and trigger an internal reload hook.
 See the [Hyprland migration guide](docs/hyprland-summary.md) for ownership, checks, and the user-only activation, live smoke, and saved-path rollback procedure.
 
 ### Flake Exports
