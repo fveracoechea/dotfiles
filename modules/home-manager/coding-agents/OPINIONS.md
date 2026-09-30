@@ -48,6 +48,7 @@ A compact map of what I believe about building software. Each rule carries its r
 - Structure by feature or capability, never by technical layer. A `server/` folder is the wrong axis in an isomorphic framework. The server-client seam is per file.
 - A capability module ships a finished use case, not parts. It owns the state rules, the link policy, and the UI together, and a caller that assembles parts holds the module's state switches.
 - A helper is a module that was not named. When a second caller wants the behaviour, the answer is the capability that owns it, not a function they both import.
+- Write a one-line expression inline where it is used. A one-line helper hides one line behind a name the reader must look up, and such helpers multiply across the codebase.
 - Build from the use case down. Name the interface and write the call site first, because code written from the bottom up produces helpers that no module owns.
 - Moving exports to a new file, or grouping helpers under one name, adds no depth. The interface is deeper only when the caller has less to know.
 - Shared policy lives in one implementation that the link and the imperative action both call. Search preservation, push or replace, scroll behaviour, and current-item resolution written twice answer differently.
@@ -141,6 +142,7 @@ A compact map of what I believe about building software. Each rule carries its r
 
 ## Code quality
 
+- Less is more. Before you build, look for an implementation that gets the same result with less code, because every line is a line someone maintains. A PR that removes code and keeps the behaviour untouched is a good PR.
 - Simple, modular code that is easy to read and change beats pretty and complex abstractions.
 - Code is not cheap. A codebase that is hard to change locks you out of everything AI can offer.
 - Codebases drift toward entropy unless senior engineers hold the bar.
