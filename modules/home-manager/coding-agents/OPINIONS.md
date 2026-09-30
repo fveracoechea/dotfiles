@@ -22,10 +22,12 @@ A compact map of what I believe about building software. Each rule carries its r
 
 ## Enforcement over prose
 
-- Tooling wins over written rules. Tooling is deterministic, a guideline is not. Where lint enforces a rule, the document stays silent about it.
-- A policy stated only in a document is not upheld. Make it a lint rule, a ruleset, or a CI check.
+- Determinism wins over documentation and context files. A lint rule or a CLI check steers an agent at the moment it breaks the rule, costs no context until it fires, and saves a turn.
+- A rule stated only in a document or a context file is a suggestion. The agent can skip it, and it costs context on every run. Make it a lint rule, a ruleset, or a CI check, and delete it from the document.
 - When drift recurs, write a lint rule, not a stronger ADR.
+- A lint message ends with the skill topic that explains the fix, and a test checks that the topic covers it. A pointer that no test checks goes stale, and the agent reads a topic that does not explain the fix.
 - An agent hook is a nudge that saves a turn. Enforcement lives in CI. A mis-wired hook fails open.
+- Every adapter of one check, such as the CLI, the hook, and the plugin, gets a parity test that gives each adapter the same input and expects the same findings. Adapters drift on settings that only one of them reads.
 - Review workflows read their tooling from the base ref, so a PR cannot choose the tooling that scores it.
 - Pin third-party actions by commit SHA. A tag is a name its owner can move.
 - Verify every guard against a deliberate break. A guard that cannot fail is vacuous.
@@ -133,7 +135,7 @@ A compact map of what I believe about building software. Each rule carries its r
 - Test a route through the real route tree. The route's behaviour is the composition.
 - Assert what an operator or caller observes. Assert the locale and the fields, never the glue text.
 - Confirm a test can fail. Delete the behaviour and the test must go red.
-- Run the real consumer path in CI. A lookalike passes on the file the real path rejects.
+- Run the real consumer path in CI, down to the command line the consumer runs. A lookalike passes on the file the real path rejects, and a direct script call skips the consumer's config.
 - Each test file gets its own global. A leaked fake is a failure the next file cannot see coming, and run time is the accepted price.
 - Reproduce a bug end to end, the way an operator hits it, before fixing it.
 
@@ -176,6 +178,9 @@ A compact map of what I believe about building software. Each rule carries its r
 
 - A skill is a small router with topic files that load only when a task needs them. Split on the second topic, not below about 150 lines.
 - A skill description says when to load and nothing else. Every agent pays for it on every turn.
+- Skills are not software. A skill is a prompt that you pay for every time it runs. When its procedure has proven to work, turn it into a CLI command, a lint rule, or a check. The skill then shrinks to a pointer to that tool.
+- A skill that edits what a check reads names that check and runs it, because the skill can delete what the check requires. The check is the software, and the skill defers to it.
+- A skill example that says what a tool reports is a claim. Run it through that tool, or make it a fixture test. Three React Compiler examples in one skill were wrong, and the linter found each error in a minute.
 - Headings are the rule index. A separate rules list is a copy that drifts.
 - A skill owns one seam and names its neighbours. The package skill covers the API, the team skill covers the conventions on top.
 - Every skill has one home. Author it instead of shadowing a vendored copy.
