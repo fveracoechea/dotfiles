@@ -35,11 +35,11 @@
 
       settings = {
         autoupdate = false;
-        model = "openai/gpt-6-sol";
+        model = "openai/gpt-6.1-sol";
 
         agent = {
           build = {
-            model = "openai/gpt-6-sol";
+            model = "openai/gpt-6.1-sol";
             variant = "high";
           };
         };
@@ -49,7 +49,7 @@
 
         provider = {
           openai = {
-            models."gpt-6-sol" = {
+            models."gpt-6.1-sol" = {
               options.reasoningEffort = "high";
               variants.high.reasoningEffort = "high";
             };
