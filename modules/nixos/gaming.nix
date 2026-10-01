@@ -77,6 +77,9 @@ in {
             # ENABLE_HDR = "1";
           };
           args = [
+            # Keep the streamed picture on one KMS plane for Sunshine capture.
+            "--force-composition"
+            "--disable-layers"
             "--adaptive-sync" # VRR support
             # "--hdr-enabled" # HDR, disabled during RDNA3 illegal-opcode hangs
             # "--hdr-itm-enable"
