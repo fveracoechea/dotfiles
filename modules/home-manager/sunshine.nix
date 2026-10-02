@@ -28,8 +28,7 @@
           image-path = "desktop.png";
           prep-cmd = [
             {
-              do = "enable-stream-output";
-              undo = "disable-stream-output";
+              do = "prepare-steam-stream";
             }
           ];
         }
@@ -39,21 +38,30 @@
           auto-detach = "true";
           prep-cmd = [
             {
-              do = "enable-stream-output";
-              undo = "disable-stream-output";
+              do = "prepare-steam-stream";
             }
           ];
         }
       ];
     };
 
-    # Toggle the Dummy Plug output inside Hyprland (no-op elsewhere)
     home.packages = [
-      (pkgs.writers.writeBashBin "enable-stream-output" ''
-        hyprctl keyword monitor "HDMI-A-1, 3840x2160@120, 5120x0, 1" || true
-      '')
-      (pkgs.writers.writeBashBin "disable-stream-output" ''
-        hyprctl keyword monitor "HDMI-A-1, disable" || true
+      (pkgs.writers.writeBashBin "prepare-steam-stream" ''
+        set -euo pipefail
+
+        display="''${DISPLAY:-:0}"
+        ${pkgs.xprop}/bin/xprop -display "$display" -root GAMESCOPE_COMPOSITE_FORCE
+
+        # Steam can override --force-composition after Gamescope starts.
+        ${pkgs.xprop}/bin/xprop -display "$display" -root -f GAMESCOPE_COMPOSITE_FORCE 32c -set GAMESCOPE_COMPOSITE_FORCE 1
+        ${pkgs.coreutils}/bin/sleep 0.5
+
+        composition=$(${pkgs.xprop}/bin/xprop -display "$display" -root GAMESCOPE_COMPOSITE_FORCE)
+        printf '%s\n' "$composition"
+        if [[ "$composition" != "GAMESCOPE_COMPOSITE_FORCE(CARDINAL) = 1" ]]; then
+          printf 'Gamescope did not retain forced composition\n' >&2
+          exit 1
+        fi
       '')
     ];
   };

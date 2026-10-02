@@ -4,42 +4,7 @@
   lib,
   config,
   ...
-}: let
-  steamSession = config.programs.steam.gamescopeSession;
-  steamGamescopeUwsm = pkgs.writeShellScriptBin "steam-gamescope-uwsm" ''
-    set -u
-
-    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value: "export ${name}=${lib.escapeShellArg value}") steamSession.env)}
-
-    ${pkgs-latest.gamescope}/bin/gamescope --steam --expose-wayland ${toString steamSession.args} -- \
-      ${pkgs.coreutils}/bin/env -u WAYLAND_DISPLAY ${config.programs.steam.package}/bin/steam ${lib.escapeShellArgs steamSession.steamArgs} &
-    gamescope_pid=$!
-
-    for ((attempt = 0; attempt < 40; attempt++)); do
-      if ! kill -0 "$gamescope_pid" 2>/dev/null; then
-        wait "$gamescope_pid"
-        exit 1
-      fi
-      for socket in "''${XDG_RUNTIME_DIR}/"gamescope-*; do
-        if [ -S "$socket" ]; then
-          if ! WAYLAND_DISPLAY="''${socket##*/}" ${config.programs.uwsm.package}/bin/uwsm finalize; then
-            kill "$gamescope_pid" 2>/dev/null || true
-            wait "$gamescope_pid" 2>/dev/null || true
-            exit 1
-          fi
-          wait "$gamescope_pid"
-          exit $?
-        fi
-      done
-      ${pkgs.coreutils}/bin/sleep 0.2
-    done
-
-    kill "$gamescope_pid" 2>/dev/null || true
-    wait "$gamescope_pid" 2>/dev/null || true
-    printf 'Gamescope did not create a Wayland socket\n' >&2
-    exit 1
-  '';
-in {
+}: {
   options.dotfiles.gaming.enable = lib.mkEnableOption "gaming suite (steam, gamescope, sunshine, openrgb, AMD tools)";
 
   config = lib.mkIf config.dotfiles.gaming.enable {
@@ -56,12 +21,6 @@ in {
     # boot.kernelParams = ["amdgpu.user_queue=0"];
 
     programs = {
-      uwsm.waylandCompositors.steam = {
-        prettyName = "Steam";
-        comment = "Steam Session managed by UWSM";
-        binPath = "${steamGamescopeUwsm}/bin/steam-gamescope-uwsm";
-      };
-
       steam = {
         enable = true;
         package = pkgs-latest.steam;
@@ -141,7 +100,7 @@ in {
       sunshine = {
         enable = true;
         package = pkgs-latest.sunshine;
-        # Only the Steam Session starts Sunshine, whether plain or UWSM-managed.
+        # Only the Steam Session starts Sunshine.
         autoStart = false;
         capSysAdmin = true;
         openFirewall = true;
@@ -151,8 +110,8 @@ in {
     # Sunshine probes encoders once at startup; give gamescope time to take DRM
     # and modeset the Dummy Plug first, or probing fails until Sunshine restarts
     systemd.user.services.sunshine = {
-      wantedBy = ["nixos-fake-graphical-session.target" "wayland-session@steam-gamescope-uwsm.target"];
-      after = ["nixos-fake-graphical-session.target" "wayland-session@steam-gamescope-uwsm.target"];
+      wantedBy = ["nixos-fake-graphical-session.target"];
+      after = ["nixos-fake-graphical-session.target"];
       serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
     };
   };

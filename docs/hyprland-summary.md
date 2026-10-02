@@ -104,19 +104,18 @@ Without an idle inhibitor, verify lock at 15 minutes and suspend at 30 minutes.
 
 Run `enable-stream-output` in Hyprland and inspect `hyprctl monitors all -j` for HDMI-A-1 at 3840x2160@120 and position 5120x0.
 Run `disable-stream-output` and confirm it is disabled again.
-Confirm Sunshine and both Steam Session targets are inactive in Hyprland:
+Confirm Sunshine and the Steam Session target are inactive in Hyprland:
 
 ```bash
-systemctl --user show sunshine.service nixos-fake-graphical-session.target wayland-session@steam-gamescope-uwsm.target -p Id -p ActiveState
+systemctl --user show sunshine.service nixos-fake-graphical-session.target -p Id -p ActiveState
 ```
 
-Log out through `uwsm stop` and select `Steam (UWSM)` in Ly.
-The plain `Steam` entry remains available during migration.
+Log out through `uwsm stop` and select `Steam` in Ly.
 Wait for Sunshine's configured startup delay.
-In the Steam Session, check `systemctl --user is-active wayland-session@steam-gamescope-uwsm.target sunshine.service` from a TTY or remote shell.
+In the Steam Session, check `systemctl --user is-active nixos-fake-graphical-session.target sunshine.service` from a TTY or remote shell.
 Verify Steam Big Picture on the Dummy Plug and connect through Moonlight to test capture and input.
 Inspect the Sunshine service and logs from a user terminal or TTY.
-Run `uwsm stop` from a TTY or remote shell to exit the UWSM Steam Session, then return to `Hyprland (uwsm-managed)` in Ly.
+Press `Ctrl + Alt + Q` to exit the Steam Session, then return to `Hyprland (uwsm-managed)` in Ly.
 Confirm Sunshine is inactive, HDMI-A-1 is disabled, and DMS is running.
 Record pass or failure and the logs in [issue #40](https://github.com/fveracoechea/dotfiles/issues/40).
 
