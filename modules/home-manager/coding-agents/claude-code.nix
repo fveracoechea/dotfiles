@@ -26,6 +26,8 @@
         permissions = {
           allow = [
             "Bash(*)"
+            "Bash(git push --force-with-lease:*)"
+            "Bash(git reset --keep:*)"
             "Read(*)"
             "Edit(*)"
             "Write(*)"
