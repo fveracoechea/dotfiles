@@ -61,6 +61,8 @@
         disableArtifact = false;
         disableRemoteControl = true;
         autoMemoryEnabled = false;
+
+        enabledPlugins."slack@claude-plugins-official" = true;
       };
 
       skills = {
