@@ -24,6 +24,7 @@
         };
 
         permissions = {
+          defaultMode = "bypassPermissions";
           allow = [
             "Bash(*)"
             "Bash(git push --force-with-lease:*)"
