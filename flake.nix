@@ -40,9 +40,6 @@
     hunk.url = "github:modem-dev/hunk";
     hunk.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    figma-plugin.url = "github:figma/mcp-server-guide";
-    figma-plugin.flake = false;
-
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
 
@@ -104,7 +101,7 @@
     });
 
     codingAgentSources = {
-      inherit (inputs) figma-plugin herdr hunk operator;
+      inherit (inputs) herdr hunk operator;
     };
 
     # Aggregates close over this flake's own inputs, so consumer flakes do

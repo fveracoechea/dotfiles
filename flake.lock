@@ -106,22 +106,6 @@
         "type": "github"
       }
     },
-    "figma-plugin": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1790335004,
-        "narHash": "sha256-go3bEdcg53iZt3wOXqxjynuj49b11wDtRP+NGWd/y7g=",
-        "owner": "figma",
-        "repo": "mcp-server-guide",
-        "rev": "38308b7bbc676a9e9d57795ad4793fa9682d1644",
-        "type": "github"
-      },
-      "original": {
-        "owner": "figma",
-        "repo": "mcp-server-guide",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -359,7 +343,6 @@
         "catppuccin-dms": "catppuccin-dms",
         "dev-manager-desktop": "dev-manager-desktop",
         "dms": "dms",
-        "figma-plugin": "figma-plugin",
         "herdr": "herdr",
         "home-manager": "home-manager",
         "hunk": "hunk",

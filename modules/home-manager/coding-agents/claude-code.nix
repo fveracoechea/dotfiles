@@ -36,8 +36,6 @@
             "Grep(*)"
             "WebFetch"
             "WebSearch"
-            "mcp__plugin_figma_figma"
-            "Skill(figma:*)"
           ];
           deny = [
             "EnterPlanMode"
@@ -71,10 +69,6 @@
         no-slop = "${codingAgentSources.operator}/skills/no-slop";
         pr-review = "${codingAgentSources.operator}/skills/pr-review";
         frontend-design = ../../../.agents/skills/frontend-design;
-      };
-
-      plugins = {
-        figma = codingAgentSources.figma-plugin;
       };
 
       lspServers = {
