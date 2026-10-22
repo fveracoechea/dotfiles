@@ -54,6 +54,8 @@
           ];
         };
 
+        skipDangerousModePermissionPrompt = true;
+
         disableBundledSkills = true;
         disableWorkflows = true;
         disableClaudeAiConnectors = true;
