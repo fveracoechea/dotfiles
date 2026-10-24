@@ -61,7 +61,6 @@
         e = "exit";
         c = "clear";
         ".." = "cd ..";
-        cc = "claude --dangerously-skip-permissions";
       };
 
       plugins = [

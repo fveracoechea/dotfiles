@@ -1,16 +1,13 @@
 {
   lib,
   config,
-  pkgs,
   dotfilesPkgs,
   codingAgentSources,
   ...
 }: let
-  # Declarative equivalent of `herdr integration install claude|opencode`,
+  # Declarative equivalent of `herdr integration install opencode`,
   # which cannot patch the read-only configs home-manager writes.
   assets = "${codingAgentSources.herdr}/src/integration/assets";
-
-  claudeHook = "${config.programs.claude-code.configDir}/hooks/herdr-agent-state.sh";
 in {
   config = lib.mkIf config.dotfiles.coding-agents.enable {
     programs.herdr = {
@@ -41,31 +38,8 @@ in {
       };
     };
 
-    programs.claude-code = {
-      hooks."herdr-agent-state.sh" = "${assets}/claude/herdr-agent-state.sh";
+    programs.opencode.cli.plugins = ["./herdr-opencode"];
 
-      settings.hooks.SessionStart = [
-        {
-          matcher = "*";
-          hooks = [
-            {
-              type = "command";
-              command = "bash '${claudeHook}' session";
-              timeout = 10;
-            }
-          ];
-        }
-      ];
-    };
-
-    # opencode merges tui.json and tui.jsonc, so this coexists with
-    # `programs.opencode.tui`.
-    xdg.configFile = {
-      "opencode/plugins/herdr-agent-state.js".source = "${assets}/opencode/herdr-agent-state.js";
-      "opencode/herdr-tui-session.js".source = "${assets}/opencode/herdr-tui-session.js";
-      "opencode/tui.jsonc".source = (pkgs.formats.json {}).generate "herdr-tui.jsonc" {
-        plugin = ["./herdr-tui-session.js"];
-      };
-    };
+    xdg.configFile."opencode/herdr-opencode/tui.js".source = "${assets}/opencode/herdr-tui-session.js";
   };
 }

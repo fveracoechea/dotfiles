@@ -78,7 +78,6 @@
           conform-nvim
           gitsigns-nvim
           codesnap-nvim
-          opencode-nvim
         ];
       };
     };

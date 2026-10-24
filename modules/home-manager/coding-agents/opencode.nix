@@ -3,26 +3,38 @@
   lib,
   config,
   pkgs,
+  pkgs-stable,
   ...
 }: {
   config = lib.mkIf config.dotfiles.coding-agents.enable {
     home.packages = with pkgs; [
       lsof
-      mcp-nixos
+      # Latest depends on broken fastmcp-slim. Return when its MCP 2 support is fixed.
+      pkgs-stable.mcp-nixos
     ];
-
-    home.sessionVariables = {
-      OPENCODE_ENABLE_EXA = "true";
-      OPENCODE_EXPERIMENTAL_LSP_TOOL = "true";
-    };
 
     programs.opencode = {
       enable = true;
 
       context = ./AGENTS.md;
 
-      tui = {
-        theme = "system";
+      cli = {
+        theme = {
+          name = "system";
+          mode = "system";
+        };
+        session = {
+          sidebar = "auto";
+          scrollbar = false;
+          thinking = "show";
+        };
+        diffs.wrap = "word";
+        animations = true;
+      };
+
+      validateFiles = {
+        config = true;
+        cli = true;
       };
 
       skills = {
@@ -34,56 +46,61 @@
       };
 
       settings = {
-        autoupdate = false;
+        update = "disable";
         model = "openai/gpt-6.1-sol";
 
-        agent = {
+        agents = {
           build = {
-            model = "openai/gpt-6.1-sol";
-            variant = "high";
+            model = "openai/gpt-6.1-sol#high";
           };
         };
 
-        # permission.external_directory."~/OPINIONS.md" = "allow";
-        permission."*" = "allow";
+        permissions = [
+          {
+            action = "*";
+            resource = "*";
+            effect = "allow";
+          }
+        ];
 
-        provider = {
+        experimental.todo = true;
+        websearch.provider = "exa";
+
+        providers = {
           openai = {
             models."gpt-6.1-sol" = {
-              options.reasoningEffort = "high";
-              variants.high.reasoningEffort = "high";
+              settings.reasoningEffort = "high";
+              variants = [
+                {
+                  id = "high";
+                  settings.reasoningEffort = "high";
+                }
+              ];
             };
           };
 
           openrouter = {
             models."z-ai/glm-5.3-flash" = {
-              options.reasoning.effort = "high";
-              variants.high.reasoning.effort = "high";
+              settings.reasoning.effort = "high";
+              variants = [
+                {
+                  id = "high";
+                  settings.reasoning.effort = "high";
+                }
+              ];
             };
 
-            options = {
-              extraBody = {
-                provider = {
-                  sort = "throughput";
-                  only = [
-                    "baseten"
-                    "novita"
-                    "fireworks"
-                  ];
-                  allow_fallbacks = true;
-                  data_collection = "deny";
-                  zdr = true;
-                };
-              };
+            body.provider = {
+              sort = "throughput";
+              only = [
+                "baseten"
+                "novita"
+                "fireworks"
+              ];
+              allow_fallbacks = true;
+              data_collection = "deny";
+              zdr = true;
             };
-          };
-        };
-
-        mcp = {
-          grep = {
-            enabled = true;
-            type = "remote";
-            url = "https://mcp.grep.app";
           };
         };
 
@@ -92,76 +109,17 @@
             command = ["nixd"];
             extensions = [".nix"];
           };
-          lua_ls = {
-            command = ["lua-language-server"];
-            extensions = [".lua"];
-          };
-          qmlls = {
-            command = ["qmlls"];
-            extensions = [".qml"];
-          };
-          biome = {
-            command = ["biome" "lsp-proxy"];
+          typescript = {
+            command = ["typescript-language-server" "--stdio"];
             extensions = [
               ".js"
               ".jsx"
               ".ts"
               ".tsx"
-              ".json"
-              ".jsonc"
-              ".css"
-              ".html"
-              ".graphql"
-              ".vue"
-              ".svelte"
-              ".astro"
-            ];
-          };
-          stylelint = {
-            command = ["stylelint-language-server" "--stdio"];
-            extensions = [
-              ".css"
-              ".scss"
-              ".less"
-              ".html"
-              ".vue"
-              ".astro"
-            ];
-          };
-          oxlint = {
-            command = ["oxlint" "--lsp"];
-            extensions = [
-              ".js"
-              ".jsx"
-              ".ts"
-              ".tsx"
-              ".vue"
-              ".svelte"
-              ".astro"
-            ];
-          };
-          oxfmt = {
-            command = ["oxfmt" "--lsp"];
-            extensions = [
-              ".js"
-              ".jsx"
-              ".ts"
-              ".tsx"
-              ".toml"
-              ".json"
-              ".jsonc"
-              ".json5"
-              ".yaml"
-              ".yml"
-              ".html"
-              ".vue"
-              ".handlebars"
-              ".hbs"
-              ".css"
-              ".scss"
-              ".less"
-              ".graphql"
-              ".md"
+              ".mjs"
+              ".cjs"
+              ".mts"
+              ".cts"
             ];
           };
         };

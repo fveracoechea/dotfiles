@@ -15,7 +15,7 @@
         postInstall =
           old.postInstall
           + ''
-            chmod -R u+w "$out/share/quickshell/dms/Modules/DankBar"
+            chmod -R u+w "$out/share/quickshell/dms/Modules/DBar"
             ${pkgs.patch}/bin/patch --directory="$out/share/quickshell/dms" --fuzz=0 -p2 < ${./dms-bar-max-width.patch}
           '';
       });
