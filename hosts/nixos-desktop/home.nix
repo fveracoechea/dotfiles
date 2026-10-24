@@ -41,7 +41,8 @@
     # ABI v12. Return to Latest when the package builds and launches there.
     pkgs-stable.zettlr
     tiny-rdm
-    obs-studio
+    tuxguitar
+    glow
   ];
 
   programs.ssh = {

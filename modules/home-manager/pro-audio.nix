@@ -30,6 +30,7 @@
       guitarix
       fil-plugins
       geonkick
+      drumgizmo
 
       # Support for Windows VST2/VST3 plugins
       # yabridge
