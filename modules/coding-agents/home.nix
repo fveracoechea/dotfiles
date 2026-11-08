@@ -2,14 +2,14 @@
   lib,
   config,
   pkgs,
-  dotfilesPkgs,
+  codingAgentPackages,
   ...
 }: {
-  options.dotfiles.coding-agents.enable = lib.mkEnableOption "OpenCode";
+  options.dotfiles.coding-agents.enable = lib.mkEnableOption "Home coding agents with Herdr, OpenCode, Operator, Hunk, and language tooling";
 
   config = lib.mkIf config.dotfiles.coding-agents.enable {
     home.packages = with pkgs; [
-      dotfilesPkgs.operator
+      codingAgentPackages.operator
       python3
       nixd
       typescript-language-server

@@ -1,7 +1,7 @@
 {
   lib,
   config,
-  dotfilesPkgs,
+  codingAgentPackages,
   codingAgentSources,
   ...
 }: let
@@ -12,7 +12,7 @@ in {
   config = lib.mkIf config.dotfiles.coding-agents.enable {
     programs.herdr = {
       enable = true;
-      package = dotfilesPkgs.herdr;
+      package = codingAgentPackages.herdr;
       settings = {
         onboarding = false;
 
@@ -31,7 +31,7 @@ in {
         };
 
         ui = {
-          sidebar_width = 32;
+          sidebar_width = lib.mkDefault 32;
           agent_panel_sort = "spaces";
           show_agent_labels_on_pane_borders = true;
         };

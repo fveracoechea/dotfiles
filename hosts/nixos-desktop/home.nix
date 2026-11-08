@@ -1,5 +1,4 @@
 {
-  lib,
   pkgs,
   pkgs-stable,
   dotfilesPkgs,
@@ -45,11 +44,6 @@
     tuxguitar
     glow
   ];
-
-  programs.opencode.settings.mcp.servers.nix-mcp = {
-    type = "local";
-    command = [(lib.getExe pkgs-stable.mcp-nixos)];
-  };
 
   programs.hex.systemdTarget = "wayland-session@hyprland.desktop.target";
 

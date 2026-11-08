@@ -40,7 +40,7 @@ in {
       extensions.paths = ["${config.xdg.configHome}/hunk/extensions/hunk-gh"];
     };
 
-    programs.git.settings.core.pager = "hunk pager";
-    programs.lazygit.settings.git.diffRenderers = [{command = "hunk pager";}];
+    programs.git.settings.core.pager = lib.mkIf config.programs.git.enable "hunk pager";
+    programs.lazygit.settings.git.diffRenderers = lib.mkIf config.programs.lazygit.enable [{command = "hunk pager";}];
   };
 }

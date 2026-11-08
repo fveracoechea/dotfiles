@@ -15,7 +15,7 @@
     ./hex.nix
     ./hyprland
     ./mangohud.nix
-    ./coding-agents
+    ../coding-agents/home.nix
     ./pro-audio.nix
     ./shell.nix
     ./spotify.nix

@@ -98,20 +98,16 @@
       pkgs = latestPkgsFor system;
     });
 
-    codingAgentSources = {
-      inherit (inputs) herdr hunk operator;
-    };
-
     # Aggregates close over this flake's own inputs, so consumer flakes do
     # not re-declare them. Third-party modules are imported here because
     # `imports` cannot read module arguments.
     homeManagerModules.default = {
       _module.args = {
-        inherit codingAgentSources;
         dmsThemeSource = inputs.catppuccin-dms;
         dmsSource = inputs.dms;
       };
       imports = [
+        (import ./modules/coding-agents/composition.nix {inherit inputs stablePkgsFor;})
         ./modules/home-manager/default.nix
         inputs.neovim.homeManagerModules.default
         inputs.dms.homeModules.dank-material-shell
@@ -145,6 +141,15 @@
       hosts = inputs.self.nixosConfigurations;
       pkgs = latestPkgsFor "x86_64-linux";
     };
+
+    codingAgentChecks = system:
+      import ./modules/coding-agents/checks.nix {
+        inherit lib home-manager;
+        pkgs = latestPkgsFor system;
+        homeModule = homeManagerModules.default;
+        dotfilesPkgs = dotfilesPkgsFor system;
+        pkgs-stable = stablePkgsFor system;
+      };
   in {
     inherit homeManagerModules nixosModules;
 
@@ -157,7 +162,7 @@
         value =
           (neovimChecks system)
           // lib.optionalAttrs (system == "x86_64-linux") (
-            (hyprlandChecks system) // {host-preservation = hostChecks.check;}
+            (hyprlandChecks system) // (codingAgentChecks system) // {host-preservation = hostChecks.check;}
           );
       })
       supportedSystems);

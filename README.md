@@ -288,12 +288,22 @@ It saves the active System path before `test`; `nixos-rebuild test --rollback` d
 │   └── vps/                 # VPS control plane, host-local services/, networking, and storage
 ├── modules/                  # Reusable configuration modules
 │   ├── core/                # Cross-cutting options (palette)
-│   ├── nixos/               # NixOS-specific modules
-│   └── home-manager/        # User environment modules
+│   ├── coding-agents/       # Capability-owned Home implementation, packages, and checks
+│   ├── nixos/               # Explicit System registry and unmigrated implementations
+│   └── home-manager/        # Explicit Home registry and unmigrated implementations
 ├── packages/                # Custom packages (locally-built + wrapped from inputs)
-├── config/                  # Store-backed native app configuration, including hypr/ and nvim/
+├── config/                  # Native configuration for capabilities not yet migrated
 └── flake.nix               # Main flake configuration
 ```
+
+Reusable implementations migrate by capability, following ADR-0001 and ADR-0005.
+The registries remain explicit and static.
+Coding agents use `modules/coding-agents/home.nix` through `homeManagerModules.default` and `dotfiles.coding-agents.enable`.
+That switch owns Herdr, OpenCode, Operator, Hunk, language tooling, and the held Nix MCP package and declaration.
+It does not enable Git or lazygit; Hunk configures their pagers only when they are enabled.
+Ordinary upstream definitions override the default OpenCode model and Herdr sidebar width.
+Upstream list options merge contributions; use `lib.mkForce` only to deliberately replace an entire list.
+Native capability assets belong beside their implementation; external instructions, skills, and Neovim sources retain their owners.
 
 ## Documentation
 

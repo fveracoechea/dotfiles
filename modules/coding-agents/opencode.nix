@@ -3,17 +3,17 @@
   lib,
   config,
   pkgs,
-  pkgs-stable,
-  dotfilesPkgs,
+  codingAgentMcpPackage,
+  codingAgentPackages,
   ...
 }: {
   config = lib.mkIf config.dotfiles.coding-agents.enable {
-    xdg.configFile."opencode/plugins/operator.ts".source = "${dotfilesPkgs.operator}/share/opencode/plugins/operator.ts";
+    xdg.configFile."opencode/plugins/operator.ts".source = "${codingAgentPackages.operator}/share/opencode/plugins/operator.ts";
 
     home.packages = with pkgs; [
       lsof
       # Latest depends on broken fastmcp-slim. Return when its MCP 2 support is fixed.
-      pkgs-stable.mcp-nixos
+      codingAgentMcpPackage
     ];
 
     programs.opencode = {
@@ -41,7 +41,7 @@
       };
 
       skills =
-        lib.genAttrs dotfilesPkgs.operator.skills (name: "${dotfilesPkgs.operator}/share/skills/operator/${name}")
+        lib.genAttrs codingAgentPackages.operator.skills (name: "${codingAgentPackages.operator}/share/skills/operator/${name}")
         // {
           herdr = "${codingAgentSources.herdr}/skills/herdr";
           hunk-review = "${codingAgentSources.hunk}/packages/hunk/skills/hunk-review";
@@ -49,7 +49,12 @@
 
       settings = {
         update = "disable";
-        model = "openai/gpt-6.1-sol";
+        model = lib.mkDefault "openai/gpt-6.1-sol";
+
+        mcp.servers.nix-mcp = {
+          type = "local";
+          command = [(lib.getExe codingAgentMcpPackage)];
+        };
 
         # Compact at 268K with the 500K OpenAI input cap.
         compaction.buffer = 232000;
