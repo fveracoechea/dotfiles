@@ -150,6 +150,26 @@
         dotfilesPkgs = dotfilesPkgsFor system;
         pkgs-stable = stablePkgsFor system;
       };
+
+    shellChecks = system:
+      import ./modules/shell/checks.nix {
+        inherit lib home-manager;
+        pkgs = latestPkgsFor system;
+        pkgs-stable = stablePkgsFor system;
+        homeModule = homeManagerModules.default;
+        dotfilesPkgs = dotfilesPkgsFor system;
+        hosts = inputs.self.nixosConfigurations;
+        nixpkgs = nixpkgs-stable;
+        nixosModule = nixosModules.default;
+      };
+
+    networkingChecks = system:
+      import ./modules/networking/checks.nix {
+        inherit lib;
+        pkgs = latestPkgsFor system;
+        nixpkgs = nixpkgs-stable;
+        nixosModule = nixosModules.default;
+      };
   in {
     inherit homeManagerModules nixosModules;
 
@@ -162,7 +182,7 @@
         value =
           (neovimChecks system)
           // lib.optionalAttrs (system == "x86_64-linux") (
-            (hyprlandChecks system) // (codingAgentChecks system) // {host-preservation = hostChecks.check;}
+            (hyprlandChecks system) // (codingAgentChecks system) // (shellChecks system) // (networkingChecks system) // {host-preservation = hostChecks.check;}
           );
       })
       supportedSystems);

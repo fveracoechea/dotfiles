@@ -16,7 +16,7 @@
           name = "Francisco Veracoechea";
         };
         core = {
-          editor = "nvim";
+          editor = lib.mkIf config.programs.neovim.enable "nvim";
         };
         pull = {
           rebase = true;

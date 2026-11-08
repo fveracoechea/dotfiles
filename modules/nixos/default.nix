@@ -9,10 +9,10 @@
     ./docker.nix
     ./gaming.nix
     ./hyprland.nix
-    ./networking.nix
+    ../networking/nixos.nix
     ./nix-ld.nix
     ./pipewire.nix
     ./timezone.nix
-    ./system-shell.nix
+    ../shell/nixos.nix
   ];
 }

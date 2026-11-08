@@ -50,14 +50,18 @@
       };
 
       shellAliases = {
-        t = ''tmux new-session -A -s "$(basename "$PWD")"'';
         ls = "eza";
         la = "ls --no-user --icons always -lah";
         cd = "z";
-        cat = "bat";
         e = "exit";
         c = "clear";
         ".." = "cd ..";
+      }
+      // lib.optionalAttrs config.programs.tmux.enable {
+        t = ''tmux new-session -A -s "$(basename "$PWD")"'';
+      }
+      // lib.optionalAttrs config.programs.bat.enable {
+        cat = "bat";
       };
 
       plugins = [

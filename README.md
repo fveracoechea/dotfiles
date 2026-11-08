@@ -90,6 +90,15 @@ The server Release Channel migration requires separate review and data-recovery 
 
 ### Development environment
 
+The shell Grouping lives in `modules/shell/home.nix`; its System entry is `modules/shell/nixos.nix`.
+The existing `dotfiles.shell.enable` and `dotfiles.system-shell.enable` switches remain separate across Home and System.
+Zsh, tmux, Bat, Btop, Yazi, and Git keep their independent flat switches and Grouping opt-outs.
+Optional aliases, the Git editor, and Yazi's Eza preview follow enabled companions without enabling them.
+Home Zsh and tmux retain the System-compatible Zsh package.
+Homelab still uses its frozen compatibility shell implementation and package graph.
+
+`modules/networking/nixos.nix` owns reusable network policy; the Host owns its hostname and interface selection.
+
 - **[Neovim](https://neovim.io/)**: Extensible text editor with custom configuration
 - **[TMUX](https://github.com/tmux/tmux)**: Terminal multiplexer with custom scripts
 - **[Zsh](https://zsh.sourceforge.io/)** + **[Oh My Posh](https://ohmyposh.dev/)**: Enhanced shell experience
