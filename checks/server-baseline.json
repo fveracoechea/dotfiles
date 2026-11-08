@@ -1,0 +1,67 @@
+{
+  "verifiedAt": "2026-11-08",
+  "sourceRepository": "https://github.com/fveracoechea/homelab",
+  "sourceRevision": "4901bf69ae42c85789c0b7452100054d9a6b4ed3",
+  "nixpkgsRevision": "2fcb964de67fcf60b43471c55d5d99e61a9ccb5a",
+  "homeManagerRevision": "e13ba5e5abbd9b912fa8c6979bd119e87ca7fdd9",
+  "sharedModulesRevision": "a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46",
+  "diskoRevision": "ff8702b4de27f72b4c78573dfb89ec74e36abdf1",
+  "hosts": {
+    "homelab": {
+      "systemPath": "/nix/store/6fxavfj32xp45410rfk6zr0cm6fxz8sw-nixos-system-homelab-26.11.20260810.2fcb964",
+      "systemStateVersion": "26.05",
+      "homeStateVersion": "26.05",
+      "serviceVersions": {
+        "adguardhome": "0.107.78",
+        "caddy": "2.11.4",
+        "home-assistant": "2026.8.1",
+        "immich": "3.1.0",
+        "immich-machine-learning": "3.1.0",
+        "ollama": "0.32.7",
+        "paperless": "3.0.5",
+        "podman": "5.8.4",
+        "postgresql": "17.10",
+        "redis": "8.8.1",
+        "tailscale": "1.102.2",
+        "vaultwarden": "1.37.1",
+        "zwave-js": "3.9.0"
+      },
+      "postgresqlMajor": "17",
+      "postgresqlExtensions": {"pgvector": "0.8.6", "vectorchord": "1.1.1"},
+      "runningExecutables": {
+        "immich-server": "/nix/store/jy3vlmdzmyjpb37r6r2n24lc3zarhjz3-nodejs-slim-24.18.1/bin/node",
+        "immich-machine-learning": "/nix/store/gxzhl7aaiid7zp3y47jqqiq7zg5mqpwp-python3-3.14.6/bin/python3.14",
+        "paperless-web": "/nix/store/gxzhl7aaiid7zp3y47jqqiq7zg5mqpwp-python3-3.14.6/bin/python3.14",
+        "home-assistant": "/nix/store/gxzhl7aaiid7zp3y47jqqiq7zg5mqpwp-python3-3.14.6/bin/python3.14",
+        "zwave-js": "/nix/store/jy3vlmdzmyjpb37r6r2n24lc3zarhjz3-nodejs-slim-24.18.1/bin/node",
+        "vaultwarden": "/nix/store/jsa9x6km321h4crk1y1hknsgar2k34p1-vaultwarden-1.37.1/bin/vaultwarden"
+      },
+      "liveDatabaseExtensions": {
+        "cube": "1.5", "earthdistance": "1.2", "pg_trgm": "1.6", "plpgsql": "1.0",
+        "unaccent": "1.1", "uuid-ossp": "1.1", "vchord": "1.1.1", "vector": "0.8.6"
+      }
+    },
+    "vps": {
+      "hostname": "hostinger",
+      "systemPath": "/nix/store/fh8a92zaklmc1am0lya1p80h8a70nayi-nixos-system-hostinger-26.11.20260810.2fcb964",
+      "systemStateVersion": "24.05",
+      "homeStateVersion": null,
+      "serviceVersions": {
+        "caddy": "2.11.4",
+        "fail2ban": "1.1.0",
+        "headplane": "0.7.0",
+        "headscale": "0.29.3",
+        "tailscale": "1.102.2"
+      },
+      "runningExecutables": {
+        "headscale": "/nix/store/9kjjs0qramlxkzrvgqc4wh3incpma1y3-headscale-0.29.3/bin/headscale",
+        "headplane": "/nix/store/jy3vlmdzmyjpb37r6r2n24lc3zarhjz3-nodejs-slim-24.18.1/bin/node"
+      }
+    }
+  },
+  "paperlessGpt": {
+    "image": "ghcr.io/icereed/paperless-gpt@sha256:6b9024d1adebfcd6bd7ec5e9da2ca17f9879b1fb5ce749d72905bbb121091ef8",
+    "configurationId": "71d19c69021ffd1373df9d71f4906f9ebe65690d89ef5e533d92a5dbbf76257b",
+    "originalReference": "ghcr.io/icereed/paperless-gpt:latest"
+  }
+}

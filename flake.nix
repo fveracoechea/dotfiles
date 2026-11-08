@@ -11,6 +11,15 @@
     # Release channel: system packages and services.
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
+    # Deployed server graph. Remove only after the ADR-0008 migration gates pass.
+    nixpkgs-servers.url = "github:nixos/nixpkgs/2fcb964de67fcf60b43471c55d5d99e61a9ccb5a";
+    server-home-manager.url = "github:nix-community/home-manager/e13ba5e5abbd9b912fa8c6979bd119e87ca7fdd9";
+    server-home-manager.inputs.nixpkgs.follows = "nixpkgs-servers";
+    server-disko.url = "github:nix-community/disko/ff8702b4de27f72b4c78573dfb89ec74e36abdf1";
+    server-disko.inputs.nixpkgs.follows = "nixpkgs-servers";
+    server-dotfiles-compat.url = "github:fveracoechea/dotfiles/a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46";
+    server-dotfiles-compat.inputs.nixpkgs.follows = "nixpkgs-servers";
+
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
 
@@ -125,12 +134,31 @@
         pkgs = latestPkgsFor system;
         pkgs-stable = stablePkgsFor system;
       };
+
+    homelabSpecialArgs = {
+      serverDotfiles = inputs.server-dotfiles-compat;
+      dotfilesPkgs = inputs.server-dotfiles-compat.dotfilesPkgs.x86_64-linux;
+    };
+
+    hostChecks = import ./checks/hosts.nix {
+      inherit lib inputs;
+      hosts = inputs.self.nixosConfigurations;
+      pkgs = latestPkgsFor "x86_64-linux";
+    };
   in {
     inherit homeManagerModules nixosModules;
 
+    lib.hostManifests = hostChecks.manifests;
+    lib.serverPreservation = hostChecks.preservation;
+    lib.serverPreservationNegativeCases = hostChecks.negativeCases;
+
     checks = builtins.listToAttrs (map (system: {
         name = system;
-        value = (neovimChecks system) // lib.optionalAttrs (system == "x86_64-linux") (hyprlandChecks system);
+        value =
+          (neovimChecks system)
+          // lib.optionalAttrs (system == "x86_64-linux") (
+            (hyprlandChecks system) // {host-preservation = hostChecks.check;}
+          );
       })
       supportedSystems);
 
@@ -139,6 +167,34 @@
         value = dotfilesPkgsFor system;
       })
       supportedSystems);
+
+    nixosConfigurations.homelab = inputs.nixpkgs-servers.lib.nixosSystem {
+      specialArgs = homelabSpecialArgs;
+      modules = [
+        ./hosts/homelab/configuration.nix
+        inputs.server-dotfiles-compat.nixosModules.default
+        inputs.server-home-manager.nixosModules.home-manager
+        {
+          nixpkgs.hostPlatform = "x86_64-linux";
+          nixpkgs.config.allowUnfree = true;
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "hm-backup";
+          home-manager.users.fveracoechea = import ./hosts/homelab/home.nix;
+          home-manager.extraSpecialArgs = homelabSpecialArgs;
+        }
+      ];
+    };
+    nixosConfigurations.vps = inputs.nixpkgs-servers.lib.nixosSystem {
+      modules = [
+        inputs.server-disko.nixosModules.disko
+        ./hosts/vps/configuration.nix
+        {
+          nixpkgs.hostPlatform = "x86_64-linux";
+          nixpkgs.config.allowUnfree = true;
+        }
+      ];
+    };
 
     nixosConfigurations.nixos-desktop = let
       system = "x86_64-linux";

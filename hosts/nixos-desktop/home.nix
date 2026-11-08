@@ -57,7 +57,7 @@
     enable = true;
     enableDefaultConfig = false;
     settings = {
-      hostinger = {
+      vps = {
         HostName = "168.231.68.183";
         User = "fveracoechea";
         IdentityFile = "~/.ssh/fveracoechea";

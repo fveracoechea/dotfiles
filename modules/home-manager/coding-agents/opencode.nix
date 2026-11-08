@@ -45,7 +45,6 @@
         // {
           herdr = "${codingAgentSources.herdr}/skills/herdr";
           hunk-review = "${codingAgentSources.hunk}/packages/hunk/skills/hunk-review";
-          frontend-design = ../../../.agents/skills/frontend-design;
         };
 
       settings = {

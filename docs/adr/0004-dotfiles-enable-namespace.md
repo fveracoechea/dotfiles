@@ -1,6 +1,15 @@
 # dotfiles.* Enable Namespace
 
-All module activation switched from `imports = [ ./path/to/module.nix ]` in host configs to `dotfiles.<name>.enable = true;` boolean switches under a single flat `dotfiles.*` namespace. Each module declares `options.dotfiles.<name>.enable` and wraps its body in `lib.mkIf config.dotfiles.<name>.enable { ... }`.
+## Status
+
+Accepted. Amended 2026-11-08: the enable namespace applies only to reusable modules, not host-only services.
+
+## Decision
+
+Reusable modules use boolean switches under a single flat `dotfiles.*` namespace.
+Hosts activate them through `dotfiles.<name>.enable = true;`.
+Each reusable module declares `options.dotfiles.<name>.enable` and wraps its body in `lib.mkIf config.dotfiles.<name>.enable { ... }`.
+Host-only services use direct imports and upstream options as described in ADR-0001.
 
 The namespace includes single apps such as `dotfiles.git` and groupings such as `dotfiles.shell`.
 Groupings cascade to their members via `lib.mkDefault`, so a host can opt out of any member by setting it to `false` explicitly.

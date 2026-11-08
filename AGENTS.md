@@ -2,15 +2,14 @@ This is a Linux dotfiles repository using Nix flakes.
 
 ## Guidelines
 
-- Never build system config, the user should do it
-- Naming: Use descriptive function names, kebab-case for file names
 - Comments: Minimal inline comments, prefer self-documenting code
 - Only do system changes using the nix config flake
 - User-only config test: `nixos-rebuild test --flake .#nixos-desktop`
 - Check flake: `nix flake check`
 - Neovim lua config checks `nix flake check`
-- You can ssh into homelab host machine by doing "ssh homelab" nix config: ~/Code/homelab
-- You can ssh into hostinger VSP machine by doing "ssh hostinger"
+  Commit most changes and push them to main.
+- SSH to the VPS with `ssh vps`.
+- SSH to the homelab with `ssh homelab`.
 
 ## Agent skills
 

@@ -1,12 +1,14 @@
 # Dotfiles Context
 
 Personal Linux dotfiles repository using Nix flakes.
-It manages the NixOS desktop and exports reusable Linux modules and packages.
+It manages the NixOS desktop, homelab, and VPS and exports reusable Linux modules and packages.
+The servers retain their deployed dependency graph during consolidation. See ADR-0008.
 
 ## Language
 
 **Host**:
-A physical machine managed by this repository. Each host has its own directory under `hosts/` containing system and user configuration.
+A physical or virtual machine managed by this repository. Each host has its own directory under `hosts/` containing System configuration and optional Home configuration.
+Host-only services live in that host's `services/` directory, with each service's related proxy, firewall, and secret references in the same file.
 
 **Custom Utils**:
 _Appears in legacy code only._ Previously shared utilities injected into all modules via `specialArgs`, including the color palette and monitor specs. The refactor replaced them with `config.dotfiles.palette` and a host monitor option. The Lua migration now declares this desktop's monitors in `config/hypr/settings.lua`. The `utils/` directory is deleted.

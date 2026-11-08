@@ -15,6 +15,33 @@ A Linux dotfiles configuration managed through Nix flakes and Home Manager.
 ## Supported systems
 
 - **NixOS Desktop** (`nixos-desktop`): x86_64-linux gaming/development setup
+- **Homelab** (`homelab`): application services, LAN DNS, home automation, GPU inference, and subnet routing
+- **VPS** (`vps`): Headscale, Headplane, Caddy, Tailscale, and Fail2ban
+
+This repository is the canonical configuration source for all three hosts.
+See [server consolidation and deployment](docs/server-consolidation.md) before any server activation.
+
+## Project commands
+
+Run `just` to list the available recipes.
+Deployment recipes require confirmation and evaluate all hosts before activation.
+Complete the backup and recovery checks before deploying servers.
+
+```sh
+just evaluate                    # Evaluation only, no System builds or activation
+just check                       # Build and run the flake checks
+just manifests                   # Print evaluated host manifests
+just check-lua                    # Run Neovim flake checks
+just check-neovim-runtime         # Test first launch with plugin downloads
+just hyprland-baseline test       # Run the baseline script's self-tests
+just deploy-desktop
+just deploy-homelab
+just deploy-vps
+```
+
+Use `just deploy-vps hostinger` until the desktop's `vps` SSH alias is activated.
+Use `just --yes --dry-run deploy-vps` to inspect commands without running them or requesting confirmation.
+`just test-desktop` activates temporarily; it is not a read-only check.
 
 ## Core tooling
 
@@ -25,12 +52,15 @@ A Linux dotfiles configuration managed through Nix flakes and Home Manager.
 
 ### Package channels
 
-Two nixpkgs channels feed this flake, so Home packages can move without disturbing the System. See [ADR-0007](docs/adr/0007-split-nixpkgs-channels-by-package-owner.md).
+The desktop uses two nixpkgs channels, so Home packages can move without disturbing its System.
+See [ADR-0007](docs/adr/0007-split-nixpkgs-channels-by-package-owner.md).
+The servers temporarily retain a separate immutable dependency graph under [ADR-0008](docs/adr/0008-preserve-server-software-during-consolidation.md).
 
 | Channel             | Input                       | Branch                   | Builds                        |
 | ------------------- | --------------------------- | ------------------------ | ----------------------------- |
 | **Latest Channel**  | `nixpkgs-latest`            | `nixpkgs-unstable`       | Home-owned packages           |
-| **Release Channel** | `nixpkgs-stable`     | `nixos-26.05`            | Linux System-owned packages   |
+| **Release Channel** | `nixpkgs-stable`     | `nixos-26.05`            | Desktop System-owned packages |
+| Server source | `nixpkgs-servers` | Immutable deployed revision | Both server Systems and homelab Home |
 
 Package ownership decides the channel.
 Version-Coupled Packages follow their partner.
@@ -48,6 +78,8 @@ nix flake update herdr
 ```
 
 When a release lands, change `nixpkgs-stable` to `nixos-YY.MM` before updating that input.
+Do not move `nixpkgs-servers` or the `server-*` compatibility inputs during personal-tool updates.
+The server Release Channel migration requires separate review and data-recovery checks.
 
 ### Window management and desktop
 
@@ -87,7 +119,7 @@ The sandboxed flake smoke check uses the shared module's generated Home Manager 
 OpenCode comes from the Latest Channel's nixpkgs package, with Home Manager schema validation enabled.
 Operator comes directly from its upstream flake, pinned to release `v2.2.2`.
 Operator owns global agent instructions, its full skill catalog, and its OpenCode server plugin.
-Herdr, Hunk, and the existing frontend-design skill remain separately managed.
+Herdr and Hunk remain separately managed.
 The desktop declares `nix-mcp` globally with an absolute Nix executable path.
 
 After you rebuild, follow [Operator's update procedure](https://github.com/fveracoechea/operator/blob/v2.2.2/docs/update.md).
@@ -141,7 +173,10 @@ See the [Hex Nix guide](https://github.com/anomalyco/hex/blob/dev/docs/nix.md) f
 
 ## Module system
 
-Modules are activated via `dotfiles.<name>.enable` boolean switches under a single flat namespace. Each module declares its own enable option and wraps its configuration in `mkIf`. Hosts flip switches instead of importing module paths.
+Reusable modules are activated via `dotfiles.<name>.enable` boolean switches under a single flat namespace.
+Each reusable module declares its own enable option and wraps its configuration in `mkIf`.
+Host-only services live in `hosts/<host>/services/` and are imported directly.
+Each service file includes its application settings and related reverse-proxy, firewall, and secret references.
 
 ### Atomic modules
 
@@ -248,7 +283,9 @@ It saves the active System path before `test`; `nixos-rebuild test --rollback` d
 
 ```
 ├── hosts/                    # Host-specific configurations
-│   └── nixos-desktop/       # NixOS desktop configuration
+│   ├── nixos-desktop/       # NixOS desktop configuration
+│   ├── homelab/             # LAN application server, host-local services/, and Home configuration
+│   └── vps/                 # VPS control plane, host-local services/, networking, and storage
 ├── modules/                  # Reusable configuration modules
 │   ├── core/                # Cross-cutting options (palette)
 │   ├── nixos/               # NixOS-specific modules
@@ -260,6 +297,7 @@ It saves the active System path before `test`; `nixos-rebuild test --rollback` d
 
 ## Documentation
 
+- [Server consolidation and deployment](docs/server-consolidation.md): preserved sources, evaluation gates, backups, and workflow retirement.
 - [Hyprland configuration and migration](docs/hyprland-summary.md): native Lua ownership, verification, user-only activation, live tests, and rollback.
 - **[Architecture Decision Records](docs/adr/)**: module structure, theming, the `dotfiles.*` enable namespace, and the nixpkgs channel split.
 - [CONTEXT.md](CONTEXT.md) defines the repository's domain terms.
