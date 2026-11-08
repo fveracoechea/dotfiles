@@ -300,7 +300,7 @@ It saves the active System path before `test`; `nixos-rebuild test --rollback` d
 - [Server consolidation and deployment](docs/server-consolidation.md): preserved sources, evaluation gates, backups, and workflow retirement.
 - [Hyprland configuration and migration](docs/hyprland-summary.md): native Lua ownership, verification, user-only activation, live tests, and rollback.
 - **[Architecture Decision Records](docs/adr/)**: module structure, theming, the `dotfiles.*` enable namespace, and the nixpkgs channel split.
-- [CONTEXT.md](CONTEXT.md) defines the repository's domain terms.
+- [GLOSSARY.md](GLOSSARY.md) defines the repository's domain terms.
 
 ## License
 

@@ -23,4 +23,4 @@ Default canonical labels: `needs-triage`, `needs-info`, `ready-for-agent`, `read
 
 ### Domain docs
 
-Single-context repo: `CONTEXT.md` at root + `docs/adr/` for ADRs. See `docs/agents/domain.md`.
+Single-context repo: `GLOSSARY.md` at root + `docs/adr/` for ADRs. See `docs/agents/domain.md`.
