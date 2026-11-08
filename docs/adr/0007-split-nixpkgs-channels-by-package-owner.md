@@ -1,5 +1,9 @@
 # Split nixpkgs channels by package owner
 
+## Status
+
+Accepted. Amended 2026-11-08: capabilities own package composition while Dotfiles Pkgs remains the public package collection.
+
 The servers temporarily retain their deployed dependency graph under [ADR-0008](0008-preserve-server-software-during-consolidation.md).
 The channel policy below remains unchanged for the desktop.
 
@@ -48,7 +52,10 @@ Package ownership decides the channel, with two narrow departures:
   Home Manager and tmux use `pkgs-stable.zsh` so the configured shell and the executed shell match.
   Shell tools and plugins remain on the Latest Channel.
 - Unused flake inputs are removed rather than kept current. `neovim-config` is removed because no host or module consumes it.
-- Custom Packages and flake-input wrappers are built on the Latest Channel in `packages/default.nix`; consumers keep reading `dotfilesPkgs.<name>` and no call site knows the plumbing. System-only packages such as the compositor stay out of it and come straight from the System layer's Release Channel `pkgs`.
+- Custom Packages and flake-input wrappers use the Latest Channel.
+  Capabilities own their package composition under ADR-0001 and may consume those packages internally without the public collection.
+  Dotfiles Pkgs preserves its public package names for external consumers without owning capability implementation.
+  System-only packages such as the compositor stay outside that collection and use the System layer's Release Channel.
 - Home modules receive `pkgs-stable` only for an explicit Version-Coupled Package or Channel Hold. Each use states its reason beside the assignment. Ordinary Home packages use the default Latest Channel `pkgs`; ordinary nixpkgs packages do not enter Dotfiles Pkgs.
 - Latest Channel updates run `nix flake check` and the user-only `nixos-rebuild test --flake .#nixos-desktop`.
   A Release update runs the same checks, stages the NixOS generation with `nixos-rebuild boot`, reboots, and validates boot, login, Hyprland, networking, audio, and the Steam Session before merge.
