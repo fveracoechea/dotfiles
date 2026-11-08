@@ -114,7 +114,9 @@ From another project, run `opencode mcp list` to check that global `nix-mcp` con
 
 ### Voice dictation
 
-Hex replaces Handy and comes from its `dev` flake input.
+Hex replaces Handy and uses the Latest Channel's `anomaly-hex` package.
+Nix downloads a prebuilt package when the selected revision is in the binary cache.
+The Hex flake input supplies only its Home Manager module, not the application package.
 Its Home Manager user service starts with the Hyprland session and stops at logout.
 It needs a working audio session and Vulkan driver.
 Download a speech model after activation with `hex model install`, then open `hex` to select your microphone and settings.

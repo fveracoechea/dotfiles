@@ -22,7 +22,8 @@ Package ownership decides the channel, with two narrow departures:
 - The System Toolset contains only packages needed for boot, administration, recovery, or by a System Module. `vim`, `git`, and `curl` form the general recovery set; `ethtool` remains for network administration. Personal development tools and desktop utilities belong to Home Manager. Duplicate commands remain only when the System copy has a clear recovery purpose.
 - System Modules keep integrated packages such as Docker and login shells on the Release Channel. Home Manager owns companion tools such as `lazydocker`, `docker-compose`, `pavucontrol`, `nautilus`, `wl-clipboard`, and `libnotify`, so they use the Latest Channel. Firefox remains on the Release Channel while the NixOS `programs.firefox` option owns it.
 - Gaming packages take the Latest Channel even where a System Module installs them: Steam, protontricks, `proton-ge-bin`, gamescope (which also serves the Steam Session), `gamescope-wsi`, LACT, OpenRGB, and Sunshine are routed through their module package options. GameMode stays on the Release Channel because the 26.05 module exposes no package option.
-- Hex is owned by Home Manager and comes from its flake input on the Latest Channel.
+- Hex is owned by Home Manager and uses `anomaly-hex` from the Latest Channel.
+  Its flake input supplies only the Home Manager module.
   It uses desktop shortcuts and Wayland paste helpers, not privileged input-device access.
   The desktop keeps its existing input support for Sunshine.
 - `nixpkgs.pkgs` receives an already-built instance, and NixOS asserts that `nixpkgs.config` is empty in that case. So `allowUnfree` and `permittedInsecurePackages` live in `nixpkgsConfig` in `flake.nix`, shared by both instances, and hosts can no longer declare them.
