@@ -36,10 +36,12 @@ for _, app in ipairs {
   { "B", "google-chrome-stable" },
   { "S", "ghostty" },
   { "A", "dms ipc call spotlight toggle" },
-  { "O", "handy --toggle-transcription" },
+  { "O", "hex dictation toggle" },
 } do
   bind("SUPER + " .. app[1], "Open " .. app[2], hl.dsp.exec_cmd(app[2]))
 end
+
+bind("CTRL + SPACE", "Hex hold-to-talk", hl.dsp.global "anomaly.hex:dictation")
 
 bind("SUPER + C", "Copy", hl.dsp.send_shortcut { mods = "CTRL", key = "INSERT", window = "activewindow" })
 bind("SUPER + V", "Open clipboard history", hl.dsp.exec_cmd "dms ipc call clipboard toggle")

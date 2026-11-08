@@ -34,11 +34,8 @@
 
     programs.zsh = {
       enable = true;
-      # NixOS owns the login shell; macOS continues to use its native shell.
-      package =
-        if pkgs.stdenv.hostPlatform.isLinux
-        then pkgs-stable.zsh
-        else pkgs.zsh;
+      # Match the System's registered login shell. See ADR-0007.
+      package = pkgs-stable.zsh;
       dotDir = "${config.xdg.configHome}/zsh";
       enableCompletion = true;
       syntaxHighlighting.enable = true;

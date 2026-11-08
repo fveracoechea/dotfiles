@@ -4,9 +4,12 @@
   config,
   pkgs,
   pkgs-stable,
+  dotfilesPkgs,
   ...
 }: {
   config = lib.mkIf config.dotfiles.coding-agents.enable {
+    xdg.configFile."opencode/plugins/operator.ts".source = "${dotfilesPkgs.operator}/share/opencode/plugins/operator.ts";
+
     home.packages = with pkgs; [
       lsof
       # Latest depends on broken fastmcp-slim. Return when its MCP 2 support is fixed.
@@ -16,7 +19,7 @@
     programs.opencode = {
       enable = true;
 
-      context = ./AGENTS.md;
+      context = "${codingAgentSources.operator}/agents/AGENTS.md";
 
       cli = {
         theme = {
@@ -37,17 +40,20 @@
         cli = true;
       };
 
-      skills = {
-        herdr = "${codingAgentSources.herdr}/skills/herdr";
-        hunk-review = "${codingAgentSources.hunk}/packages/hunk/skills/hunk-review";
-        no-slop = "${codingAgentSources.operator}/skills/no-slop";
-        pr-review = "${codingAgentSources.operator}/skills/pr-review";
-        frontend-design = ../../../.agents/skills/frontend-design;
-      };
+      skills =
+        lib.genAttrs dotfilesPkgs.operator.skills (name: "${dotfilesPkgs.operator}/share/skills/operator/${name}")
+        // {
+          herdr = "${codingAgentSources.herdr}/skills/herdr";
+          hunk-review = "${codingAgentSources.hunk}/packages/hunk/skills/hunk-review";
+          frontend-design = ../../../.agents/skills/frontend-design;
+        };
 
       settings = {
         update = "disable";
         model = "openai/gpt-6.1-sol";
+
+        # Compact at 268K with the 500K OpenAI input cap.
+        compaction.buffer = 232000;
 
         agents = {
           build = {

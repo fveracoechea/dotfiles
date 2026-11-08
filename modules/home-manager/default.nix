@@ -3,7 +3,6 @@
     ../core/palette.nix
 
     ./neovim.nix
-    ./aerospace.nix
     ./bat.nix
     ./btop.nix
     ./desktop-entries
@@ -13,9 +12,8 @@
     ./ghostty.nix
     ./git.nix
     ./gtk.nix
-    ./handy.nix
+    ./hex.nix
     ./hyprland
-    ./karabiner.nix
     ./mangohud.nix
     ./coding-agents
     ./pro-audio.nix

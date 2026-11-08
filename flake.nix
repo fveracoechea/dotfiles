@@ -1,18 +1,15 @@
 {
-  description = "My fist NixOS Flake";
+  description = "Linux dotfiles and NixOS configuration";
 
   inputs = {
     # Latest channel: apps, CLI, and tooling. `nixpkgs-unstable`, not
     # `nixos-unstable`: this input no longer builds a NixOS system, so the
     # NixOS VM integration tests that gate `nixos-unstable` validate nothing
-    # it provides, and upstream recommends this branch for darwin and home
-    # use. See ADR-0007.
+    # it provides. See ADR-0007.
     nixpkgs-latest.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-    # Release channel: system packages and services. The release has a separate
-    # branch per platform, and nix-darwin requires the darwin one.
+    # Release channel: system packages and services.
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
-    nixpkgs-stable-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
@@ -29,11 +26,6 @@
     spicetify-nix.url = "github:Gerg-L/spicetify-nix";
     spicetify-nix.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    # Pinned to the release branch to match `nixpkgs-stable-darwin`:
-    # nix-darwin asserts that the two branches correspond.
-    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs-stable-darwin";
-
     tmux-powerkit.url = "github:fabioluciano/tmux-powerkit";
     tmux-powerkit.inputs.nixpkgs.follows = "nixpkgs-latest";
 
@@ -43,22 +35,22 @@
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    # Owns the `pr-review` and `no-slop` skills. It ships TypeScript sources
-    # with no flake, so this input is a plain source tree.
-    operator.url = "github:fveracoechea/operator";
-    operator.flake = false;
+    operator.url = "github:fveracoechea/operator/v2.2.2";
+    operator.inputs.nixpkgs.follows = "nixpkgs-latest";
+
+    hex.url = "github:anomalyco/hex/dev";
+    hex.inputs.nixpkgs.follows = "nixpkgs-latest";
+    hex.inputs.home-manager.follows = "home-manager";
 
     dev-manager-desktop.url = "github:webosbrew/dev-manager-desktop";
     dev-manager-desktop.inputs.nixpkgs.follows = "nixpkgs-latest";
-    dev-manager-desktop.inputs.nixpkgs-x86-darwin.follows = "nixpkgs-stable-darwin";
+    dev-manager-desktop.inputs.nixpkgs-x86-darwin.follows = "nixpkgs-latest";
   };
 
   outputs = {
     nixpkgs-latest,
     nixpkgs-stable,
-    nixpkgs-stable-darwin,
     home-manager,
-    nix-darwin,
     ...
   } @ inputs: let
     # Home Manager imports interfaces from the Latest Channel, so its module
@@ -66,7 +58,7 @@
     # outer System module trees keep their Release Channel libraries.
     lib = nixpkgs-latest.lib;
     homeManagerLib = import (home-manager + "/modules/lib/stdlib-extended.nix") lib;
-    supportedSystems = ["x86_64-linux" "aarch64-darwin"];
+    supportedSystems = ["x86_64-linux"];
 
     # Both channels share one config. `nixpkgs.pkgs` takes an already-built
     # instance, and NixOS asserts that `nixpkgs.config` is empty in that case,
@@ -82,15 +74,8 @@
         config = nixpkgsConfig;
       };
 
-    # One release, two QA branches: `nixos-*` for Linux, `nixpkgs-*-darwin`
-    # for macOS. The system picks the branch so every call site stays one line.
-    stableSourceFor = system:
-      if lib.hasSuffix "darwin" system
-      then nixpkgs-stable-darwin
-      else nixpkgs-stable;
-
     stablePkgsFor = system:
-      import (stableSourceFor system) {
+      import nixpkgs-stable {
         inherit system;
         config = nixpkgsConfig;
       };
@@ -117,20 +102,13 @@
         ./modules/home-manager/default.nix
         inputs.dms.homeModules.dank-material-shell
         inputs.spicetify-nix.homeManagerModules.default
+        inputs.hex.homeManagerModules.default
       ];
     };
     nixosModules.default = {
       imports = [
         ./modules/nixos/default.nix
         inputs.musnix.nixosModules.musnix
-      ];
-    };
-    darwinModules.default = {
-      imports = [
-        ./modules/darwin/default.nix
-        # Installs into environment.systemPackages so nix-darwin links
-        # Spotify.app into /Applications/Nix Apps for Spotlight/Launchpad.
-        inputs.spicetify-nix.darwinModules.default
       ];
     };
 
@@ -147,7 +125,7 @@
         pkgs-stable = stablePkgsFor system;
       };
   in {
-    inherit homeManagerModules nixosModules darwinModules;
+    inherit homeManagerModules nixosModules;
 
     checks = builtins.listToAttrs (map (system: {
         name = system;
@@ -160,52 +138,6 @@
         value = dotfilesPkgsFor system;
       })
       supportedSystems);
-
-    darwinConfigurations.macbook-pro = let
-      system = "aarch64-darwin";
-      pkgs-stable = stablePkgsFor system;
-      pkgs-latest = latestPkgsFor system;
-      specialArgs = {
-        inherit pkgs-latest;
-        dotfilesPkgs = dotfilesPkgsFor system;
-      };
-    in
-      nix-darwin.lib.darwinSystem {
-        inherit specialArgs;
-
-        modules = [
-          darwinModules.default
-          ./hosts/macbook-pro/configuration.nix
-          home-manager.darwinModules.home-manager
-          {
-            # System layer runs on the release channel.
-            nixpkgs.hostPlatform = system;
-            nixpkgs.pkgs = pkgs-stable;
-
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "hm-backup";
-            home-manager.users.fveracoechea = {
-              imports = [homeManagerModules.default ./hosts/macbook-pro/home.nix];
-              # Home layer runs on the latest channel. `useGlobalPkgs` hands
-              # Home Manager the system `pkgs` at default priority, so this
-              # plain definition replaces it.
-              _module.args.pkgs = pkgs-latest;
-
-              # Home Manager and `pkgs` are both on the Latest Channel. The
-              # release check reads the System package set, so it still sees
-              # the intentional channel split. See ADR-0007.
-              home.enableNixpkgsReleaseCheck = false;
-            };
-            home-manager.extraSpecialArgs =
-              specialArgs
-              // {
-                inherit pkgs-stable;
-                lib = homeManagerLib;
-              };
-          }
-        ];
-      };
 
     nixosConfigurations.nixos-desktop = let
       system = "x86_64-linux";

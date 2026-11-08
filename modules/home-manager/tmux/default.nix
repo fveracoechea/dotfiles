@@ -17,11 +17,8 @@
       baseIndex = 1;
       focusEvents = true;
       historyLimit = 50000;
-      shell = "${
-        if pkgs.stdenv.hostPlatform.isLinux
-        then pkgs-stable.zsh
-        else pkgs.zsh
-      }/bin/zsh";
+      # Match the System's registered login shell. See ADR-0007.
+      shell = "${pkgs-stable.zsh}/bin/zsh";
       extraConfig = lib.fileContents ./tmux.conf;
       plugins = with pkgs; [
         tmuxPlugins.vim-tmux-navigator

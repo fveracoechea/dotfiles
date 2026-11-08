@@ -15,7 +15,6 @@
     timezone.enable = true;
     pipewire.enable = true;
     gaming.enable = true;
-    handy.enable = true;
     hyprland.enable = true;
     networking.enable = true;
   };

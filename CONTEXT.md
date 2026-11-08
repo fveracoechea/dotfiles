@@ -1,6 +1,7 @@
 # Dotfiles Context
 
-Personal NixOS/nix-darwin dotfiles repository using flakes. Manages reproducible, cross-platform development environments across multiple physical machines.
+Personal Linux dotfiles repository using Nix flakes.
+It manages the NixOS desktop and exports reusable Linux modules and packages.
 
 ## Language
 
@@ -23,7 +24,9 @@ The set of packages this flake provides to its modules via `specialArgs`, inject
 _Avoid_: customPkgs, custom packages, local packages
 
 **Release Channel**:
-A platform-specific nixpkgs release branch that builds System-owned packages. It moves through deliberate Release updates, not routine app and tool updates. See ADR-0007.
+A NixOS release branch that builds System-owned packages.
+It moves through deliberate Release updates, not routine app and tool updates.
+See ADR-0007.
 _Avoid_: stable, stable channel, stable nixpkgs
 
 **Latest Channel**:
@@ -33,10 +36,6 @@ _Avoid_: unstable, unstable channel, bleeding edge
 **Version-Coupled Package**:
 A package whose working version is tied to a package on the other side of the channel seam, so it takes its partner's channel instead of its owner's channel. See ADR-0007.
 _Avoid_: pinned package, exception, override
-
-**Packaging Exception**:
-A package that takes the channel for its purpose instead of its System location because only a packaging constraint prevents Home Manager from owning it. Use only when separating the package from its System integration is not practical. See ADR-0007.
-_Avoid_: app override, layer exception
 
 **Channel Hold**:
 A temporary assignment to the other channel because a package does not build or work from its default channel. A Channel Hold needs a reason and an exit condition. See ADR-0007.
@@ -55,16 +54,17 @@ A compatibility marker (`system.stateVersion` or `home.stateVersion`) that prese
 _Avoid_: version, state
 
 **System**:
-OS-level configuration for a host. On NixOS this includes bootloader, networking, services, and hardware. On macOS this includes nix-darwin system defaults and Homebrew.
+OS-level configuration for a host, including bootloader, networking, services, and hardware.
 
 **Home**:
 User-level configuration for a host, managed by Home Manager. Includes dotfiles, shell configuration, applications, and themes.
 
 **Home Manager Module**:
-A module under `modules/home-manager/` that configures a user-level concern. These modules are shared across all platforms (NixOS and macOS) and imported into each host's `home.nix`.
+A module under `modules/home-manager/` that configures a user-level concern.
+Hosts import these reusable Linux modules through the flake's default aggregate.
 
 **System Module**:
-A module under `modules/nixos/` or `modules/darwin/` that configures an OS-level concern specific to one platform. NixOS modules configure bootloader, services, networking, and hardware. Darwin modules configure macOS system defaults, Homebrew, and shell integration.
+A module under `modules/nixos/` that configures an OS-level concern such as bootloader, services, networking, or hardware.
 
 **Dotfiles Option**:
 A boolean enable switch under the `dotfiles.*` namespace that activates a personal configuration for an app, service, or grouping of them. Hosts activate modules by setting `dotfiles.<name>.enable = true`. An option may cover a single app (e.g. `dotfiles.ghostty`) or a grouping of several apps under one concern (e.g. `dotfiles.shell` = zsh + tmux + oh-my-posh + bat + btop + yazi + git). Groupings cascade to their members via `mkDefault`, so a host can opt out of any member by setting it to `false` explicitly. Groupings are distinguished from atomics by name only, not by a marker.
@@ -75,7 +75,10 @@ A `dotfiles.*` module that composes several atomic `dotfiles.*` modules under on
 _Avoid_: bundle, profile, suite
 
 **Config Directory**:
-A top-level `config/` directory at the repo root that holds non-Nix application configuration files (lua, json, toml), namespaced per application (e.g. `config/nvim/`). Each Home Manager module installs its application's subdirectory from the repo into the Nix store via `xdg.configFile` source paths, so the files are edited in their native format with full editor tooling rather than embedded as Nix string literals; edits reach the application on the next rebuild. See ADR-0005.
+A top-level `config/` directory at the repo root that holds native application configuration, namespaced per application.
+Home Manager installs application configuration through store-backed links, so source edits reach the application on the next rebuild.
+Neovim's plugin lockfile instead links to the writable checkout so plugin updates change the tracked file directly.
+See ADR-0005.
 _Avoid_: config folder, dotfiles directory
 
 **Steam Session**:

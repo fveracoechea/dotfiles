@@ -10,10 +10,7 @@
     programs.ghostty = {
       enable = true;
       enableZshIntegration = true;
-      package =
-        if pkgs.stdenv.hostPlatform.isDarwin
-        then pkgs.ghostty-bin
-        else pkgs.ghostty;
+      package = pkgs.ghostty;
 
       settings = {
         theme = "Catppuccin Mocha";
@@ -26,12 +23,7 @@
         window-padding-x = 6;
         window-padding-y = 6;
         window-decoration = "auto";
-        macos-titlebar-style = "hidden";
-
-        font-size =
-          if pkgs.stdenv.hostPlatform.isDarwin
-          then 17
-          else 13;
+        font-size = 13;
 
         font-family-bold = "JetBrainsMono Nerd Font Bold";
         font-family-italic = "JetBrainsMono Nerd Font Italic";

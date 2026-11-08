@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  pkgs,
   ...
 }: {
   options.dotfiles.git.enable = lib.mkEnableOption "git";
@@ -24,9 +23,6 @@
         };
         rebase = {
           autosquash = true;
-        };
-        credential = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-          helper = "osxkeychain";
         };
       };
     };

@@ -1,5 +1,8 @@
-# Thin Hosts with Focused Modules
+# Thin hosts with focused modules
 
-Host configurations are thin orchestrators that only import modules. All actual configuration lives in focused modules under `modules/{nixos,darwin,home-manager}/`. This separates machine-specific wiring from reusable, concern-separated configuration.
+Host configurations select reusable modules and supply machine-specific settings.
+Reusable configuration lives in focused modules under `modules/{nixos,home-manager}/`.
 
-Home Manager modules are shared across platforms (NixOS and macOS), while system modules are platform-specific. This trade-off favors modularity over self-contained host configs — a host can be understood by reading its imports list, and any module can be reused or disabled independently.
+Home Manager modules configure the user environment, while System Modules configure NixOS.
+This favors reuse over self-contained host files.
+To understand a host, read its enabled modules and their configuration.

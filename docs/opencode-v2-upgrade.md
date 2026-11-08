@@ -3,23 +3,24 @@
 ## Applied configuration
 
 Ran `nix flake update` on 2026-10-24.
-Both hosts now select OpenCode **2.1.1** from `nixpkgs-latest` revision `901c54c08bdc20e00c2b3c73716b97497b1b3c74`.
-This updated all flake inputs, including both Release Channel revisions.
+The desktop selected OpenCode **2.1.1** from `nixpkgs-latest` revision `901c54c08bdc20e00c2b3c73716b97497b1b3c74` at that migration point.
+This updated all flake inputs, including the Release Channel revision.
 System builds and activation remain user-only operations.
-The equivalent Homebrew/stow migration is tracked in [macos-dotfiles#2](https://github.com/fveracoechea/macos-dotfiles/issues/2).
 
 - Converted server settings to native v2 names and preserved high reasoning for the build agent and both configured providers.
 - Preserved OpenRouter routing through `providers.openrouter.body.provider`.
 - Moved terminal settings to `programs.opencode.cli`, including the saved Linux presentation preferences.
 - Registered the v2 Herdr directory entrypoint through `cli.plugins` and removed the v1 plugin files and registration.
 - Removed the obsolete environment flags, selected Exa through `websearch.provider`, and enabled the v2 todo tool.
-- Converted the project's `nix-mcp` definition to `mcp.servers`.
+- Converted `nix-mcp` to `mcp.servers`.
+  The desktop now declares it globally in `hosts/nixos-desktop/home.nix`, using the absolute Release Channel executable path.
+  The project no longer overrides that server.
 - Retained only the requested `nixd` and TypeScript settings; v2 still has no working LSP runtime.
 - Removed the v1-only Neovim OpenCode plugin and its keymaps, as requested.
 - Enabled Home Manager validation against the configured OpenCode package's server and CLI schemas. [14] [15]
 
 The Latest Channel's `mcp-nixos` cannot evaluate because its `fastmcp-slim` dependency is marked broken with MCP 2.
-A temporary Channel Hold selects Release Channel `mcp-nixos` 2.4.3 on both hosts.
+A temporary Channel Hold selects Release Channel `mcp-nixos` 2.4.3.
 Return to the Latest Channel when that dependency supports MCP 2.
 The DMS update renamed its bar component to `DBar`; the existing max-width patch now targets that path.
 
@@ -28,14 +29,14 @@ The DMS update renamed its bar component to `DBar`; the existing max-width patch
 Completed:
 
 - `nix flake check`, including Neovim lint/smoke checks and the patched DMS/Hyprland check on Linux.
-- Both hosts' OpenCode evaluations and the full Darwin system derivation evaluation.
+- The desktop's OpenCode evaluation.
 - Generated global server and CLI files built and validated against OpenCode 2.1.1's bundled schemas.
 - Project `opencode.json` validated against the same bundled server schema.
 - Isolated OpenCode 2.1.1 `api --standalone config.get` loaded the generated native settings.
 - Held `mcp-nixos` 2.4.3 completed MCP initialization and returned its `nix` and `nix_versions` tools.
 - Nix formatting and whitespace checks.
 
-Live provider calls, the full Herdr TUI lifecycle, and activation on either host remain pending.
+Live provider calls, the full Herdr TUI lifecycle, and desktop activation remain pending.
 
 ## Activation
 
@@ -46,13 +47,6 @@ For the desktop, first test the configuration, then stage the updated boot gener
 sudo nixos-rebuild test --flake .#nixos-desktop
 sudo nixos-rebuild boot --flake .#nixos-desktop
 sudo reboot
-```
-
-On the MacBook:
-
-```sh
-darwin-rebuild check --flake .#macbook-pro
-darwin-rebuild switch --flake .#macbook-pro
 ```
 
 After activation, quit old OpenCode processes and start OpenCode from a new terminal.
@@ -149,7 +143,8 @@ For a native rewrite, use `providers.openrouter.body.provider` with the existing
 OpenAI supports `settings.reasoningEffort`; OpenRouter supports `settings.reasoning.effort`. [12]
 Actual model access, high-reasoning requests, and outgoing routing fields need live checks.
 
-The root `opencode.json` local MCP definition supported a v1-form trial and is now in native v2 form.
+The root `opencode.json` previously held the MCP definition.
+The desktop now owns that definition in global Home Manager settings.
 The grep.app MCP definition was removed after the initial upgrade review.
 The declared skills and global `AGENTS.md` paths remain supported. [1] [3]
 Keep each provider, model, agent, or command entry entirely in one format when converting.

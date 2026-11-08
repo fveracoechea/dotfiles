@@ -11,5 +11,7 @@
   stylelint-language-server = pkgs.callPackage ./stylelint-language-server.nix {};
 
   herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
+  hex = inputs.hex.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  operator = inputs.operator.packages.${pkgs.stdenv.hostPlatform.system}.default;
   tmux-powerkit = inputs.tmux-powerkit.packages.${pkgs.stdenv.hostPlatform.system}.default;
 }

@@ -2,7 +2,9 @@
 
 All module activation switched from `imports = [ ./path/to/module.nix ]` in host configs to `dotfiles.<name>.enable = true;` boolean switches under a single flat `dotfiles.*` namespace. Each module declares `options.dotfiles.<name>.enable` and wraps its body in `lib.mkIf config.dotfiles.<name>.enable { ... }`.
 
-The namespace is mixed-granularity: some entries are single apps (`dotfiles.git`, `dotfiles.ghostty`, `dotfiles.fuzzel`), some are groupings (`dotfiles.shell` = zsh + tmux + oh-my-posh + bat + btop + yazi + git + lazygit + lazydocker; `dotfiles.gaming` = steam + gamescope). Groupings cascade to their members via `lib.mkDefault`, so a host can opt out of any member by setting it to `false` explicitly. Groupings and atomics are distinguished by name only — no marker.
+The namespace includes single apps such as `dotfiles.git` and groupings such as `dotfiles.shell`.
+Groupings cascade to their members via `lib.mkDefault`, so a host can opt out of any member by setting it to `false` explicitly.
+Names distinguish groupings from atomics without a separate marker.
 
 ## Trade-offs
 
@@ -10,11 +12,16 @@ This trade-off favors discoverability and uniform host API over the minimal-mach
 
 ## Rejected alternatives
 
-- **Two namespaces (`configurations.*` for apps + `bundles.*` for groupings)** — rejected as unnecessary ceremony; one namespace with mixed granularity is simpler and the grouping/atomic distinction is clear from names.
-- **Auto-enable (grouping sets member `.enable = true` without mkDefault)** — rejected because it breaks opt-out: a host wanting the shell suite minus one app would hit a duplicate-definition error. `mkDefault` yields to explicit host values.
-- **Full per-app theming options (`dotfiles.git.userName`, `dotfiles.git.email`)** — rejected as the classic wrapper-repo anti-pattern; hosts override via the upstream HM/nixpkgs option directly (HM merges), so re-exposing upstream options under a custom namespace is noise.
-- **Bridging NixOS↔Home Manager eval contexts (one switch fires both layers)** — rejected to keep things clean; apps spanning both layers (hyprland, gaming, zsh) get two switches with the same name in separate eval contexts. Prerequisites are documented in `mkEnableOption` descriptions, not enforced via cross-context assertions (which don't work).
-- **Shared accumulator options (`dotfiles.unfreePackages`)** — rejected; nixpkgs merges `nixpkgs.config.permittedInsecurePackages` across modules, so a custom accumulator reinvents upstream merging.
+- Separate `configurations.*` and `bundles.*` namespaces add names without changing how the modules work.
+  One namespace supports both apps and groupings.
+- Auto-enabling a member without `mkDefault` prevents a host from opting out.
+  `mkDefault` yields to explicit host values.
+- Per-app options such as `dotfiles.git.userName` duplicate upstream Home Manager options.
+  Hosts set the upstream option directly.
+- A single switch cannot activate both NixOS and Home Manager evaluation contexts.
+  Apps spanning both layers use two switches with the same name.
+  `mkEnableOption` descriptions record prerequisites.
+- A custom accumulator such as `dotfiles.unfreePackages` duplicates nixpkgs option merging.
 
 ## Package plumbing
 
@@ -32,4 +39,6 @@ No overlays are used for this package wiring.
 
 ## Flake exports
 
-The flake exports `homeManagerModules`, `nixosModules`, `darwinModules` — each an attrset with per-name entries (`homeManagerModules.git`, `homeManagerModules.shell`, etc.) plus a `.default` aggregate that imports every per-name module in that layer. External consumers can import `.default` for the full suite or pick per-name modules.
+The flake exports `homeManagerModules.default` and `nixosModules.default`.
+Each aggregate imports all modules in its layer.
+External Linux consumers import the aggregate and select modules with `dotfiles.<name>.enable`.

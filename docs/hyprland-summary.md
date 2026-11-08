@@ -96,7 +96,7 @@ The parser check cannot prove that the DisplayPort link negotiates 10-bit output
 Hyprland notes that some screen-capture applications do not support 10-bit output.
 Check the Catppuccin borders, wallpaper, cursor, and DMS bar.
 Test focus, split, floating, fullscreen, resizing, groups, pseudo, workspace moves, and `SHIFT + ALT + left-button drag`.
-Open Chrome, Ghostty, the DMS launcher with `SUPER + A`, and Handy.
+Open Chrome, Ghostty, the DMS launcher with `SUPER + A`, and Hex.
 Open clipboard history with `SUPER + V` and paste with `SUPER + SHIFT + V`.
 Test representative floating dialogs and fullscreen idle inhibition.
 Run `dms ipc call lock lock`, inspect the DMS lock screen, and unlock.

@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   pkgs-stable,
   dotfilesPkgs,
@@ -7,13 +8,14 @@
   dotfiles = {
     shell.enable = true;
     neovim.enable = true;
+    neovim.pluginLockPath = "/home/fveracoechea/dotfiles/config/nvim/nvim-pack-lock.json";
     gtk.enable = true;
     volta.enable = true;
     ghostty.enable = true;
     sunshine.enable = true;
     fonts.enable = true;
     gaming.enable = true;
-    handy.enable = true;
+    hex.enable = true;
     spotify.enable = true;
     coding-agents.enable = true;
     desktop-entries.enable = true;
@@ -44,6 +46,13 @@
     tuxguitar
     glow
   ];
+
+  programs.opencode.settings.mcp.servers.nix-mcp = {
+    type = "local";
+    command = [(lib.getExe pkgs-stable.mcp-nixos)];
+  };
+
+  programs.hex.systemdTarget = "wayland-session@hyprland.desktop.target";
 
   programs.ssh = {
     enable = true;

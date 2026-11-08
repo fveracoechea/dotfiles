@@ -15,14 +15,21 @@ vim.keymap.set("n", "<C-a>", "ggVG", { desc = "Select All" })
 map("n", "<leader>\\", "<C-w>v", { desc = "Split window vertically" })
 map("n", "<leader>-", "<C-w>s", { desc = "Split window horizontally" })
 map("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })
+map("n", "<C-h>", "<C-w>h", { desc = "Go to the left window" })
+map("n", "<C-j>", "<C-w>j", { desc = "Go to the window below" })
+map("n", "<C-k>", "<C-w>k", { desc = "Go to the window above" })
+map("n", "<C-l>", "<C-w>l", { desc = "Go to the right window" })
 
 -- ============================================================================
 -- PLUGIN MAPPINGS
 -- ============================================================================
 
--- Yazi file manager
-map("n", "<C-n>", "<CMD>Yazi cwd<CR>", { desc = "Open the file manager in nvim's working directory" })
-map("n", "<C-y>", "<CMD>Yazi<CR>", { desc = "Open yazi at the current file" })
+map("n", "<C-n>", function()
+  Snacks.explorer { cwd = vim.fn.getcwd() }
+end, { desc = "Open the file manager in nvim's working directory" })
+map("n", "<C-y>", function()
+  Snacks.explorer()
+end, { desc = "Open the file manager at the current file" })
 
 -- CodeSnap screenshots
 map("v", "<leader>cc", "<CMD>CodeSnap<CR>", { desc = "Save selected code snapshot into clipboard" })
@@ -283,11 +290,11 @@ end, { desc = "Close completion menu", expr = true })
 map("i", "<Tab>", function()
   if vim.fn.pumvisible() == 1 then
     return "<C-n>"
-  elseif MiniSnippets.can_expand() then
-    MiniSnippets.expand()
+  elseif #MiniSnippets.expand { insert = false } > 0 then
+    vim.schedule(MiniSnippets.expand)
     return ""
-  elseif MiniSnippets.can_jump "next" then
-    MiniSnippets.jump "next"
+  elseif MiniSnippets.session.get() then
+    MiniSnippets.session.jump "next"
     return ""
   else
     return "<Tab>"
@@ -297,18 +304,10 @@ end, { desc = "Next completion, expand snippet, or Tab", expr = true })
 map("i", "<S-Tab>", function()
   if vim.fn.pumvisible() == 1 then
     return "<C-p>"
-  elseif MiniSnippets.can_jump "prev" then
-    MiniSnippets.jump "prev"
+  elseif MiniSnippets.session.get() then
+    MiniSnippets.session.jump "prev"
     return ""
   else
     return "<S-Tab>"
   end
 end, { desc = "Previous completion, jump prev, or Shift-Tab", expr = true })
-
--- ============================================================================
--- LINT PLUGIN MAPPINGS
--- ============================================================================
-
-map("n", "<leader>ll", function()
-  require("lint").try_lint()
-end, { desc = "Trigger linting for current file" })
