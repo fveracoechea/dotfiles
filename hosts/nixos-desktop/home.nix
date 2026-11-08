@@ -8,7 +8,6 @@
   dotfiles = {
     shell.enable = true;
     neovim.enable = true;
-    neovim.pluginLockPath = "/home/fveracoechea/dotfiles/config/nvim/nvim-pack-lock.json";
     gtk.enable = true;
     volta.enable = true;
     ghostty.enable = true;

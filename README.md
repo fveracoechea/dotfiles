@@ -66,24 +66,21 @@ When a release lands, change `nixpkgs-stable` to `nixos-YY.MM` before updating t
 
 ### Neovim plugins and tools
 
-The Linux Neovim copy started from [this configuration](https://github.com/fveracoechea/macos-dotfiles/tree/9841b2b8aadfa22889712287a9630dc7d353b6dc/.config/nvim) and is maintained independently.
-`vim.pack` owns plugins and pins them in `config/nvim/nvim-pack-lock.json`.
-Nix supplies Neovim, language servers, formatters, and parser build tools.
-The first launch needs network access to install plugins and compile parsers.
-Nix and GraphQL language support remain enabled.
-QML and Relay support are removed.
+The configuration and editor checks live in [fveracoechea/neovim](https://github.com/fveracoechea/neovim).
+Linux and macOS consume the same Lua files and `vim.pack` plugin lockfile.
+This flake pins the shared repository and follows the Latest Channel for its editor dependencies.
+`dotfiles.neovim.enable` enables the shared Home Manager module.
+The first launch downloads plugins and compiles parsers.
 
-The desktop's `dotfiles.neovim.pluginLockPath` points to the tracked lockfile in `~/dotfiles`.
-Home Manager links that file outside the Nix store, while Lua and snippets remain store-backed links in a writable directory.
-Run `:lua vim.pack.update()` to update plugins, then review and commit the lockfile diff.
-Activation does not copy an older lockfile over your edits.
-Set `pluginLockPath` to your checkout if you clone elsewhere.
-External consumers can omit it to keep a writable lockfile under their Neovim config directory.
-Activation seeds that file only when absent and preserves later plugin updates.
+Update plugins in the shared repository, commit its lockfile, then run `nix flake update neovim` here.
+Home Manager installs store-backed Lua files and a writable lockfile copy.
+Activation advances an unchanged lockfile with the configuration revision and refuses local lockfile edits.
+For development only, set `programs.neovim-config.pluginLockPath` to the shared checkout's lockfile at the same revision as the Lua configuration.
+Sessions and undo files live in Neovim's state directory.
 
 Run `bash scripts/check-neovim-runtime.sh` for an isolated first-launch test with real plugin downloads and parser compilation.
 It builds only the editor package, not the System.
-The sandboxed flake smoke check instead uses parser fixtures from nixpkgs so it can run without network access.
+The sandboxed flake smoke check uses the shared module's generated Home Manager files and offline parser fixtures.
 
 ### Coding agents
 
@@ -213,7 +210,6 @@ External consumer example:
         {
           dotfiles.shell.enable = true;
           dotfiles.neovim.enable = true;
-          dotfiles.neovim.pluginLockPath = "/home/me/dotfiles/config/nvim/nvim-pack-lock.json";
         }
       ];
     };

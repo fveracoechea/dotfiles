@@ -14,6 +14,10 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
 
+    neovim.url = "github:fveracoechea/neovim";
+    neovim.inputs.nixpkgs.follows = "nixpkgs-latest";
+    neovim.inputs.home-manager.follows = "home-manager";
+
     dms.url = "github:AvengeMedia/DankMaterialShell/stable";
     dms.inputs.nixpkgs.follows = "nixpkgs-latest";
 
@@ -100,6 +104,7 @@
       };
       imports = [
         ./modules/home-manager/default.nix
+        inputs.neovim.homeManagerModules.default
         inputs.dms.homeModules.dank-material-shell
         inputs.spicetify-nix.homeManagerModules.default
         inputs.hex.homeManagerModules.default
@@ -112,11 +117,7 @@
       ];
     };
 
-    neovimChecks = system:
-      import ./checks/neovim.nix {
-        inherit lib inputs system;
-        pkgs = latestPkgsFor system;
-      };
+    neovimChecks = system: inputs.neovim.checks.${system};
 
     hyprlandChecks = system:
       import ./checks/hyprland.nix {

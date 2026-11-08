@@ -312,6 +312,29 @@
         "type": "github"
       }
     },
+    "neovim": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs-latest"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794154903,
+        "narHash": "sha256-Txf4m/CXU+KvMFBBjOmGJrsemcT9CAGB4+dmzgzLEXw=",
+        "owner": "fveracoechea",
+        "repo": "neovim",
+        "rev": "6dc70cdf5f5593ec025ec3f673e31cab4a770142",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fveracoechea",
+        "repo": "neovim",
+        "type": "github"
+      }
+    },
     "nixpkgs-latest": {
       "locked": {
         "lastModified": 1793977579,
@@ -391,6 +414,7 @@
         "home-manager": "home-manager",
         "hunk": "hunk",
         "musnix": "musnix",
+        "neovim": "neovim",
         "nixpkgs-latest": "nixpkgs-latest",
         "nixpkgs-stable": "nixpkgs-stable",
         "operator": "operator",

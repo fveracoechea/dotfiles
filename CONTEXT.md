@@ -77,7 +77,9 @@ _Avoid_: bundle, profile, suite
 **Config Directory**:
 A top-level `config/` directory at the repo root that holds native application configuration, namespaced per application.
 Home Manager installs application configuration through store-backed links, so source edits reach the application on the next rebuild.
-Neovim's plugin lockfile instead links to the writable checkout so plugin updates change the tracked file directly.
+Neovim's native configuration is owned by the shared `fveracoechea/neovim` repository, not this Config Directory.
+Its normal installation uses a writable lockfile copy that advances with the shared revision and refuses local edits.
+Development installations can link the shared checkout's tracked lockfile explicitly.
 See ADR-0005.
 _Avoid_: config folder, dotfiles directory
 
