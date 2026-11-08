@@ -35,7 +35,7 @@
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    operator.url = "github:fveracoechea/operator/v2.2.2";
+    operator.url = "github:fveracoechea/operator";
     operator.inputs.nixpkgs.follows = "nixpkgs-latest";
 
     hex.url = "github:anomalyco/hex/dev";

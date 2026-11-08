@@ -52,7 +52,7 @@
       shellAliases = {
         t = ''tmux new-session -A -s "$(basename "$PWD")"'';
         ls = "eza";
-        la = "eza -abghHl --no-user --icons";
+        la = "ls --no-user --icons always -lah";
         cd = "z";
         cat = "bat";
         e = "exit";

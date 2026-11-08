@@ -368,16 +368,15 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1794097575,
-        "narHash": "sha256-7j/iTm8ELv8BpsLSaL7llYL9Y4DI6nbwQpwO+qMdE0k=",
+        "lastModified": 1794100137,
+        "narHash": "sha256-XTHU6R4rCtsVCdz0AaS4kiiD1L8vCi9rj8B4L5JNrhE=",
         "owner": "fveracoechea",
         "repo": "operator",
-        "rev": "be6ac47ca0a7881313a5139f6e30ce75d30be960",
+        "rev": "f16c53ccaa66a04a19fb8f8202c602d064634406",
         "type": "github"
       },
       "original": {
         "owner": "fveracoechea",
-        "ref": "v2.2.2",
         "repo": "operator",
         "type": "github"
       }
