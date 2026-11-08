@@ -167,7 +167,7 @@ just deploy-vps
 just deploy-homelab
 ```
 
-Each deployment recipe requests confirmation and runs `just evaluate` before `nixos-rebuild switch`.
+Each deployment recipe runs `just evaluate` before `nixos-rebuild switch`, without a confirmation prompt.
 This evaluates every host and the preservation gate without building Systems.
 It does not verify backups or replace owner-run build and smoke tests.
 Before the desktop SSH configuration is activated, use `just deploy-vps hostinger` with the legacy SSH alias.

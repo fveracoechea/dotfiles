@@ -24,7 +24,7 @@ See [server consolidation and deployment](docs/server-consolidation.md) before a
 ## Project commands
 
 Run `just` to list the available recipes.
-Deployment recipes require confirmation and evaluate all hosts before activation.
+Deployment recipes evaluate all hosts, then activate without a confirmation prompt.
 Complete the backup and recovery checks before deploying servers.
 
 ```sh
@@ -40,7 +40,7 @@ just deploy-vps
 ```
 
 Use `just deploy-vps hostinger` until the desktop's `vps` SSH alias is activated.
-Use `just --yes --dry-run deploy-vps` to inspect commands without running them or requesting confirmation.
+Use `just --dry-run deploy-vps` to inspect commands without running them.
 `just test-desktop` activates temporarily; it is not a read-only check.
 
 ## Core tooling

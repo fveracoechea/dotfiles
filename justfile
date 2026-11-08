@@ -35,16 +35,13 @@ test-desktop: evaluate
     sudo nixos-rebuild test --flake .#nixos-desktop
 
 # Activate the desktop configuration permanently.
-[confirm("Deploy the desktop configuration?")]
 deploy-desktop: evaluate
     sudo nixos-rebuild switch --flake .#nixos-desktop
 
 # Activate homelab services after backup and recovery validation.
-[confirm("Deploy homelab? Confirm backups and recovery procedures before continuing.")]
 deploy-homelab target="homelab": evaluate
     nixos-rebuild switch --flake .#homelab --build-host "$1" --target-host "$1" --sudo
 
 # Activate VPS services. Use target hostinger until the vps SSH alias is installed.
-[confirm("Deploy the VPS? Confirm backups and independent SSH or console access before continuing.")]
 deploy-vps target="vps": evaluate
     nixos-rebuild switch --flake .#vps --target-host "$1" --sudo
