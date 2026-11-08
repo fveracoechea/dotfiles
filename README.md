@@ -122,8 +122,12 @@ It needs a working audio session and Vulkan driver.
 Download a speech model after activation with `hex model install`, then open `hex` to select your microphone and settings.
 Existing Handy settings and models stay on disk, but this configuration no longer modifies them.
 
-Use `Ctrl+Space` for Hex's hold-to-talk desktop shortcut, or `Super+O` to toggle dictation.
-The shortcut changes from Handy's `Alt+Space` because Hex documents focus and paste problems with Alt on Hyprland.
+Hold left `Alt` to dictate, then release it to stop and transcribe.
+Recording starts after the keyboard repeat delay, so a short Alt tap does not start dictation.
+Hyprland consumes the Alt key events to prevent application menus from taking focus.
+Other Alt combinations held for a long time can also start dictation.
+Use `Super+O` to toggle dictation.
+These bindings call Hex directly and do not depend on its portal shortcut names.
 Hex needs no privileged input-device access.
 Existing input access remains for Sunshine.
 See the [Hex Nix guide](https://github.com/anomalyco/hex/blob/dev/docs/nix.md) for service diagnostics and model setup.

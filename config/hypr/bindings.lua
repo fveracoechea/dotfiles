@@ -41,7 +41,18 @@ for _, app in ipairs {
   bind("SUPER + " .. app[1], "Open " .. app[2], hl.dsp.exec_cmd(app[2]))
 end
 
-bind("CTRL + SPACE", "Hex hold-to-talk", hl.dsp.global "anomaly.hex:dictation")
+local hex_hold_active = false
+hl.bind("Alt_L", function()
+  hex_hold_active = true
+  hl.dispatch(hl.dsp.exec_cmd "hex dictation start")
+end, { long_press = true, description = "Hex hold-to-talk" })
+hl.bind("Alt_L", function()
+  if not hex_hold_active then
+    return
+  end
+  hex_hold_active = false
+  hl.dispatch(hl.dsp.exec_cmd "hex dictation stop")
+end, { release = true, ignore_mods = true, transparent = true, description = "Finish Hex dictation" })
 
 bind("SUPER + C", "Copy", hl.dsp.send_shortcut { mods = "CTRL", key = "INSERT", window = "activewindow" })
 bind("SUPER + V", "Open clipboard history", hl.dsp.exec_cmd "dms ipc call clipboard toggle")
