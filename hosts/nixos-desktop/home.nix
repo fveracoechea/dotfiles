@@ -45,8 +45,6 @@
     glow
   ];
 
-  programs.hex.systemdTarget = "wayland-session@hyprland.desktop.target";
-
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;

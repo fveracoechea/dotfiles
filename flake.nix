@@ -125,8 +125,9 @@
     neovimChecks = system: inputs.neovim.checks.${system};
 
     hyprlandChecks = system:
-      import ./checks/hyprland.nix {
-        inherit lib inputs;
+      import ./modules/hyprland/config-check.nix {
+        inherit lib home-manager;
+        homeModule = homeManagerModules.default;
         pkgs = latestPkgsFor system;
         pkgs-stable = stablePkgsFor system;
       };
@@ -170,6 +171,20 @@
         nixpkgs = nixpkgs-stable;
         nixosModule = nixosModules.default;
       };
+
+    desktopCapabilityChecks = system: let
+      args = {
+        inherit lib home-manager;
+        pkgs = latestPkgsFor system;
+        pkgs-stable = stablePkgsFor system;
+        homeModule = homeManagerModules.default;
+        nixpkgs = nixpkgs-stable;
+        nixosModule = nixosModules.default;
+      };
+    in
+      (import ./modules/hyprland/checks.nix args)
+      // (import ./modules/gaming/checks.nix args)
+      // (import ./modules/audio/checks.nix args);
   in {
     inherit homeManagerModules nixosModules;
 
@@ -182,7 +197,7 @@
         value =
           (neovimChecks system)
           // lib.optionalAttrs (system == "x86_64-linux") (
-            (hyprlandChecks system) // (codingAgentChecks system) // (shellChecks system) // (networkingChecks system) // {host-preservation = hostChecks.check;}
+            (hyprlandChecks system) // (codingAgentChecks system) // (shellChecks system) // (networkingChecks system) // (desktopCapabilityChecks system) // {host-preservation = hostChecks.check;}
           );
       })
       supportedSystems);

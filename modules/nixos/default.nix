@@ -7,11 +7,11 @@
     ./display-manager.nix
     ./tailscale-client.nix
     ./docker.nix
-    ./gaming.nix
-    ./hyprland.nix
+    ../gaming/nixos.nix
+    ../hyprland/nixos.nix
     ../networking/nixos.nix
     ./nix-ld.nix
-    ./pipewire.nix
+    ../audio/nixos.nix
     ./timezone.nix
     ../shell/nixos.nix
   ];

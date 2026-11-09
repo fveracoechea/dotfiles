@@ -187,6 +187,12 @@ Each reusable module declares its own enable option and wraps its configuration 
 Host-only services live in `hosts/<host>/services/` and are imported directly.
 Each service file includes its application settings and related reverse-proxy, firewall, and secret references.
 
+`modules/hyprland/`, `modules/gaming/`, and `modules/audio/` own their Home and System implementations and checks.
+The context registries in `modules/home-manager/default.nix` and `modules/nixos/default.nix` keep explicit import lists.
+Home gaming defaults MangoHud on; Sunshine remains independently optional.
+Audio keeps separate `dotfiles.pro-audio.enable` (Home applications) and `dotfiles.pipewire.enable` (System audio) switches.
+Neither audio switch enables the other evaluation context.
+
 ### Atomic modules
 
 Single-app modules that configure one application:
@@ -219,7 +225,7 @@ dotfiles.hyprland.enable = true;
 dotfiles.hyprland.enable = true;
 ```
 
-The desktop's monitor settings are in `config/hypr/settings.lua`.
+The desktop's monitor settings are in `modules/hyprland/assets/settings.lua`.
 Hyprland's four native Lua files use store-backed installation.
 Home Manager adds the source of `entry.lua` to `hyprland.lua`.
 Rebuild and activation install source edits and trigger an internal reload hook.

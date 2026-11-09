@@ -7,17 +7,17 @@
 }: let
   luaFiles = {
     settings = {
-      content = pkgs.replaceVars ../../../config/hypr/settings.lua {
+      content = pkgs.replaceVars ./assets/settings.lua {
         catppuccinMocha = "${pkgs.catppuccin-hyprland}/share/themes/catppuccin-hyprland-themes/catppuccin-mocha.lua";
       };
       autoLoad = false;
     };
     bindings = {
-      content = ../../../config/hypr/bindings.lua;
+      content = ./assets/bindings.lua;
       autoLoad = false;
     };
     windowrule = {
-      content = ../../../config/hypr/windowrule.lua;
+      content = ./assets/windowrule.lua;
       autoLoad = false;
     };
   };
@@ -49,14 +49,14 @@ in {
       portalPackage = null;
       configType = "lua";
       settings = {};
-      extraConfig = builtins.readFile ../../../config/hypr/entry.lua;
+      extraConfig = builtins.readFile ./assets/entry.lua;
       extraLuaFiles = luaFiles;
     };
 
     # Home Manager skips its own config reload when package = null.
     xdg.configFile."dotfiles/hyprland.stamp" = {
       text = builtins.hashString "sha256" (builtins.toJSON {
-        entry = builtins.hashFile "sha256" ../../../config/hypr/entry.lua;
+        entry = builtins.hashFile "sha256" ./assets/entry.lua;
         modules = lib.mapAttrs (_: file: builtins.hashFile "sha256" file.content) luaFiles;
       });
       onChange = reload;

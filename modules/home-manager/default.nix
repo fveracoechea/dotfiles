@@ -8,18 +8,18 @@
     ./desktop-entries
     ./fonts.nix
     ./fuzzel.nix
-    ./gaming.nix
+    ../gaming/home.nix
     ./ghostty.nix
     ../shell/git.nix
     ./gtk.nix
     ./hex.nix
-    ./hyprland
-    ./mangohud.nix
+    ../hyprland/home.nix
+    ../gaming/mangohud.nix
     ../coding-agents/home.nix
-    ./pro-audio.nix
+    ../audio/home.nix
     ../shell/home.nix
     ./spotify.nix
-    ./sunshine.nix
+    ../gaming/sunshine.nix
     ../shell/tmux
     ./volta.nix
     ../shell/yazi.nix
