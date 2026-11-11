@@ -1221,6 +1221,23 @@
         "type": "github"
       }
     },
+    "operator-agents": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794438208,
+        "narHash": "sha256-xzk3LdByNxXkF5axN4SnkCbGBge9El9cTtK5CJpEG+8=",
+        "owner": "fveracoechea",
+        "repo": "operator",
+        "rev": "4377970223c5261ced50ced88125cb90efb61baa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fveracoechea",
+        "repo": "operator",
+        "rev": "4377970223c5261ced50ced88125cb90efb61baa",
+        "type": "github"
+      }
+    },
     "playwriter": {
       "flake": false,
       "locked": {
@@ -1276,6 +1293,7 @@
         "nixpkgs-servers": "nixpkgs-servers",
         "nixpkgs-stable": "nixpkgs-stable",
         "operator": "operator",
+        "operator-agents": "operator-agents",
         "server-disko": "server-disko",
         "server-dotfiles-compat": "server-dotfiles-compat",
         "server-home-manager": "server-home-manager",

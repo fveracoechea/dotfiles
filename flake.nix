@@ -51,6 +51,12 @@
     operator.url = "github:fveracoechea/operator";
     operator.inputs.nixpkgs.follows = "nixpkgs-latest";
 
+    # Agent prompts can advance without upgrading the Operator CLI or device state.
+    operator-agents = {
+      url = "github:fveracoechea/operator/4377970223c5261ced50ced88125cb90efb61baa";
+      flake = false;
+    };
+
     hex.url = "github:anomalyco/hex/dev";
     hex.inputs.nixpkgs.follows = "nixpkgs-latest";
     hex.inputs.home-manager.follows = "home-manager";
@@ -99,7 +105,7 @@
     });
 
     codingAgentSources = {
-      inherit (inputs) herdr hunk operator;
+      inherit (inputs) herdr hunk operator operator-agents;
     };
 
     # Aggregates close over this flake's own inputs, so consumer flakes do

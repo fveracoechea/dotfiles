@@ -9,6 +9,8 @@
 }: {
   config = lib.mkIf config.dotfiles.coding-agents.enable {
     xdg.configFile."opencode/plugins/operator.ts".source = "${dotfilesPkgs.operator}/share/opencode/plugins/operator.ts";
+    xdg.configFile."opencode/agents/super.md".source = "${codingAgentSources.operator-agents}/agents/opencode/super.md";
+    xdg.configFile."opencode/agents/worker.md".source = "${codingAgentSources.operator-agents}/agents/opencode/worker.md";
 
     home.packages = with pkgs; [
       lsof
@@ -58,6 +60,8 @@
           build = {
             model = "openai/gpt-6.1-sol#high";
           };
+          super.model = "openai/gpt-6.1-sol#high";
+          worker.model = "openai/gpt-6.1-sol#high";
         };
 
         permissions = [
