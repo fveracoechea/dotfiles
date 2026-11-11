@@ -57,11 +57,12 @@
         compaction.buffer = 232000;
 
         agents = {
+          plan.disabled = true;
           build = {
             model = "openai/gpt-6.1-sol#high";
           };
           super.model = "openai/gpt-6.1-sol#high";
-          worker.model = "openai/gpt-6.1-sol#high";
+          worker.model = "openai/gpt-6.1-sol#medium";
         };
 
         permissions = [
@@ -80,6 +81,10 @@
             models."gpt-6.1-sol" = {
               settings.reasoningEffort = "high";
               variants = [
+                {
+                  id = "medium";
+                  settings.reasoningEffort = "medium";
+                }
                 {
                   id = "high";
                   settings.reasoningEffort = "high";
