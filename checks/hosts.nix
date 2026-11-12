@@ -127,9 +127,35 @@
     modules = [({lib, ...}: {services.caddy.virtualHosts."opencode.veracoechea.com".extraConfig = lib.mkForce "reverse_proxy 127.0.0.1:4096";})];
   };
   changedWebFirewall = hosts.homelab.extendModules {
-    modules = [({config, lib, ...}: {
-      networking.firewall.allowedTCPPorts = lib.mkIf config.dotfiles.coding-agents.web.enable [4096];
-    })];
+    modules = [
+      ({
+        config,
+        lib,
+        ...
+      }: {
+        networking.firewall.allowedTCPPorts = lib.mkIf config.dotfiles.coding-agents.web.enable [4096];
+      })
+    ];
+  };
+  changedWebConfinement = hosts.homelab.extendModules {
+    modules = [({lib, ...}: {systemd.services.opencode-web.confinement.enable = lib.mkForce false;})];
+  };
+  unrelatedWebUnit = hosts.homelab.extendModules {
+    modules = [
+      ({
+        config,
+        lib,
+        pkgs,
+        ...
+      }: {
+        systemd.packages = lib.mkIf config.dotfiles.coding-agents.web.enable [
+          (pkgs.writeTextDir "lib/systemd/system/unrelated-preservation-fixture.service" ''
+            [Service]
+            ExecStart=/unexpected-fixture
+          '')
+        ];
+      })
+    ];
   };
 
   manifests =
@@ -293,6 +319,8 @@
     public-web-listener = !(accepted (hosts // {homelab = changedWebListener;}));
     unrestricted-web-proxy = !(accepted (hosts // {homelab = changedWebProxy;}));
     enabled-only-web-firewall = !(accepted (hosts // {homelab = changedWebFirewall;}));
+    unconfined-web-service = !(accepted (hosts // {homelab = changedWebConfinement;}));
+    unrelated-enabled-systemd-package = !(accepted (hosts // {homelab = unrelatedWebUnit;}));
   };
 in {
   inherit manifests preservation negativeCases;

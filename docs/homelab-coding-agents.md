@@ -36,8 +36,9 @@ VPS identity and the immutable server input guards remain exact.
 
 `checks/homelab-agent-delta.json` enumerates the permitted Home package and file changes.
 It also fixes the complete Home generation, profile, NixOS user-package list, and Home Manager activation-unit identity.
-`checks/homelab-web-delta.json` separately fixes the dedicated account, group, service unit, and Caddy route.
+`checks/homelab-web-delta.json` separately fixes the dedicated account, group, service unit, confinement drop-in package, and Caddy route.
 The normalized enabled System removes those verified web additions and restores the historical Home profile and Home Manager unit.
+It removes only the enumerated confinement package, not arbitrary Systemd packages or their units.
 Its full identity must match the agents-and-web-disabled System.
 This comparison includes unrelated service closures, units, networking, authorization, secret references, and activation behavior.
 The negative cases reject unrelated Home files, enabled-only environment changes, sudo changes, service-unit changes, firewall changes, secret-reference changes, and user-package additions.
@@ -71,6 +72,9 @@ The existing proxy's other virtual hosts retain their existing access rules.
 
 The dedicated `opencode-web` account has no supplementary groups, SSH keys, wheel membership, or Nix trusted-user grant.
 Systemd protects the owner's Home, prevents privilege elevation, and restricts writes outside the service's private state.
+Its filesystem confinement exposes only the selected runtime closure, private state, and explicit runtime files.
+It does not expose the host's entire Nix store, `/srv`, `/opt`, or other existing project directories.
+Read-only runtime bindings supply name resolution, account metadata, and `/usr/bin/env`; certificate roots come from the selected runtime closure.
 The account owns `/var/lib/opencode-web`, with mode `0700` and a `0077` umask.
 It starts in its own `workspace` directory.
 Data, cache, and state use separate directories there; shared declarative configuration comes from the read-only Nix store.
@@ -103,6 +107,12 @@ Do not promise browser-to-Herdr dispatch, phone compatibility, disconnect recove
 It also verifies that isolation and proxy mutations fail their checks.
 Address examples test the configured matcher, not live network packets.
 These checks do not establish HTTP authentication behavior, deployed firewall rejection, namespace isolation, or browser streaming.
+
+`coding-agents-web-isolation` runs a separate VM using the frozen System test framework and the evaluated service's filesystem restrictions.
+It replaces the server command with a probe and omits the password-file requirement; it never starts an authenticated server or provisions credentials.
+The probe rejects synthetic world-readable project, Home credential, unrelated-directory, and unrelated Nix-store files that the same account can read outside confinement.
+It also writes private workspace/state files, reads immutable configuration, executes OpenCode's version command, initializes a Git repository, and loads certificate roots.
+These are isolated-fixture filesystem results, not deployed acceptance or proof that every server operation works inside confinement.
 
 ## Owner acceptance before activation
 

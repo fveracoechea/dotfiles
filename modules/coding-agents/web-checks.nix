@@ -48,6 +48,10 @@
     && s.RestrictSUIDSGID
     && s.PrivateTmp
     && s.PrivateDevices
+    && service.confinement.enable
+    && !service.confinement.fullUnit
+    && service.confinement.mode == "full-apivfs"
+    && s.RootDirectory == "/run/confinement/%n"
     && s.StateDirectory == "opencode-web"
     && s.StateDirectoryMode == "0700"
     && s.WorkingDirectory == "/var/lib/opencode-web"
@@ -55,7 +59,10 @@
     && s.EnvironmentFile == "/var/lib/opencode-web.env"
     && (s.ReadWritePaths or []) == []
     && (s.BindPaths or []) == []
-    && (s.BindReadOnlyPaths or []) == []
+    && builtins.length s.BindReadOnlyPaths == 6
+    && lib.take 4 s.BindReadOnlyPaths == ["/etc/resolv.conf" "/etc/hosts" "/etc/passwd" "/etc/group"]
+    && builtins.match "/nix/store/[a-z0-9]{32}-opencode-web-nsswitch.conf:/etc/nsswitch.conf" (builtins.elemAt s.BindReadOnlyPaths 4) != null
+    && builtins.match "/nix/store/[a-z0-9]{32}-coreutils-[^/]+/bin/env:/usr/bin/env" (builtins.elemAt s.BindReadOnlyPaths 5) != null
     && service.environment.HOME == "/var/lib/opencode-web"
     && lib.hasPrefix "/nix/store/" service.environment.XDG_CONFIG_HOME
     && service.environment.XDG_DATA_HOME == "/var/lib/opencode-web/data"
@@ -88,6 +95,9 @@
     shared-config.service.environment.XDG_CONFIG_HOME = "/home/fveracoechea/.config";
     writable-project.service.serviceConfig.ReadWritePaths = ["/home/fveracoechea/projects"];
     owner-bind.service.serviceConfig.BindReadOnlyPaths = ["/home/fveracoechea/.ssh:/run/owner-ssh"];
+    unconfined.service.confinement.enable = false;
+    whole-unit-closure.service.confinement.fullUnit = true;
+    full-store-bind.service.serviceConfig.BindReadOnlyPaths = ["/nix/store"];
     store-password.service.serviceConfig.EnvironmentFile = "/nix/store/unapproved-password";
     ssh-key.user.openssh.authorizedKeys.keys = ["unapproved-key"];
   };
@@ -105,6 +115,7 @@
     }
   '';
 in {
+  coding-agents-web-isolation = import ./web-isolation-test.nix {inherit homelab lib;};
   coding-agents-web = assert lib.assertMsg (
     c.dotfiles.coding-agents.web.enable
     && !desktop.config.dotfiles.coding-agents.web.enable
