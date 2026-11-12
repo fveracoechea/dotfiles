@@ -7,7 +7,7 @@
     codingAgentSources = {
       inherit (inputs) herdr hunk operator operator-agents;
     };
-    codingAgentPackages = import ./packages.nix {inherit inputs pkgs;};
+    codingAgentPackages = import ../../packages {inherit inputs pkgs;};
     codingAgentMcpPackage = (stablePkgsFor pkgs.stdenv.hostPlatform.system).mcp-nixos;
   };
 }

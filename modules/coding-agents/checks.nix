@@ -6,6 +6,7 @@
   dotfilesPkgs,
   pkgs-stable,
   homelab,
+  desktopHost,
 }: let
   fixture = modules:
     (home-manager.lib.homeManagerConfiguration {
@@ -66,6 +67,183 @@
     inherit name;
     path = f.source;
   }) (lib.filterAttrs (name: f: f.enable && builtins.any (prefix: lib.hasPrefix prefix name) ["opencode/" "herdr/" "hunk/"]) serverHome.xdg.configFile));
+  expectedFormatters = {
+    nixfmt = {
+      command = [(lib.getExe pkgs.nixfmt) "$FILE"];
+      extensions = [".nix"];
+    };
+    oxfmt = {
+      command = [(lib.getExe pkgs.oxfmt) "--write" "$FILE"];
+      extensions = [".js" ".jsx" ".mjs" ".cjs" ".ts" ".tsx" ".mts" ".cts"];
+    };
+  };
+  formatterMutations = [
+    {nixfmt.command = ["/missing/nixfmt" "$FILE"];}
+    {oxfmt.command = [(lib.getExe pkgs.coreutils) "$FILE"];}
+    {nixfmt.disabled = true;}
+    {oxfmt.extensions = [".nix"];}
+    {nixfmt.command = [(lib.getExe pkgs.nixfmt)];}
+  ];
+  validFormatters = formatters: formatters == expectedFormatters;
+  formatterFixture = settings:
+    assert lib.assertMsg (validFormatters settings.formatter) "coding-agents: formatter policy changed";
+      ''
+        mkdir "formatter fixtures"
+        test ! -e "formatter fixtures/package.json"
+        ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: original: let
+          command = settings.formatter.${name}.command;
+          run = lib.concatMapStringsSep " " (arg: if arg == "$FILE" then ''"$file"'' else lib.escapeShellArg arg) command;
+          extension = if name == "nixfmt" then ".nix" else ".ts";
+        in ''
+          file="$PWD/formatter fixtures/unformatted example${extension}"
+          printf '%s\n' ${lib.escapeShellArg original} > "$file"
+          original=$(sha256sum "$file")
+          test -x ${lib.escapeShellArg (builtins.head command)}
+          ${run}
+          if [ "$(sha256sum "$file")" = "$original" ]; then
+            echo "${name} did not format the fixture" >&2
+            exit 1
+          fi
+          formatted=$(sha256sum "$file")
+          ${run}
+          test "$(sha256sum "$file")" = "$formatted"
+          ${lib.escapeShellArg (builtins.head command)} --check "$file"
+        '') {
+          nixfmt = "{foo=1;bar=[1 2];}";
+          oxfmt = "const value={foo:1,bar:[1,2]};";
+        })}
+      '';
+  web = homelab.config;
+  service = web.systemd.services.opencode-web;
+  identity = {
+    user = web.users.users.opencode-web;
+    inherit service;
+    groups = web.users.groups;
+    trustedUsers = web.nix.settings.trusted-users;
+    sudoRules = web.security.sudo.extraRules;
+  };
+  isolated = {
+    user,
+    service,
+    groups,
+    trustedUsers,
+    sudoRules,
+  }: let
+    s = service.serviceConfig;
+  in
+    user.isSystemUser
+    && !user.isNormalUser
+    && user.name == "opencode-web"
+    && user.uid != 0
+    && user.group == "opencode-web"
+    && groups.opencode-web.gid != 0
+    && user.extraGroups == []
+    && user.openssh.authorizedKeys.keys == []
+    && user.openssh.authorizedKeys.keyFiles == []
+    && user.home == "/var/lib/opencode-web"
+    && builtins.all (group: !(builtins.elem "opencode-web" group.members)) (builtins.attrValues groups)
+    && builtins.all (name: !(builtins.elem name trustedUsers)) ["opencode-web" "@opencode-web" "*"]
+    && builtins.all (rule:
+      !(builtins.any (name: builtins.elem name rule.users) ["opencode-web" "ALL"])
+      && !(builtins.any (name: builtins.elem name rule.groups) ["opencode-web" "ALL"])) sudoRules
+    && s.User == "opencode-web"
+    && s.Group == "opencode-web"
+    && (s.SupplementaryGroups or []) == []
+    && s.NoNewPrivileges
+    && s.ProtectHome
+    && s.ProtectSystem == "strict"
+    && s.CapabilityBoundingSet == ""
+    && s.RestrictSUIDSGID
+    && s.PrivateTmp
+    && s.PrivateDevices
+    && service.confinement.enable
+    && !service.confinement.fullUnit
+    && service.confinement.mode == "full-apivfs"
+    && s.RootDirectory == "/run/confinement/%n"
+    && s.StateDirectory == "opencode-web"
+    && s.StateDirectoryMode == "0700"
+    && s.WorkingDirectory == "/var/lib/opencode-web"
+    && s.UMask == "0077"
+    && s.EnvironmentFile == "/var/lib/opencode-web.env"
+    && service.unitConfig.ConditionPathExists == s.EnvironmentFile
+    && (s.ReadWritePaths or []) == []
+    && (s.BindPaths or []) == []
+    && builtins.length s.BindReadOnlyPaths == 6
+    && lib.take 4 s.BindReadOnlyPaths == ["/etc/resolv.conf" "/etc/hosts" "/etc/passwd" "/etc/group"]
+    && builtins.match "/nix/store/[a-z0-9]{32}-opencode-web-nsswitch.conf:/etc/nsswitch.conf" (builtins.elemAt s.BindReadOnlyPaths 4) != null
+    && builtins.match "/nix/store/[a-z0-9]{32}-coreutils-[^/]+/bin/env:/usr/bin/env" (builtins.elemAt s.BindReadOnlyPaths 5) != null
+    && service.environment.HOME == "/var/lib/opencode-web"
+    && lib.hasPrefix "/nix/store/" service.environment.XDG_CONFIG_HOME
+    && service.environment.XDG_DATA_HOME == "/var/lib/opencode-web/data"
+    && service.environment.XDG_CACHE_HOME == "/var/lib/opencode-web/cache"
+    && service.environment.XDG_STATE_HOME == "/var/lib/opencode-web/state";
+  isolationMutations = {
+    root-service.service.serviceConfig.User = "root";
+    root-uid.user.uid = 0;
+    root-gid.groups.opencode-web.gid = 0;
+    wheel-user.user.extraGroups = ["wheel"];
+    wheel-service.service.serviceConfig.SupplementaryGroups = ["wheel"];
+    wheel-membership.groups.wheel.members = ["opencode-web"];
+    trusted-user.trustedUsers = ["root" "@wheel" "opencode-web"];
+    trusted-group.trustedUsers = ["root" "@opencode-web"];
+    sudo-user.sudoRules = [
+      {
+        users = ["opencode-web"];
+        groups = [];
+      }
+    ];
+    sudo-group.sudoRules = [
+      {
+        users = [];
+        groups = ["opencode-web"];
+      }
+    ];
+    readable-home.service.serviceConfig.ProtectHome = false;
+    privileged-exec.service.serviceConfig.NoNewPrivileges = false;
+    shared-state.service.environment.XDG_STATE_HOME = "/home/fveracoechea/.local/state";
+    shared-config.service.environment.XDG_CONFIG_HOME = "/home/fveracoechea/.config";
+    writable-project.service.serviceConfig.ReadWritePaths = ["/home/fveracoechea/projects"];
+    owner-bind.service.serviceConfig.BindReadOnlyPaths = ["/home/fveracoechea/.ssh:/run/owner-ssh"];
+    unconfined.service.confinement.enable = false;
+    whole-unit-closure.service.confinement.fullUnit = true;
+    full-store-bind.service.serviceConfig.BindReadOnlyPaths = ["/nix/store"];
+    store-password.service.serviceConfig.EnvironmentFile = "/nix/store/unapproved-password";
+    missing-file-condition.service.unitConfig.ConditionPathExists = "/unexpected-fixture";
+    ssh-key.user.openssh.authorizedKeys.keys = ["unapproved-key"];
+  };
+  proxyFixture = pkgs.writeText "opencode-web.Caddyfile" ''
+    {
+      admin off
+      auto_https off
+    }
+    https://opencode.veracoechea.com {
+      ${web.services.caddy.virtualHosts."opencode.veracoechea.com".extraConfig}
+    }
+  '';
+  proxyCheck = pkgs.writeText "opencode-web-proxy-check.jq" ''
+    (.apps.http.servers | to_entries | map(.value)) as $servers |
+    $servers[0].routes as $routes |
+    $routes[0].handle[0].routes as $access |
+    ($servers | length) == 1 and ($routes | length) == 1 and
+    $routes[0].match == [{host: ["opencode.veracoechea.com"]}] and
+    ($access | length) == 2 and
+    $access[0].match == [{remote_ip: {ranges: ["100.64.0.0/10"]}}] and
+    ($access[1] | has("match") | not) and
+    ($access[0].group | type) == "string" and
+    $access[0].group == $access[1].group and
+    $access[0].handle[0].routes[0].handle == [{handler: "reverse_proxy", upstreams: [{dial: "127.0.0.1:4096"}]}] and
+    $access[1].handle[0].routes[0].handle == [{handler: "static_response", status_code: 403}] and
+    ([.. | objects | has("client_ip")] | any | not)
+  '';
+  proxyMutations = {
+    lan = ''.apps.http.servers[].routes[0].handle[0].routes[0].match[0].remote_ip.ranges += ["192.168.0.0/16"]'';
+    public = ''.apps.http.servers[].routes[0].handle[0].routes[0].match[0].remote_ip.ranges = ["0.0.0.0/0"]'';
+    forwarded-ip = ''(.apps.http.servers[].routes[0].handle[0].routes[0].match[0]) |= {client_ip: .remote_ip}'';
+    missing-denial = ''del(.apps.http.servers[].routes[0].handle[0].routes[1])'';
+    denial-proxy = ''.apps.http.servers[].routes[0].handle[0].routes[1].handle = .apps.http.servers[].routes[0].handle[0].routes[0].handle'';
+    public-backend = ''.apps.http.servers[].routes[0].handle[0].routes[0].handle[0].routes[0].handle[0].upstreams[0].dial = "0.0.0.0:4096"'';
+    extra-route = ''.apps.http.servers[].routes += [{handle: [{handler: "reverse_proxy"}]}]'';
+  };
 in {
   coding-agents-homelab = check "homelab" (
     serverHome.dotfiles.coding-agents.enable
@@ -182,8 +360,139 @@ in {
     python3 -c 'import sys, tomllib; c = tomllib.load(open(sys.argv[1], "rb")); assert c["ui"]["sound"]["enabled"] is False; assert c["ui"]["toast"]["delivery"] == "herdr"' ${overridden.xdg.configFile."herdr/config.toml".source}
     touch "$out"
   '';
-  coding-agents-formatters = pkgs.runCommand "coding-agents-formatters-check" {nativeBuildInputs = [pkgs.python3];} ''
-    python ${./formatters-check.py} ${configFiles."opencode/opencode.json".source}
+  coding-agents-formatters = assert builtins.all (mutation: !(validFormatters (lib.recursiveUpdate expectedFormatters mutation))) formatterMutations;
+    pkgs.runCommand "coding-agents-formatters-check" {nativeBuildInputs = [pkgs.jq];} ''
+    jq -e --argjson expected ${lib.escapeShellArg (builtins.toJSON expectedFormatters)} '.formatter == $expected' ${configFiles."opencode/opencode.json".source}
+    ${formatterFixture desktop.programs.opencode.settings}
     touch "$out"
   '';
+  coding-agents-web = assert lib.assertMsg (
+    web.dotfiles.coding-agents.web.enable
+    && !desktopHost.config.dotfiles.coding-agents.web.enable
+    && !(desktopHost.config.systemd.services ? opencode-web)
+    && isolated identity
+    && builtins.all (name:
+      lib.assertMsg (!(isolated (lib.recursiveUpdate identity isolationMutations.${name})))
+      "coding-agents: web isolation accepted ${name}") (builtins.attrNames isolationMutations)
+  ) "coding-agents: web identity or isolation changed";
+    pkgs.runCommand "coding-agents-web-check" {nativeBuildInputs = [pkgs.caddy pkgs.jq];} ''
+      set -eu
+      if env -i ${service.serviceConfig.ExecStart} > missing-password.log 2>&1; then
+        echo "Service accepted a missing password" >&2
+        exit 1
+      fi
+      grep -q 'OPENCODE_PASSWORD must be provisioned' missing-password.log
+      if env -i OPENCODE_PASSWORD= ${service.serviceConfig.ExecStart} > empty-password.log 2>&1; then
+        echo "Service accepted an empty password" >&2
+        exit 1
+      fi
+      grep -q 'OPENCODE_PASSWORD must be provisioned' empty-password.log
+      caddy adapt --config ${proxyFixture} --adapter caddyfile > proxy.json
+      jq -e -f ${proxyCheck} proxy.json
+      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: mutation: ''
+        jq ${lib.escapeShellArg mutation} proxy.json > mutation.json
+        if jq -e -f ${proxyCheck} mutation.json; then
+          echo "Accepted proxy mutation: ${name}" >&2
+          exit 1
+        fi
+        echo "Rejected proxy mutation: ${name}"
+      '') proxyMutations)}
+      config=${service.environment.XDG_CONFIG_HOME}/opencode
+      for asset in opencode.json AGENTS.md agents/super.md agents/worker.md skills/herdr/SKILL.md plugins/operator.ts; do
+        test -s "$config/$asset"
+      done
+      jq -e --argjson expected ${lib.escapeShellArg (builtins.toJSON expectedFormatters)} '.formatter == $expected' "$config/opencode.json"
+      ${formatterFixture serverHome.programs.opencode.settings}
+      touch "$out"
+    '';
+  coding-agents-web-isolation = let
+    vmPkgs = homelab.pkgs;
+    unrelatedProject = vmPkgs.writeText "unrelated-project" "synthetic-not-a-runtime-dependency";
+    deniedPaths = [
+      "/srv/world-readable-project/README"
+      "/home/owner/.ssh/synthetic-key"
+      "/opt/unrelated/synthetic-data"
+      # Do not add this unrelated fixture to the probe's runtime closure.
+      (builtins.unsafeDiscardStringContext "${unrelatedProject}")
+    ];
+    probe = vmPkgs.writeShellScript "opencode-web-isolation-probe" ''
+      set -eu
+      mkdir -p "$HOME/workspace" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME"
+      for directory in "$HOME/workspace" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME"; do
+        echo private-state > "$directory/probe"
+        test -r "$directory/probe"
+      done
+      test -r "$XDG_CONFIG_HOME/opencode/opencode.json"
+      test -r "$XDG_CONFIG_HOME/opencode/AGENTS.md"
+      test -r "$XDG_CONFIG_HOME/opencode/agents/super.md"
+      test -r "$XDG_CONFIG_HOME/opencode/agents/worker.md"
+      test ! -w "$XDG_CONFIG_HOME/opencode/opencode.json"
+      test -r /etc/resolv.conf
+      /usr/bin/env /bin/sh -c 'test -w "$HOME/workspace"'
+      ${lib.getExe serverHome.programs.opencode.package} --version
+      git --version
+      git -C "$HOME/workspace" init
+      python3 -c 'import os, pwd, socket, ssl; assert pwd.getpwuid(os.getuid()).pw_name == "opencode-web"; assert socket.getaddrinfo("localhost", 443); assert ssl.create_default_context().get_ca_certs()'
+      cd "$HOME/workspace"
+      ${formatterFixture serverHome.programs.opencode.settings}
+      cat --version > /dev/null
+      failed=0
+      for file in ${lib.escapeShellArgs deniedPaths}; do
+        if cat "$file" > /dev/null 2>&1; then
+          echo "Unexpected readable path: $file" >&2
+          failed=1
+        else
+          echo "Denied synthetic path: $file"
+        fi
+      done
+      exit "$failed"
+    '';
+  in vmPkgs.testers.runNixOSTest {
+    name = "coding-agents-web-isolation";
+    nodes.machine = {
+      virtualisation.additionalPaths = [unrelatedProject];
+      users.groups.opencode-web = {};
+      users.users.opencode-web = {
+        isSystemUser = true;
+        group = "opencode-web";
+        home = "/var/lib/opencode-web";
+      };
+      systemd.tmpfiles.rules = [
+        "d /srv/world-readable-project 0755 root root -"
+        "f /srv/world-readable-project/README 0644 root root - synthetic-project"
+        "d /home/owner/.ssh 0755 root root -"
+        "f /home/owner/.ssh/synthetic-key 0644 root root - synthetic-not-a-secret"
+        "d /opt/unrelated 0755 root root -"
+        "f /opt/unrelated/synthetic-data 0644 root root - synthetic-unrelated"
+      ];
+      systemd.services.opencode-web = {
+        inherit (service) path confinement;
+        environment = builtins.removeAttrs service.environment ["PATH"];
+        serviceConfig = (builtins.removeAttrs service.serviceConfig ["ExecStart" "EnvironmentFile" "Restart" "RestartSec"]) // {
+          ExecStart = probe;
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+      };
+      systemd.services.opencode-web-unprovisioned = {
+        inherit (service) path confinement serviceConfig unitConfig;
+        environment = builtins.removeAttrs service.environment ["PATH"];
+      };
+    };
+    testScript = ''
+      machine.start()
+      machine.wait_for_unit("multi-user.target")
+      machine.succeed("test ! -e /var/lib/opencode-web.env")
+      machine.succeed("test ! -d /var/lib/opencode-web/workspace")
+      machine.succeed("systemctl start opencode-web-unprovisioned.service")
+      machine.succeed("systemctl show opencode-web-unprovisioned.service -p ConditionResult --value | grep '^no$'")
+      machine.fail("systemctl is-active --quiet opencode-web-unprovisioned.service")
+      machine.succeed("test ! -d /var/lib/opencode-web/workspace")
+      for path in ${builtins.toJSON deniedPaths}:
+          machine.succeed(f"runuser -u opencode-web -- cat {path}")
+      machine.succeed("systemctl start opencode-web.service")
+      machine.succeed("journalctl -u opencode-web.service --no-pager | grep 'Denied synthetic path: /srv/world-readable-project/README'")
+      machine.succeed("test -r /var/lib/opencode-web/workspace/probe")
+    '';
+  };
 }

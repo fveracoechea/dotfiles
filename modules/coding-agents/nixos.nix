@@ -9,7 +9,7 @@
 }: let
   cfg = config.dotfiles.coding-agents.web;
   codingAgentSources = {inherit (inputs) herdr hunk operator operator-agents;};
-  codingAgentPackages = import ./packages.nix {
+  codingAgentPackages = import ../../packages {
     inherit inputs;
     pkgs = agentPkgs;
   };

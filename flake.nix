@@ -134,14 +134,6 @@
 
     neovimChecks = system: inputs.neovim.checks.${system};
 
-    hyprlandChecks = system:
-      import ./modules/hyprland/config-check.nix {
-        inherit lib home-manager;
-        homeModule = homeManagerModules.default;
-        pkgs = latestPkgsFor system;
-        pkgs-stable = stablePkgsFor system;
-      };
-
     homelabSpecialArgs = {
       serverDotfiles = inputs.server-dotfiles-compat;
       dotfilesPkgs = inputs.server-dotfiles-compat.dotfilesPkgs.x86_64-linux;
@@ -154,20 +146,15 @@
     };
 
     codingAgentChecks = system:
-      (import ./modules/coding-agents/checks.nix {
+      import ./modules/coding-agents/checks.nix {
         inherit lib home-manager;
         homelab = inputs.self.nixosConfigurations.homelab;
         pkgs = latestPkgsFor system;
         homeModule = homeManagerModules.default;
         dotfilesPkgs = dotfilesPkgsFor system;
         pkgs-stable = stablePkgsFor system;
-      })
-      // (import ./modules/coding-agents/web-checks.nix {
-        inherit lib;
-        pkgs = latestPkgsFor system;
-        homelab = inputs.self.nixosConfigurations.homelab;
-        desktop = inputs.self.nixosConfigurations.nixos-desktop;
-      });
+        desktopHost = inputs.self.nixosConfigurations.nixos-desktop;
+      };
 
     shellChecks = system:
       import ./modules/shell/checks.nix {
@@ -220,7 +207,7 @@
         value =
           (neovimChecks system)
           // lib.optionalAttrs (system == "x86_64-linux") (
-            (hyprlandChecks system) // (codingAgentChecks system) // (shellChecks system) // (networkingChecks system) // (desktopCapabilityChecks system) // {host-preservation = hostChecks.check;}
+            (codingAgentChecks system) // (shellChecks system) // (networkingChecks system) // (desktopCapabilityChecks system) // {host-preservation = hostChecks.check;}
           );
       })
       supportedSystems);

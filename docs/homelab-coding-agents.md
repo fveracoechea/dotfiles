@@ -109,7 +109,7 @@ Do not promise browser-to-Herdr dispatch, phone compatibility, disconnect recove
 
 `coding-agents-web` checks the evaluated identity, state paths, privilege restrictions, missing/empty password rejection, and Caddy's adapted route.
 It also verifies that isolation and proxy mutations fail their checks.
-Address examples test the configured matcher, not live network packets.
+The proxy check inspects Caddy's adapted route and rejects broadened or forwarded-IP mutations; it sends no network packets.
 These checks do not establish HTTP authentication behavior, deployed firewall rejection, namespace isolation, or browser streaming.
 
 `coding-agents-web-isolation` runs a separate VM using the frozen System test framework and the evaluated service's filesystem restrictions.

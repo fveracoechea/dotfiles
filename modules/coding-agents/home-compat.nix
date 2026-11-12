@@ -27,7 +27,7 @@
       _module.args = {
         codingAgentPkgs = agentPkgs;
         codingAgentSources = lib.mkForce {inherit (inputs) herdr hunk operator operator-agents;};
-        codingAgentPackages = import ./packages.nix {
+        codingAgentPackages = import ../../packages {
           inherit inputs;
           pkgs = agentPkgs;
         };
