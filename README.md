@@ -87,6 +87,10 @@ The server Release Channel migration requires separate review and data-recovery 
 - **[Ly](https://github.com/fairyglade/ly)**: Display manager for UWSM-managed Hyprland and Steam sessions on NixOS
 - **[Ghostty](https://mitchellh.com/ghostty)**: Fast, GPU-accelerated terminal emulator
 
+NixOS owns DankMaterialShell and Quickshell on the Release Channel, even when it means a downgrade.
+Home Manager writes personal DMS JSON settings without installing a second shell package or service.
+See [the desktop shell configuration](docs/hyprland-summary.md) for downgrade limitations and activation checks.
+
 ### Development environment
 
 The shell Grouping lives in `modules/shell/home.nix`; its System entry is `modules/shell/nixos.nix`.

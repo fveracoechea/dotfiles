@@ -1,35 +1,13 @@
 {
   lib,
   config,
-  pkgs,
   dmsThemeSource,
-  dmsSource,
   ...
 }:
 {
   config = lib.mkIf config.dotfiles.hyprland.enable {
-    programs.dank-material-shell = {
-      enable = true;
-      systemd.enable = true;
-      systemd.target = "wayland-session@hyprland.desktop.target";
-      package = (dmsSource.lib.mkDmsShell pkgs).overrideAttrs (old: {
-        postInstall = old.postInstall + ''
-          chmod -R u+w "$out/share/quickshell/dms/Modules/DBar"
-          ${pkgs.patch}/bin/patch --directory="$out/share/quickshell/dms" --fuzz=0 -p2 < ${./dms-bar-max-width.patch}
-        '';
-      });
-
-      enableSystemMonitoring = true;
-      enableVPN = false;
-      enableDynamicTheming = false;
-      enableAudioWavelength = false;
-      enableCalendarEvents = false;
-
-      # DMS owns this package and requires its current QML APIs, so it follows
-      # the Home layer's Latest Channel instead of Hyprland's Release Channel.
-      quickshell.package = pkgs.quickshell;
-
-      settings = {
+    xdg.configFile = {
+      "DankMaterialShell/settings.json".text = builtins.toJSON {
         currentThemeName = "custom";
         currentThemeCategory = "custom";
         customThemeFile = "${dmsThemeSource}/catppuccin.json";
@@ -117,7 +95,6 @@
             autoHideStrict = false;
             barInsetPadding = 4;
             barLengthPadding = 0;
-            barMaxLength = 1896;
             batteryColorMode = "theme";
             borderColor = "surfaceText";
             borderEnabled = false;
@@ -296,20 +273,10 @@
         frameLauncherArcExtender = true;
         barInsetPaddingShared = 8;
         barInsetPaddingSyncAll = true;
-        configVersion = 18;
+        configVersion = 5;
       };
 
-      session = {
-        recentColors = [ "#00634f97" ];
-        lastPlayerIdentity = "Chrome";
-        lastAppliedIconTheme = "Papirus-Dark";
-        launcherQueryHistory = [ "set" ];
-        settingsSidebarExpandedIds = ",dock_launcher,applications,system,power_security,";
-        settingsSidebarCollapsedIds = ",network,";
-        configVersion = 4;
-      };
-
-      clipboardSettings = {
+      "DankMaterialShell/clsettings.json".text = builtins.toJSON {
         maxHistory = 25;
         maxEntrySize = 5242880;
         autoClearDays = 1;
@@ -319,9 +286,14 @@
       };
     };
 
-    systemd.user.services.dms = {
-      Unit.Requisite = [ "wayland-session@hyprland.desktop.target" ];
-      Service.Environment = [ "DMS_DISABLE_MATUGEN=1" ];
+    xdg.stateFile."DankMaterialShell/session.json".text = builtins.toJSON {
+      recentColors = [ "#00634f97" ];
+      lastPlayerIdentity = "Chrome";
+      lastAppliedIconTheme = "Papirus-Dark";
+      launcherQueryHistory = [ "set" ];
+      settingsSidebarExpandedIds = ",dock_launcher,applications,system,power_security,";
+      settingsSidebarCollapsedIds = ",network,";
+      configVersion = 3;
     };
   };
 }

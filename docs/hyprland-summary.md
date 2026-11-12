@@ -16,15 +16,23 @@ To change monitors, edit `modules/hyprland/assets/settings.lua` and rebuild.
 `windowrule.lua` declares window behavior and `bindings.lua` declares the keyboard and mouse shortcuts.
 The launcher and clipboard bindings call DankMaterialShell.
 
-Home Manager also owns Hypridle, Hyprpaper, cursor settings, and DankMaterialShell.
+Home Manager also owns Hypridle, Hyprpaper, cursor settings, and DankMaterialShell's personal settings.
+NixOS enables `programs.dms-shell` and supplies DMS, Quickshell, and their runtime dependencies from the Release Channel.
+There is no separate upstream DMS flake input or custom package build.
 UWSM controls the graphical session target; Home Manager does not stop or start it from Hyprland's Lua config.
 When Hyprland starts, `entry.lua` calls `uwsm finalize` so UWSM gets its Wayland display and instance signature.
 DMS runs as a user service and owns the bar, launcher, clipboard history, and lock screen.
 The service starts only after the UWSM Hyprland session target is active.
 When Hex is enabled, Hyprland also selects that exact target for Hex by default.
 Hex remains independently optional and can use an explicit upstream target override.
-The DMS package has a small QML patch that limits the bar to 1896 pixels instead of applying fixed side padding.
-The bar keeps that width at 5120 and 2560 pixels and fills narrower displays.
+Home Manager writes JSON with `builtins.toJSON` through `xdg.configFile` and `xdg.stateFile`.
+DMS 1.4.6 reads `DankMaterialShell/settings.json` and `DankMaterialShell/clsettings.json` under `$XDG_CONFIG_HOME`.
+Its `DankMaterialShell/session.json` lives under `$XDG_STATE_HOME`.
+These files are store-backed; change managed preferences in Nix rather than through the DMS settings UI.
+The current Release Channel downgrade selects DMS 1.4.6 and Quickshell 0.3.0 instead of DMS 2.1.1 and Quickshell 0.3.2.
+It removes the custom 1896-pixel bar cap because the patch targets newer bar code that does not exist in 1.4.6.
+Newer-only settings, including connected-frame preferences, can be ignored by this version.
+The NixOS DMS module also enables AccountsService, power-profiles-daemon, and I2C support by default.
 Hypridle asks DMS to lock after 15 minutes and suspends after 30 minutes.
 Neither Ultrashell nor Hyprlock is part of this configuration.
 
@@ -36,7 +44,7 @@ A reload of an old session does not prove that it selected the Lua config.
 ## Automated check
 
 Run `nix flake check` from the repository root.
-The `hyprland-evaluation` check evaluates the Host's Hyprland, shell, and Hex enablement settings.
+The `hyprland-evaluation` check evaluates the Host's Hyprland and Hex enablement, DMS packages and service target, and generated DMS JSON settings.
 It does not execute the compositor or validate its Lua configuration at runtime.
 Shortcuts, idle locking, DMS, and Steam Session behavior still need owner-run desktop acceptance.
 

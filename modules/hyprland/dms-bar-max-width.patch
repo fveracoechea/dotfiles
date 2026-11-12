@@ -1,9 +1,0 @@
---- a/quickshell/Modules/DBar/DBarBody.qml
-+++ b/quickshell/Modules/DBar/DBarBody.qml
-@@ -697,2 +697,5 @@ Item {
--        const pad = Math.max(0, barConfig?.barLengthPadding ?? 0);
-         const length = isVertical ? height : width;
-+        const maxLength = Math.max(0, barConfig?.barMaxLength ?? 0);
-+        if (maxLength > 0 && length > 0)
-+            return (length - Math.min(length, maxLength)) / 2;
-+        const pad = Math.max(0, barConfig?.barLengthPadding ?? 0);

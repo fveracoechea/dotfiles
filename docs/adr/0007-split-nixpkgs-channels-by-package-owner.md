@@ -1,5 +1,9 @@
 # Split nixpkgs channels by package owner
 
+## Status
+
+Accepted - 2026-09-05. Amended 2026-11-12: let homelab's Home follow the Latest Channel independently of its System. Amended 2026-11-12: own DankMaterialShell and Quickshell through NixOS on the Release Channel, accepting downgrades.
+
 The server Systems temporarily retain their deployed dependency graph under [ADR-0008](0008-preserve-server-software-during-consolidation.md).
 The Latest Channel policy also applies to homelab's Home, with Version-Coupled Packages matching its preserved System.
 
@@ -13,7 +17,7 @@ Before this split, one `nixos-unstable` input fed everything, so a tool update a
 
 Package ownership decides the channel, with two narrow departures:
 
-- **Version-Coupled Package.** A package follows its partner's channel when compatibility depends on a shared protocol, ABI, IPC interface, patch process, or configuration format. The Hyprland satellites (`xdg-desktop-portal-hyprland`, `hyprpaper`, `hyprshot`, `hyprpicker`, `hyprcursor`, `hypridle`) therefore come from the Release Channel with the compositor. DankMaterialShell and Quickshell come from the Latest Channel because DMS depends on current Quickshell QML APIs and its upstream Home Manager module owns both packages. Compatibility takes priority over freshness, and each coupled set must be explicit.
+- **Version-Coupled Package.** A package follows its partner's channel when compatibility depends on a shared protocol, ABI, IPC interface, patch process, or configuration format. The Hyprland satellites (`xdg-desktop-portal-hyprland`, `hyprpaper`, `hyprshot`, `hyprpicker`, `hyprcursor`, `hypridle`) therefore come from the Release Channel with the compositor. DankMaterialShell and Quickshell also remain together on the Release Channel because the desktop shell is System-owned. Compatibility takes priority over freshness, and each coupled set must be explicit.
 - **Channel Hold.** A Home-owned package may temporarily come from the Release Channel when its Latest Channel package does not build or work. The use site records the failure and the condition for returning to the package owner's channel.
 
 ## Consequences
@@ -39,11 +43,15 @@ Package ownership decides the channel, with two narrow departures:
   The NixOS VM tests gate `nixos-unstable`, but do not test the Home layer this input supplies.
   `nixos-unstable-small` runs a reduced test set and builds fewer packages, so cache coverage is thinner.
 - Home Manager follows `nixpkgs-latest` but its source revision updates separately.
-  App and tool inputs, including DMS and Operator, also follow `nixpkgs-latest` and update individually.
+  App and tool inputs, including Operator, also follow `nixpkgs-latest` and update individually.
   musnix follows `nixpkgs-stable`.
   Hyprland comes from the Release Channel, not a separate compositor input.
   Its version follows the release, which can delay new features.
   The native Lua configuration and its explicit `configType` must match that version.
+- DankMaterialShell, Quickshell, and their runtime dependencies use the Release Channel through NixOS.
+  A downgrade is acceptable to keep desktop-shell updates separate from personal-tool updates.
+  Home Manager owns only the user's DMS preferences and state files.
+  Newer-only desktop-shell features can be unavailable until the Release Channel catches up.
 - Zsh is a Version-Coupled Package because the System registers it as the login shell.
   Home Manager and tmux use `pkgs-stable.zsh` so the configured shell and the executed shell match.
   Shell tools and plugins remain on the Latest Channel.
@@ -52,5 +60,5 @@ Package ownership decides the channel, with two narrow departures:
 - Home modules receive `pkgs-stable` only for an explicit Version-Coupled Package or Channel Hold. Each use states its reason beside the assignment. Ordinary Home packages use the default Latest Channel `pkgs`; ordinary nixpkgs packages do not enter Dotfiles Pkgs.
 - Latest Channel updates run `nix flake check` and the user-only `nixos-rebuild test --flake .#nixos-desktop`.
   A Release update runs the same checks, stages the NixOS generation with `nixos-rebuild boot`, reboots, and validates boot, login, Hyprland, networking, audio, and the Steam Session before merge.
-  After each Latest update, DMS and Quickshell are tested together.
+  After each Release update, DMS and Quickshell are tested together.
   Zettlr is also tested from the Latest Channel, and its hold remains until both its build and launch succeed.

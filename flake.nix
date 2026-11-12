@@ -25,9 +25,6 @@
     neovim.inputs.nixpkgs.follows = "nixpkgs-latest";
     neovim.inputs.home-manager.follows = "home-manager";
 
-    dms.url = "github:AvengeMedia/DankMaterialShell/stable";
-    dms.inputs.nixpkgs.follows = "nixpkgs-latest";
-
     catppuccin-dms.url = "github:catppuccin/dankmaterialshell";
     catppuccin-dms.flake = false;
 
@@ -114,13 +111,11 @@
       homeManagerModules.default = {
         _module.args = {
           dmsThemeSource = inputs.catppuccin-dms;
-          dmsSource = inputs.dms;
         };
         imports = [
           (import ./modules/coding-agents/composition.nix { inherit inputs stablePkgsFor; })
           ./modules/home-manager/default.nix
           inputs.neovim.homeManagerModules.default
-          inputs.dms.homeModules.dank-material-shell
           inputs.spicetify-nix.homeManagerModules.default
           inputs.hex.homeManagerModules.default
         ];
