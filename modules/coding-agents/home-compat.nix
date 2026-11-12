@@ -1,8 +1,12 @@
+# Homelab-only adapter: current agents on the frozen Home Manager contract.
+# Keep server pkgs/lib unchanged; remove after the ADR-0008 server migration.
+# docs/homelab-coding-agents.md explains each compatibility override.
 {
   inputs,
   agentPkgs,
   stablePkgsFor,
-}: {
+}:
+{
   lib,
   config,
   pkgs,
@@ -10,23 +14,43 @@
   codingAgentPackages,
   codingAgentSources,
   ...
-}: {
+}:
+{
   # ADR-0008: remove only the frozen agent subtree, not the compatibility Home.
-  disabledModules = ["${inputs.server-dotfiles-compat}/modules/home-manager/coding-agents"];
-  imports = [./home-base.nix];
+  disabledModules = [ "${inputs.server-dotfiles-compat}/modules/home-manager/coding-agents" ];
+  imports = [ ./home-base.nix ];
 
+  # Replace only the frozen Git module's Hunk and gh entries with current tools.
   options.home.packages = lib.mkOption {
-    apply = packages:
-      if config.dotfiles.coding-agents.enable
-      then builtins.filter (package: !(builtins.elem (toString package) (map toString [dotfilesPkgs.hunk pkgs.gh]))) packages
-      else packages;
+    apply =
+      packages:
+      if config.dotfiles.coding-agents.enable then
+        builtins.filter (
+          package:
+          !(builtins.elem (toString package) (
+            map toString [
+              dotfilesPkgs.hunk
+              pkgs.gh
+            ]
+          ))
+        ) packages
+      else
+        packages;
   };
 
   config = lib.mkMerge [
     {
+      # Separate agent dependencies leave all unrelated server packages frozen.
       _module.args = {
         codingAgentPkgs = agentPkgs;
-        codingAgentSources = lib.mkForce {inherit (inputs) herdr hunk operator operator-agents;};
+        codingAgentSources = lib.mkForce {
+          inherit (inputs)
+            herdr
+            hunk
+            operator
+            operator-agents
+            ;
+        };
         codingAgentPackages = import ../../packages {
           inherit inputs;
           pkgs = agentPkgs;
@@ -37,29 +61,40 @@
 
     (lib.mkIf config.dotfiles.coding-agents.enable {
       programs.opencode.package = agentPkgs.opencode;
+      # The old context renderer treats a string store path as literal text.
       programs.opencode.context = lib.mkForce "";
       # The old renderer probes unrealized package directories during evaluation.
-      programs.opencode.skills = lib.mkForce {};
+      programs.opencode.skills = lib.mkForce { };
       xdg.configFile =
-        lib.mapAttrs' (name: source:
+        lib.mapAttrs' (
+          name: source:
           lib.nameValuePair "opencode/skills/${name}" {
             inherit source;
             recursive = true;
-          }) (import ./skills.nix {inherit lib codingAgentPackages codingAgentSources;})
+          }
+        ) (import ./skills.nix { inherit lib codingAgentPackages codingAgentSources; })
         // {
           "opencode/AGENTS.md".source = "${inputs.operator}/agents/AGENTS.md";
-          "opencode/cli.json".source = let
-            json = (agentPkgs.formats.json {}).generate "cli.json" (
-              {"$schema" = "https://opencode.ai/v2/cli.json";} // import ./cli.nix
-            );
-          in
-            agentPkgs.runCommand "opencode-cli.json" {nativeBuildInputs = [agentPkgs.check-jsonschema];} ''
+          # The frozen module lacks programs.opencode.cli and validateFiles.
+          "opencode/cli.json".source =
+            let
+              json = (agentPkgs.formats.json { }).generate "cli.json" (
+                { "$schema" = "https://opencode.ai/v2/cli.json"; } // import ./cli.nix
+              );
+            in
+            agentPkgs.runCommand "opencode-cli.json" { nativeBuildInputs = [ agentPkgs.check-jsonschema ]; } ''
               check-jsonschema --force-filetype=json --schemafile=${agentPkgs.opencode.jsonschema.cli} ${json}
               cp ${json} "$out"
             '';
-          "hunk/config.toml".source = lib.mkForce ((agentPkgs.formats.toml {}).generate "hunk-config" (import ./hunk-settings.nix config.xdg.configHome));
+          "hunk/config.toml".source = lib.mkForce (
+            (agentPkgs.formats.toml { }).generate "hunk-config" (
+              import ./hunk-settings.nix config.xdg.configHome
+            )
+          );
         };
-      programs.lazygit.settings.git.diffRenderers = lib.mkIf config.programs.lazygit.enable (lib.mkForce [{command = "hunk pager";}]);
+      programs.lazygit.settings.git.diffRenderers = lib.mkIf config.programs.lazygit.enable (
+        lib.mkForce [ { command = "hunk pager"; } ]
+      );
     })
   ];
 }

@@ -8,7 +8,26 @@ Operator and its coupled agent prompts use the authorized stable v2.3.2 release.
 Herdr notification sound is disabled without changing its visual notification policy.
 These ordinary content edits do not resolve the root PR's separate Git ancestry conflict or establish default-branch readiness before landing.
 
+## Dependency wiring
+
+`flake.nix` imports `modules/coding-agents/composition.nix` with `inputs` and `stablePkgsFor`.
+That call returns a Home Manager module; Home Manager supplies its second argument, including the Home's `pkgs`.
+The module's `_module.args` supplies named dependencies to the shared coding-agent modules:
+
+- `codingAgentPkgs` selects ordinary tool packages from the Home's package set.
+- `codingAgentSources` supplies locked source trees for integrations, skills, and agent prompts.
+- `codingAgentPackages` supplies repository-defined packages, including Operator and Herdr integration.
+- `codingAgentMcpPackage` selects `mcp-nixos` from the Release Channel under the Channel Hold documented in `opencode.nix`.
+
+This module installs nothing by itself; the capability's enabled Home modules consume these dependencies.
+The separate names let homelab select current agent dependencies without replacing its frozen Home-wide package set.
+
 ## Compatibility adapter
+
+`home.nix` uses the current Home Manager OpenCode interface; homelab's frozen Home Manager cannot evaluate those options.
+`home-compat.nix` imports the same `home-base.nix` policy but adapts file generation and package conflicts to the frozen interface.
+The adapter remains necessary while ADR-0008 requires the older server dependency graph.
+Replacing it with `home.nix` requires a separately reviewed server migration, not just deleting these overrides.
 
 `modules/coding-agents/home-compat.nix` replaces only the historical coding-agent subtree.
 Its disabled-module identifier is the imported directory, not that directory's `default.nix` file.
@@ -16,6 +35,7 @@ Using the latter leaves duplicate declarations and the historical Claude impleme
 The compatibility aggregate and its unrelated Home implementations remain installed.
 
 The adapter supplies current tool packages and sources without replacing server `pkgs`, `lib`, or `dotfilesPkgs`.
+Its forced source selection overrides the frozen aggregate's conflicting agent-source definition.
 Both Home entry files share tool policy, CLI preferences, skills, Herdr integration, and Hunk settings.
 The pinned OpenCode module has no `cli` or `validateFiles` options.
 The adapter generates `cli.json` through `xdg.configFile` and validates it against the selected executable's schema during its build.
