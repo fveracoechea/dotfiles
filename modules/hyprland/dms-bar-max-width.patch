@@ -1,0 +1,24 @@
+--- a/quickshell/Modules/DankBar/DankBarWindow.qml
++++ b/quickshell/Modules/DankBar/DankBarWindow.qml
+@@ -882,12 +882,17 @@
+                 Item {
+                     id: barUnitInset
+                     property int spacingPx: Theme.px(barWindow.effectiveSpacing, barWindow._dpr)
++                    readonly property real lengthPadding: {
++                        const maxLength = Math.max(0, barConfig?.barMaxLength ?? 0);
++                        const length = barWindow.isVertical ? parent.height : parent.width;
++                        return maxLength > 0 ? Math.max(0, (length - maxLength) / 2) : 0;
++                    }
+                     anchors.fill: parent
+-                    anchors.leftMargin: !barWindow.isVertical ? spacingPx : (axis.edge === "left" ? spacingPx : 0)
+-                    anchors.rightMargin: !barWindow.isVertical ? spacingPx : (axis.edge === "right" ? spacingPx : 0)
+-                    anchors.topMargin: barWindow.isVertical ? (barWindow.hasAdjacentTopBar ? 0 : spacingPx) : (axis.outerVisualEdge() === "bottom" ? 0 : spacingPx)
+-                    anchors.bottomMargin: barWindow.isVertical ? (barWindow.hasAdjacentBottomBar ? 0 : spacingPx) : (axis.outerVisualEdge() === "bottom" ? spacingPx : 0)
++                    anchors.leftMargin: !barWindow.isVertical ? Math.max(spacingPx, lengthPadding) : (axis.edge === "left" ? spacingPx : 0)
++                    anchors.rightMargin: !barWindow.isVertical ? Math.max(spacingPx, lengthPadding) : (axis.edge === "right" ? spacingPx : 0)
++                    anchors.topMargin: barWindow.isVertical ? Math.max(barWindow.hasAdjacentTopBar ? 0 : spacingPx, lengthPadding) : (axis.outerVisualEdge() === "bottom" ? 0 : spacingPx)
++                    anchors.bottomMargin: barWindow.isVertical ? Math.max(barWindow.hasAdjacentBottomBar ? 0 : spacingPx, lengthPadding) : (axis.outerVisualEdge() === "bottom" ? spacingPx : 0)
+
+                     BarCanvas {
+                         id: barBackground
+                         barWindow: barWindow

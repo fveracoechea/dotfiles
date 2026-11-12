@@ -18,7 +18,8 @@ The launcher and clipboard bindings call DankMaterialShell.
 
 Home Manager also owns Hypridle, Hyprpaper, cursor settings, and DankMaterialShell's personal settings.
 NixOS enables `programs.dms-shell` and supplies DMS, Quickshell, and their runtime dependencies from the Release Channel.
-There is no separate upstream DMS flake input or custom package build.
+There is no separate upstream DMS flake input.
+The System module applies a local QML patch to the Release Channel's DMS package to retain the bar-width cap.
 UWSM controls the graphical session target; Home Manager does not stop or start it from Hyprland's Lua config.
 When Hyprland starts, `entry.lua` calls `uwsm finalize` so UWSM gets its Wayland display and instance signature.
 DMS runs as a user service and owns the bar, launcher, clipboard history, and lock screen.
@@ -30,7 +31,9 @@ DMS 1.4.6 reads `DankMaterialShell/settings.json` and `DankMaterialShell/clsetti
 Its `DankMaterialShell/session.json` lives under `$XDG_STATE_HOME`.
 These files are store-backed; change managed preferences in Nix rather than through the DMS settings UI.
 The current Release Channel downgrade selects DMS 1.4.6 and Quickshell 0.3.0 instead of DMS 2.1.1 and Quickshell 0.3.2.
-It removes the custom 1896-pixel bar cap because the patch targets newer bar code that does not exist in 1.4.6.
+The width patch targets 1.4.6's bar inset instead of the newer bar implementation.
+The bar stays centered at 1896 pixels on 5120- and 2560-pixel displays and fills narrower displays.
+`barConfigs[].barMaxLength` controls the cap; zero disables it without changing upstream spacing behavior.
 Newer-only settings, including connected-frame preferences, can be ignored by this version.
 The NixOS DMS module also enables AccountsService, power-profiles-daemon, and I2C support by default.
 Hypridle asks DMS to lock after 15 minutes and suspends after 30 minutes.

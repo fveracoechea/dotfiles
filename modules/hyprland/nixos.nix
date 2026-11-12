@@ -24,7 +24,12 @@
 
     programs.dms-shell = {
       enable = true;
-      package = pkgs.dms-shell;
+      package = pkgs.dms-shell.overrideAttrs (old: {
+        postInstall = old.postInstall + ''
+          chmod -R u+w "$out/share/quickshell/dms/Modules/DankBar"
+          ${pkgs.patch}/bin/patch --directory="$out/share/quickshell/dms" --fuzz=0 -p2 < ${./dms-bar-max-width.patch}
+        '';
+      });
       quickshell.package = pkgs.quickshell;
       systemd.enable = true;
       systemd.target = "wayland-session@hyprland.desktop.target";

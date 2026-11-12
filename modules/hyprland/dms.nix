@@ -95,6 +95,7 @@
             autoHideStrict = false;
             barInsetPadding = 4;
             barLengthPadding = 0;
+            barMaxLength = 1896;
             batteryColorMode = "theme";
             borderColor = "surfaceText";
             borderEnabled = false;
