@@ -156,6 +156,9 @@ Server configuration migration runs in memory and does not rewrite the source fi
 Client settings writes use a temporary file and rename it over `cli.json`.
 In a writable directory, this can replace a Home Manager symlink with a mutable file.
 Keep persistent settings in the flake and check file ownership before the next activation. [2] [3]
+The desktop uses `home-manager.backupCommand` to preserve mutable files before restoring managed links.
+The latest copy uses `.hm-backup`; older copies use `.hm-backup.~1~`, `.hm-backup.~2~`, and so on.
+Existing backups remain intact, so repeated client settings writes do not block the next rebuild.
 
 The published schema accepts supported v1 and v2 shapes from 2.0.30 onward. [13]
 Successful startup alone is insufficient because v2 can skip invalid or unsupported values while retaining other settings. [1] [10]

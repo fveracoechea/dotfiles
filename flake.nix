@@ -147,6 +147,11 @@
       };
     in
       (import ./modules/coding-agents/checks.nix args)
+      // {
+        home-manager-backups = import ./checks/home-manager-backups.nix {
+          inherit (args) pkgs desktop;
+        };
+      }
       // (import ./modules/shell/checks.nix args)
       // (import ./modules/networking/checks.nix args)
       // (import ./modules/hyprland/checks.nix args)
@@ -232,7 +237,9 @@
 
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "hm-backup";
+            home-manager.backupCommand = pkgs-stable.writeShellScript "home-manager-backup" ''
+              exec ${pkgs-stable.coreutils}/bin/mv --backup=numbered -- "$1" "$1.hm-backup"
+            '';
             home-manager.users.fveracoechea = {
               imports = [homeManagerModules.default ./hosts/nixos-desktop/home.nix];
               # Home layer runs on the latest channel. `useGlobalPkgs` hands
