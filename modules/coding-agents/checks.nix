@@ -37,6 +37,7 @@
     {
       dotfiles.coding-agents.enable = true;
       programs.herdr.settings.ui.sidebar_width = 40;
+      programs.herdr.settings.ui.toast.delivery = "herdr";
       programs.opencode.settings.model = "fixture/model";
     }
   ];
@@ -83,6 +84,8 @@ in {
     && builtins.elem (toString pkgs-stable.mcp-nixos) (paths desktop)
     && desktop.programs.opencode.settings.model == "openai/gpt-6.1-sol"
     && desktop.programs.herdr.settings.ui.sidebar_width == 32
+    && !desktop.programs.herdr.settings.ui.sound.enabled
+    && !(desktop.programs.herdr.settings.ui ? toast)
     && desktop.programs.opencode.cli.plugins == ["./herdr-opencode"]
     && builtins.all (name: desktop.programs.opencode.skills ? ${name}) (dotfilesPkgs.operator.skills ++ ["herdr" "hunk-review"])
     && desktop.programs.git.settings.core.pager == "hunk pager"
@@ -96,10 +99,12 @@ in {
     overridden.programs.herdr.settings.ui.sidebar_width
     == 40
     && overridden.programs.opencode.settings.model == "fixture/model"
+    && !overridden.programs.herdr.settings.ui.sound.enabled
+    && overridden.programs.herdr.settings.ui.toast.delivery == "herdr"
     && overridden.programs.opencode.cli.plugins == desktop.programs.opencode.cli.plugins
     && overridden.programs.opencode.skills == desktop.programs.opencode.skills
   );
-  coding-agents-config = pkgs.runCommand "coding-agents-config-check" {nativeBuildInputs = [pkgs.jq];} ''
+  coding-agents-config = pkgs.runCommand "coding-agents-config-check" {nativeBuildInputs = [pkgs.jq pkgs.python3];} ''
     set -eu
     config=${staged}/.config
     test -f "$config/opencode/herdr-opencode/tui.js"
@@ -109,6 +114,8 @@ in {
     ${lib.concatMapStringsSep "\n" (name: ''test -f "$config/opencode/skills/${name}/SKILL.md"'') (dotfilesPkgs.operator.skills ++ ["herdr" "hunk-review"])}
     jq -e '.mcp.servers["nix-mcp"].type == "local" and .model == "openai/gpt-6.1-sol"' "$config/opencode/opencode.json"
     jq -e '.plugins == ["./herdr-opencode"]' "$config/opencode/cli.json"
+    python -c 'import sys, tomllib; c = tomllib.load(open(sys.argv[1], "rb")); assert c["ui"]["sound"]["enabled"] is False; assert "toast" not in c["ui"]' "$config/herdr/config.toml"
+    python -c 'import sys, tomllib; c = tomllib.load(open(sys.argv[1], "rb")); assert c["ui"]["sound"]["enabled"] is False; assert c["ui"]["toast"]["delivery"] == "herdr"' ${overridden.xdg.configFile."herdr/config.toml".source}
     touch "$out"
   '';
 }
