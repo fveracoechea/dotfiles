@@ -23,7 +23,7 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    neovim.url = "github:fveracoechea/neovim";
+    neovim.url = "github:fveracoechea/neovim/54d70b33bde49dfe962ac1f89167cce868aa16a4";
     neovim.inputs.nixpkgs.follows = "nixpkgs-latest";
     neovim.inputs.home-manager.follows = "home-manager";
 
@@ -48,12 +48,12 @@
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    operator.url = "github:fveracoechea/operator/v2.3.1";
+    operator.url = "github:fveracoechea/operator/v2.3.2";
     operator.inputs.nixpkgs.follows = "nixpkgs-latest";
 
     # Agent prompts can advance without upgrading the Operator CLI or device state.
     operator-agents = {
-      url = "github:fveracoechea/operator/v2.3.1";
+      url = "github:fveracoechea/operator/v2.3.2";
       flake = false;
     };
 
@@ -104,20 +104,16 @@
       pkgs = latestPkgsFor system;
     });
 
-    codingAgentSources = {
-      inherit (inputs) herdr hunk operator operator-agents;
-    };
-
     # Aggregates close over this flake's own inputs, so consumer flakes do
     # not re-declare them. Third-party modules are imported here because
     # `imports` cannot read module arguments.
     homeManagerModules.default = {
       _module.args = {
-        inherit codingAgentSources;
         dmsThemeSource = inputs.catppuccin-dms;
         dmsSource = inputs.dms;
       };
       imports = [
+        (import ./modules/coding-agents/composition.nix {inherit inputs stablePkgsFor;})
         ./modules/home-manager/default.nix
         inputs.neovim.homeManagerModules.default
         inputs.dms.homeModules.dank-material-shell
@@ -127,6 +123,10 @@
     };
     nixosModules.default = {
       imports = [
+        (import ./modules/coding-agents/nixos.nix {
+          inherit inputs stablePkgsFor;
+          agentPkgs = latestPkgsFor "x86_64-linux";
+        })
         ./modules/nixos/default.nix
         inputs.musnix.nixosModules.musnix
       ];
@@ -134,36 +134,33 @@
 
     neovimChecks = system: inputs.neovim.checks.${system};
 
-    hyprlandChecks = system:
-      import ./checks/hyprland.nix {
-        inherit lib inputs;
-        pkgs = latestPkgsFor system;
-        pkgs-stable = stablePkgsFor system;
-      };
-
     homelabSpecialArgs = {
       serverDotfiles = inputs.server-dotfiles-compat;
       dotfilesPkgs = inputs.server-dotfiles-compat.dotfilesPkgs.x86_64-linux;
     };
 
-    hostChecks = import ./checks/hosts.nix {
-      inherit lib inputs;
-      hosts = inputs.self.nixosConfigurations;
-      pkgs = latestPkgsFor "x86_64-linux";
-    };
+    capabilityChecks = system: let
+      args = {
+        pkgs = latestPkgsFor system;
+        desktop = inputs.self.nixosConfigurations.nixos-desktop.config;
+        homelab = inputs.self.nixosConfigurations.homelab.config;
+      };
+    in
+      (import ./modules/coding-agents/checks.nix args)
+      // (import ./modules/shell/checks.nix args)
+      // (import ./modules/networking/checks.nix args)
+      // (import ./modules/hyprland/checks.nix args)
+      // (import ./modules/gaming/checks.nix args)
+      // (import ./modules/audio/checks.nix args);
   in {
     inherit homeManagerModules nixosModules;
-
-    lib.hostManifests = hostChecks.manifests;
-    lib.serverPreservation = hostChecks.preservation;
-    lib.serverPreservationNegativeCases = hostChecks.negativeCases;
 
     checks = builtins.listToAttrs (map (system: {
         name = system;
         value =
           (neovimChecks system)
           // lib.optionalAttrs (system == "x86_64-linux") (
-            (hyprlandChecks system) // {host-preservation = hostChecks.check;}
+            capabilityChecks system
           );
       })
       supportedSystems);
@@ -178,6 +175,10 @@
       specialArgs = homelabSpecialArgs;
       modules = [
         ./hosts/homelab/configuration.nix
+        (import ./modules/coding-agents/nixos.nix {
+          inherit inputs stablePkgsFor;
+          agentPkgs = latestPkgsFor "x86_64-linux";
+        })
         inputs.server-dotfiles-compat.nixosModules.default
         inputs.server-home-manager.nixosModules.home-manager
         {
@@ -186,7 +187,13 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "hm-backup";
-          home-manager.users.fveracoechea = import ./hosts/homelab/home.nix;
+          home-manager.users.fveracoechea.imports = [
+            (import ./modules/coding-agents/home-compat.nix {
+              inherit inputs stablePkgsFor;
+              agentPkgs = latestPkgsFor "x86_64-linux";
+            })
+            ./hosts/homelab/home.nix
+          ];
           home-manager.extraSpecialArgs = homelabSpecialArgs;
         }
       ];

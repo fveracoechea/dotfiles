@@ -5,6 +5,7 @@
     shell.enable = true;
     neovim.enable = true;
     fonts.enable = true;
+    coding-agents.enable = true;
   };
 
   home.username = "fveracoechea";

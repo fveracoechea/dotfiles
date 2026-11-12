@@ -1,7 +1,7 @@
 # Hyprland Lua migration
 
 The compositor uses the Hyprland 0.55.4 Lua configuration interface.
-The four sources in [`config/hypr/`](../config/hypr/) are `entry.lua`, `settings.lua`, `windowrule.lua`, and `bindings.lua`.
+The four sources in [`modules/hyprland/assets/`](../modules/hyprland/assets/) are `entry.lua`, `settings.lua`, `windowrule.lua`, and `bindings.lua`.
 Home Manager puts the content of `entry.lua` into its generated `hyprland.lua`.
 It installs the other three Lua files beside it, for four installed files in total.
 The System module owns the compositor and portal; Home Manager sets their package options to `null`.
@@ -12,7 +12,7 @@ The preferred mode can change when the Samsung Odyssey G95SC switches between on
 The border colors come from the packaged [Catppuccin Hyprland Mocha Lua theme](https://github.com/catppuccin/hyprland).
 Home Manager substitutes its store path into `settings.lua` during installation.
 This does not install a fifth file under `hypr/` or require a JSON bridge.
-To change monitors, edit `config/hypr/settings.lua` and rebuild.
+To change monitors, edit `modules/hyprland/assets/settings.lua` and rebuild.
 `windowrule.lua` declares window behavior and `bindings.lua` declares the keyboard and mouse shortcuts.
 The launcher and clipboard bindings call DankMaterialShell.
 
@@ -21,6 +21,8 @@ UWSM controls the graphical session target; Home Manager does not stop or start 
 When Hyprland starts, `entry.lua` calls `uwsm finalize` so UWSM gets its Wayland display and instance signature.
 DMS runs as a user service and owns the bar, launcher, clipboard history, and lock screen.
 The service starts only after the UWSM Hyprland session target is active.
+When Hex is enabled, Hyprland also selects that exact target for Hex by default.
+Hex remains independently optional and can use an explicit upstream target override.
 The DMS package has a small QML patch that limits the bar to 1896 pixels instead of applying fixed side padding.
 The bar keeps that width at 5120 and 2560 pixels and fills narrower displays.
 Hypridle asks DMS to lock after 15 minutes and suspends after 30 minutes.
@@ -34,9 +36,9 @@ A reload of an old session does not prove that it selected the Lua config.
 ## Automated check
 
 Run `nix flake check` from the repository root.
-The `hyprland-config` check stages the Home Manager config and runs its generated `hyprland.lua` through the pinned Hyprland parser.
-It also checks that `hyprland.conf` is absent.
-The parser check does not prove that shortcuts, idle locking, DMS, or Steam Session behavior work in a desktop session.
+The `hyprland-evaluation` check evaluates the Host's Hyprland, shell, and Hex enablement settings.
+It does not execute the compositor or validate its Lua configuration at runtime.
+Shortcuts, idle locking, DMS, and Steam Session behavior still need owner-run desktop acceptance.
 
 ## User-only activation and recovery
 

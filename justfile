@@ -13,10 +13,6 @@ evaluate:
 check:
     nix flake check
 
-# Print evaluated host manifests as JSON.
-manifests:
-    nix eval --json .#lib.hostManifests
-
 # Run the Neovim Lua checks and smoke tests.
 check-lua system="x86_64-linux":
     bash scripts/check-lua.sh "$1"

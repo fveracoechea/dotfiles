@@ -6,10 +6,10 @@
   inputs,
 }: {
   dev-manager-desktop = inputs.dev-manager-desktop.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
   herdr-nvim = pkgs.callPackage ./herdr-nvim.nix {};
+  operator = inputs.operator.packages.${pkgs.stdenv.hostPlatform.system}.default;
   railway = pkgs.callPackage ./railway.nix {};
 
-  herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
-  operator = inputs.operator.packages.${pkgs.stdenv.hostPlatform.system}.default;
   tmux-powerkit = inputs.tmux-powerkit.packages.${pkgs.stdenv.hostPlatform.system}.default;
 }

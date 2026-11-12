@@ -5,6 +5,11 @@
 
   boot.kernelPackages = pkgs.linuxPackages_7_2;
 
+  networking = {
+    hostName = "nixos";
+    interfaces.eno1.wakeOnLan.enable = true;
+  };
+
   dotfiles = {
     bootloader.enable = true;
     display-manager.enable = true;
