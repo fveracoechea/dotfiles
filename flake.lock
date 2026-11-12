@@ -1208,15 +1208,33 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1794100137,
-        "narHash": "sha256-XTHU6R4rCtsVCdz0AaS4kiiD1L8vCi9rj8B4L5JNrhE=",
+        "lastModified": 1794444586,
+        "narHash": "sha256-d9zM/j1o+R6fCTftIZsbWytOk7hj4ebC4+GAwq6/iu8=",
         "owner": "fveracoechea",
         "repo": "operator",
-        "rev": "f16c53ccaa66a04a19fb8f8202c602d064634406",
+        "rev": "f9bb488e805f36e31c8392d1449a857d9bb5846e",
         "type": "github"
       },
       "original": {
         "owner": "fveracoechea",
+        "ref": "v2.3.2",
+        "repo": "operator",
+        "type": "github"
+      }
+    },
+    "operator-agents": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794444586,
+        "narHash": "sha256-d9zM/j1o+R6fCTftIZsbWytOk7hj4ebC4+GAwq6/iu8=",
+        "owner": "fveracoechea",
+        "repo": "operator",
+        "rev": "f9bb488e805f36e31c8392d1449a857d9bb5846e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fveracoechea",
+        "ref": "v2.3.2",
         "repo": "operator",
         "type": "github"
       }
@@ -1276,6 +1294,7 @@
         "nixpkgs-servers": "nixpkgs-servers",
         "nixpkgs-stable": "nixpkgs-stable",
         "operator": "operator",
+        "operator-agents": "operator-agents",
         "server-disko": "server-disko",
         "server-dotfiles-compat": "server-dotfiles-compat",
         "server-home-manager": "server-home-manager",

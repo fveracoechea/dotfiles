@@ -9,6 +9,8 @@
 }: {
   config = lib.mkIf config.dotfiles.coding-agents.enable {
     xdg.configFile."opencode/plugins/operator.ts".source = "${codingAgentPackages.operator}/share/opencode/plugins/operator.ts";
+    xdg.configFile."opencode/agents/super.md".source = "${codingAgentSources.operator-agents}/agents/opencode/super.md";
+    xdg.configFile."opencode/agents/worker.md".source = "${codingAgentSources.operator-agents}/agents/opencode/worker.md";
 
     home.packages = with pkgs; [
       lsof
@@ -56,13 +58,16 @@
           command = [(lib.getExe codingAgentMcpPackage)];
         };
 
-        # Compact at 268K with the 500K OpenAI input cap.
-        compaction.buffer = 232000;
+        compaction = {
+          buffer = "25%";
+          keep.tokens = 20000;
+        };
 
         agents = {
-          build = {
-            model = "openai/gpt-6.1-sol#high";
-          };
+          plan.disabled = true;
+          build.model = "openai/gpt-6.1-sol#high";
+          super.model = "openai/gpt-6.1-sol#high";
+          worker.model = "openai/gpt-6.1-sol#medium";
         };
 
         permissions = [
@@ -78,9 +83,14 @@
 
         providers = {
           openai = {
+            settings.compaction.type = "native";
             models."gpt-6.1-sol" = {
               settings.reasoningEffort = "high";
               variants = [
+                {
+                  id = "medium";
+                  settings.reasoningEffort = "medium";
+                }
                 {
                   id = "high";
                   settings.reasoningEffort = "high";
