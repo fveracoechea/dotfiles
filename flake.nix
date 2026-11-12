@@ -48,12 +48,12 @@
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    operator.url = "github:fveracoechea/operator/v2.3.1";
+    operator.url = "github:fveracoechea/operator/v2.3.2";
     operator.inputs.nixpkgs.follows = "nixpkgs-latest";
 
     # Agent prompts can advance without upgrading the Operator CLI or device state.
     operator-agents = {
-      url = "github:fveracoechea/operator/v2.3.1";
+      url = "github:fveracoechea/operator/v2.3.2";
       flake = false;
     };
 

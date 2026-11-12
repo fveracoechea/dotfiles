@@ -1208,16 +1208,16 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1794439949,
-        "narHash": "sha256-OeMvq2XPzFZLbXfZjpe68aDFMEzJfWrro9YG8/RaUno=",
+        "lastModified": 1794444586,
+        "narHash": "sha256-d9zM/j1o+R6fCTftIZsbWytOk7hj4ebC4+GAwq6/iu8=",
         "owner": "fveracoechea",
         "repo": "operator",
-        "rev": "c2e430bc65a5ac728d78ae0dd28aec5fb92aeb64",
+        "rev": "f9bb488e805f36e31c8392d1449a857d9bb5846e",
         "type": "github"
       },
       "original": {
         "owner": "fveracoechea",
-        "ref": "v2.3.1",
+        "ref": "v2.3.2",
         "repo": "operator",
         "type": "github"
       }
@@ -1225,16 +1225,16 @@
     "operator-agents": {
       "flake": false,
       "locked": {
-        "lastModified": 1794439949,
-        "narHash": "sha256-OeMvq2XPzFZLbXfZjpe68aDFMEzJfWrro9YG8/RaUno=",
+        "lastModified": 1794444586,
+        "narHash": "sha256-d9zM/j1o+R6fCTftIZsbWytOk7hj4ebC4+GAwq6/iu8=",
         "owner": "fveracoechea",
         "repo": "operator",
-        "rev": "c2e430bc65a5ac728d78ae0dd28aec5fb92aeb64",
+        "rev": "f9bb488e805f36e31c8392d1449a857d9bb5846e",
         "type": "github"
       },
       "original": {
         "owner": "fveracoechea",
-        "ref": "v2.3.1",
+        "ref": "v2.3.2",
         "repo": "operator",
         "type": "github"
       }
