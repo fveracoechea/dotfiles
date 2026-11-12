@@ -66,14 +66,13 @@ Its image configuration ID is recorded separately.
 The application version was not identifiable from the container labels, so preservation depends on the exact registry digest.
 The image was not resolved again from `latest`.
 
-The VPS reproduces its deployed System path when its previous hostname, `hostinger`, is restored in an evaluation-only comparison.
+The historical VPS comparison reproduced its deployed System path when its previous hostname, `hostinger`, was restored.
 Its real selector, host directory, and configured hostname are now `vps`.
 The baseline retains the historical hostname and System path; they are deployment evidence, not current configuration names.
 The Headscale DERP region code and display name remain unchanged to preserve the existing control-plane configuration.
-The homelab reproduces its deployed System path when the old image reference is restored in an evaluation-only comparison.
+The historical homelab comparison reproduced its deployed System path when the old image reference was restored.
 The real host configuration uses the verified digest instead.
-These comparisons allow only the VPS hostname rename and the homelab image-reference change.
-The comparison also covers transitive runtimes, database dependencies, Home Manager files, listeners, firewall rules, permissions, and secret references.
+Those comparisons preceded the coding-agent addition and are not current check results.
 It does not prove current data or backup integrity.
 
 ## Evaluation gates
@@ -82,38 +81,16 @@ These commands do not build or activate Systems:
 
 ```sh
 nix flake check --no-build
-nix eval --raw .#checks.x86_64-linux.host-preservation.drvPath
-nix eval --json .#lib.serverPreservation
-nix eval --json .#lib.serverPreservationNegativeCases
-nix eval --json .#lib.hostManifests
+nix eval --raw .#nixosConfigurations.nixos-desktop.config.system.build.toplevel.drvPath
+nix eval --raw .#nixosConfigurations.homelab.config.system.build.toplevel.drvPath
+nix eval --raw .#nixosConfigurations.vps.config.system.build.toplevel.drvPath
 ```
 
-The preservation and negative-case outputs must contain only `true` values.
-The check compares full evaluated System identities, not just version numbers.
-It rejects any unexplained generated configuration change, including an upgrade during consolidation.
-It also checks State Versions and host isolation.
-The manifest reports resolved service package identities, PostgreSQL extensions, unit commands, firewall policy, reverse proxies, and subnet advertisements.
-Vaultwarden's package identity includes the selected PostgreSQL backend; its web client is recorded separately.
-Runtime dependencies are also covered transitively by the full System identity comparison.
-
-Negative cases pass modified configurations through the same preservation predicate.
-They cover an evaluation-only older Headscale version fixture, PostgreSQL major 16, and an unapproved mutable container reference.
-They also reject an unexpected VPS hostname so the baseline comparison cannot hide arbitrary renames.
-The Headscale fixture changes package metadata deliberately and is never built or deployed.
-CLI mutation checks also confirmed that the check derivation fails for those software changes and an unknown container digest.
-The check derivation has no System build dependencies.
-
-Latest Channel independence was checked with this temporary override:
-
-```sh
-nix eval --json .#lib.serverPreservation \
-  --override-input nixpkgs-latest github:nixos/nixpkgs/2fcb964de67fcf60b43471c55d5d99e61a9ccb5a \
-  --no-write-lock-file
-```
-
-Both servers still reproduce their baseline identities.
-This command does not change `flake.lock`.
-An additional lock-graph comparison confirmed that all original desktop inputs and the complete original server graph retain their source identities.
+The owner selected basic Nix configuration evaluation as acceptance for this refactor.
+Capability checks evaluate selected actual Host settings without runtime fixtures or mutation cases.
+The heavyweight preservation gate and its diagnostic exports are removed.
+The historical baseline and immutable input revisions remain unchanged.
+Evaluation does not prove runtime behavior, deployed identity, authentication, or safe activation.
 
 The desktop System derivation before and after the initial import was identical:
 
@@ -126,7 +103,7 @@ Its System derivation therefore changes through Home Manager; its channels and e
 
 ## User-only operational acceptance
 
-Evaluation is complete; build, recovery, activation, and reboot acceptance remain owner tasks.
+Build, recovery, activation, and reboot acceptance remain owner tasks.
 Do not treat `nixos-rebuild test` as a read-only check.
 It starts services and can trigger persistent database migrations.
 A generation rollback does not restore migrated data.
@@ -168,7 +145,7 @@ just deploy-homelab
 ```
 
 Each deployment recipe runs `just evaluate` before `nixos-rebuild switch`, without a confirmation prompt.
-This evaluates every host and the preservation gate without building Systems.
+This evaluates the flake without building Systems; it does not compare historical whole-Host identities.
 It does not verify backups or replace owner-run build and smoke tests.
 Before the desktop SSH configuration is activated, use `just deploy-vps hostinger` with the legacy SSH alias.
 Renaming the selector does not itself install the new SSH alias or change the running server's hostname.
@@ -196,4 +173,4 @@ Compare actual configured packages, database majors, runtimes, extensions, conta
 An equal or newer version is necessary for that migration but does not establish data compatibility.
 Do not mix individually retained server packages into a newer System module tree.
 Retain the old source if a candidate requires a downgrade or lacks a safe recovery procedure.
-Replace the strict consolidation identity gate only as part of that reviewed migration.
+Basic configuration evaluation does not replace the operational acceptance required for that migration.

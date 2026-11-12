@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted - 2026-11-08. Decided in #50. Amended 2026-11-09: permit current coding agents in homelab's managed Home, with exact unrelated behavior preservation.
+Accepted - 2026-11-08. Decided in #50. Amended 2026-11-09: permit current coding agents in homelab's managed Home, with exact unrelated behavior preservation. Amended 2026-11-12: accept basic configuration evaluation without whole-System or mutation test gates.
 
 ## Context
 
@@ -24,10 +24,10 @@ A temporary capability-owned adapter shares current policy while retaining the o
 Remove that adapter when the separately reviewed server migration supplies the current contract.
 
 The addition necessarily changes homelab's complete System identity because that identity includes Home.
-Preserve the historical whole-System identity in a counterfactual evaluation with coding agents disabled.
-Also require an explicit allowlist of Home package, file, and activation changes and exact preservation of unrelated System and Home behavior.
+Retain the historical whole-System and Home change records without requiring counterfactual or mutation checks for this refactor.
+Keep unrelated System and Home behavior unchanged; basic configuration evaluation does not prove that preservation.
 Any web exposure requires an owner-approved access and service-identity model and a separately enumerated service and proxy allowance.
-Keep immutable input guards and exact VPS identity preservation.
+Keep immutable input revisions and unrelated VPS behavior unchanged.
 
 This temporarily departs from ADR-0007 for the servers.
 Remove the compatibility sources only through a separately reviewed Release Channel migration that passes software, compatibility, and data-recovery checks.

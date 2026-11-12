@@ -36,9 +36,9 @@ A reload of an old session does not prove that it selected the Lua config.
 ## Automated check
 
 Run `nix flake check` from the repository root.
-The `hyprland-config` check stages the Home Manager config and runs its generated `hyprland.lua` through the pinned Hyprland parser.
-It also checks that `hyprland.conf` is absent.
-The parser check does not prove that shortcuts, idle locking, DMS, or Steam Session behavior work in a desktop session.
+The `hyprland-evaluation` check evaluates the Host's Hyprland, shell, and Hex enablement settings.
+It does not execute the compositor or validate its Lua configuration at runtime.
+Shortcuts, idle locking, DMS, and Steam Session behavior still need owner-run desktop acceptance.
 
 ## User-only activation and recovery
 

@@ -30,7 +30,6 @@ Complete the backup and recovery checks before deploying servers.
 ```sh
 just evaluate                    # Evaluation only, no System builds or activation
 just check                       # Build and run the flake checks
-just manifests                   # Print evaluated host manifests
 just check-lua                    # Run Neovim flake checks
 just check-neovim-runtime         # Test first launch with plugin downloads
 just hyprland-baseline test       # Run the baseline script's self-tests
@@ -327,7 +326,8 @@ Coding agents use `modules/coding-agents/home.nix` through `homeManagerModules.d
 That switch owns Herdr, OpenCode, Operator, Hunk, language tooling, and the held Nix MCP package and declaration.
 It does not enable Git or lazygit; Hunk configures their pagers only when they are enabled.
 Herdr and Operator package definitions live in the global `packages/default.nix` registry.
-Each capability keeps its checks in one `checks.nix`, including its small runtime fixtures.
+Each capability keeps basic Nix configuration evaluation in one `checks.nix`.
+These checks do not run VM, formatter, mutation, or whole-Host preservation tests.
 Ordinary upstream definitions override the default OpenCode model and Herdr sidebar width.
 Upstream list options merge contributions; use `lib.mkForce` only to deliberately replace an entire list.
 Native capability assets belong beside their implementation; external instructions, skills, and Neovim sources retain their owners.

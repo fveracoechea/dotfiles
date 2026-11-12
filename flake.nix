@@ -139,75 +139,28 @@
       dotfilesPkgs = inputs.server-dotfiles-compat.dotfilesPkgs.x86_64-linux;
     };
 
-    hostChecks = import ./checks/hosts.nix {
-      inherit lib inputs;
-      hosts = inputs.self.nixosConfigurations;
-      pkgs = latestPkgsFor "x86_64-linux";
-    };
-
-    codingAgentChecks = system:
-      import ./modules/coding-agents/checks.nix {
-        inherit lib home-manager;
-        homelab = inputs.self.nixosConfigurations.homelab;
-        pkgs = latestPkgsFor system;
-        homeModule = homeManagerModules.default;
-        dotfilesPkgs = dotfilesPkgsFor system;
-        pkgs-stable = stablePkgsFor system;
-        desktopHost = inputs.self.nixosConfigurations.nixos-desktop;
-      };
-
-    shellChecks = system:
-      import ./modules/shell/checks.nix {
-        inherit lib home-manager;
-        pkgs = latestPkgsFor system;
-        pkgs-stable = stablePkgsFor system;
-        homeModule = homeManagerModules.default;
-        dotfilesPkgs = dotfilesPkgsFor system;
-        hosts = inputs.self.nixosConfigurations;
-        nixpkgs = nixpkgs-stable;
-        nixosModule = nixosModules.default;
-      };
-
-    networkingChecks = system:
-      import ./modules/networking/checks.nix {
-        inherit lib;
-        pkgs = latestPkgsFor system;
-        nixpkgs = nixpkgs-stable;
-        nixosModule = nixosModules.default;
-      };
-
-    desktopCapabilityChecks = system: let
+    capabilityChecks = system: let
       args = {
-        inherit lib home-manager;
         pkgs = latestPkgsFor system;
-        pkgs-stable = stablePkgsFor system;
-        homeModule = homeManagerModules.default;
-        nixpkgs = nixpkgs-stable;
-        nixosModule = nixosModules.default;
+        desktop = inputs.self.nixosConfigurations.nixos-desktop.config;
+        homelab = inputs.self.nixosConfigurations.homelab.config;
       };
     in
-      (import ./modules/hyprland/checks.nix args)
+      (import ./modules/coding-agents/checks.nix args)
+      // (import ./modules/shell/checks.nix args)
+      // (import ./modules/networking/checks.nix args)
+      // (import ./modules/hyprland/checks.nix args)
       // (import ./modules/gaming/checks.nix args)
       // (import ./modules/audio/checks.nix args);
   in {
     inherit homeManagerModules nixosModules;
-
-    lib.hostManifests = hostChecks.manifests;
-    lib.serverPreservation = hostChecks.preservation;
-    lib.serverPreservationNegativeCases = hostChecks.negativeCases;
-    lib.homelabCodingAgentDelta = hostChecks.homelabDelta;
-    lib.homelabWebDelta =
-      (import ./checks/homelab.nix {
-        inherit lib;
-        host = inputs.self.nixosConfigurations.homelab;
-      }).webDelta;
 
     checks = builtins.listToAttrs (map (system: {
         name = system;
         value =
           (neovimChecks system)
           // lib.optionalAttrs (system == "x86_64-linux") (
-            (codingAgentChecks system) // (shellChecks system) // (networkingChecks system) // (desktopCapabilityChecks system) // {host-preservation = hostChecks.check;}
+            capabilityChecks system
           );
       })
       supportedSystems);

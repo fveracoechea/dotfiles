@@ -19,7 +19,7 @@ The adapter supplies current tool packages and sources without replacing server 
 Both Home entry files share tool policy, CLI preferences, skills, Herdr integration, and Hunk settings.
 The pinned OpenCode module has no `cli` or `validateFiles` options.
 The adapter generates `cli.json` through `xdg.configFile` and validates it against the selected executable's schema during its build.
-Flake checks also validate the generated server configuration and installed integration assets.
+The capability check evaluates the selected Home settings and web service options without executing the applications.
 Skill directories use explicit directory links because the pinned renderer probes unrealized package paths during evaluation.
 Instructions use an explicit source because the pinned renderer treats a string path as inline text.
 
@@ -29,22 +29,17 @@ It replaces the old Hunk configuration with current shared policy and preserves 
 It does not disable or duplicate the frozen Git implementation.
 Remove this adapter when a separately reviewed server migration supplies the current Home Manager contract.
 
-## Preservation evidence
+## Historical preservation evidence
 
 `checks/server-baseline.json` remains the immutable historical server control.
-The agents-and-web-disabled counterfactual must reproduce the previous homelab System identity.
-The check also applies the pre-existing Paperless image-reference normalization before comparing with the historical control.
-VPS identity and the immutable server input guards remain exact.
+The removed preservation harness compared an agents-and-web-disabled counterfactual with the previous homelab System identity.
+The server inputs remain frozen; current checks do not repeat whole-System comparisons.
 
 `checks/homelab-agent-delta.json` enumerates the permitted Home package and file changes.
 It also fixes the complete Home generation, profile, NixOS user-package list, and Home Manager activation-unit identity.
 `checks/homelab-web-delta.json` separately fixes the dedicated account, group, service unit, confinement drop-in package, and Caddy route.
-The normalized enabled System removes those verified web additions and restores the historical Home profile and Home Manager unit.
-It removes only the enumerated confinement package, not arbitrary Systemd packages or their units.
-Its full identity must match the agents-and-web-disabled System.
-This comparison includes unrelated service closures, units, networking, authorization, secret references, and activation behavior.
-The negative cases reject unrelated Home files, enabled-only environment changes, sudo changes, service-unit changes, firewall changes, secret-reference changes, and user-package additions.
-They also reject a privileged web identity, public backend, unrestricted proxy, and enabled-only firewall change.
+These JSON records remain historical evidence, not active check expectations.
+The owner requested basic Nix evaluation instead of the whole-Host and negative-case harness.
 Do not refresh the historical baseline or the Home delta to hide an unexplained change.
 
 The fontconfig file is an indirect profile-reference change, not a new font policy.
@@ -107,17 +102,10 @@ The Home capability supplies terminal integration separately.
 Validate native subagents and Operator readiness as separate acceptance checks for the selected agent mode.
 Do not promise browser-to-Herdr dispatch, phone compatibility, disconnect recovery, or unattended restart recovery without runtime evidence.
 
-`coding-agents-web` checks the evaluated identity, state paths, privilege restrictions, missing/empty password rejection, and Caddy's adapted route.
-It also verifies that isolation and proxy mutations fail their checks.
-The proxy check inspects Caddy's adapted route and rejects broadened or forwarded-IP mutations; it sends no network packets.
-These checks do not establish HTTP authentication behavior, deployed firewall rejection, namespace isolation, or browser streaming.
-
-`coding-agents-web-isolation` runs a separate VM using the frozen System test framework and the evaluated service's filesystem restrictions.
-It replaces the server command with a probe and omits the password-file requirement; it never starts an authenticated server or provisions credentials.
-The probe rejects synthetic world-readable project, Home credential, unrelated-directory, and unrelated Nix-store files that the same account can read outside confinement.
-It also writes private workspace/state files, reads immutable configuration, executes OpenCode's version command, initializes a Git repository, and loads certificate roots.
-The VM separately verifies that the real service's absent runtime file skips startup without creating credentials or launching the server.
-These are isolated-fixture filesystem results, not deployed acceptance or proof that every server operation works inside confinement.
+`coding-agents-evaluation` evaluates Home settings, the web switch, its runtime-file path, and the configured service account.
+The VM, runtime, formatter, and mutation harnesses are removed under the owner's evaluation-only acceptance.
+The actual service's password guards and confinement settings are unchanged.
+Configuration evaluation does not establish deployed isolation, HTTP authentication, or browser behavior.
 
 ## Owner acceptance before activation
 
@@ -146,7 +134,7 @@ Operator issue <https://github.com/fveracoechea/operator/issues/332> concerns in
 The final content preserves main's native agent modes/compaction and sound-only change, and advances only Operator and its coupled prompts to v2.3.2.
 Historical checks do not authorize restoring old inputs, prompts, or compaction settings.
 A fix in another workspace does not prove the locked package passes the runtime checks above.
-Final cumulative builds and exact-head independent review must cover this updated content; earlier checkpoint results do not establish them.
-Default-branch integration and genuine GitHub checks/non-author approval remain separate merge prerequisites.
+Acceptance for this refactor is basic Nix configuration evaluation, not full builds or another review round.
+The owner decides when to merge; automated merge guards are separate from that decision.
 No remote runtime, browser, authentication, or deployed security acceptance ran for this checkpoint.
 Builds and evaluation do not establish credentials, deployed state, backup readiness, or safe activation.
