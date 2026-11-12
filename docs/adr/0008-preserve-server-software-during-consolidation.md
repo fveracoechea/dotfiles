@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted - 2026-11-08. Decided in #50.
+Accepted - 2026-11-08. Decided in #50. Amended 2026-11-09: permit current coding agents in homelab's managed Home, with exact unrelated behavior preservation.
 
 ## Context
 
@@ -18,6 +18,17 @@ Preserve compatibility-sensitive shared module behavior as well as System packag
 Keep hardware, networking, secrets, and authorization host-specific.
 New reusable capabilities use the existing Dotfiles Option namespace and upstream configuration options.
 
+Homelab's requested coding-agent addition, including its explicitly requested authenticated web endpoint, is the permitted functional change during the capability refactor.
+It remains in the NixOS-integrated Home and uses current personal-tool dependencies without replacing the server dependency graph.
+A temporary capability-owned adapter shares current policy while retaining the older Home Manager contract.
+Remove that adapter when the separately reviewed server migration supplies the current contract.
+
+The addition necessarily changes homelab's complete System identity because that identity includes Home.
+Preserve the historical whole-System identity in a counterfactual evaluation with coding agents disabled.
+Also require an explicit allowlist of Home package, file, and activation changes and exact preservation of unrelated System and Home behavior.
+Any web exposure requires an owner-approved access and service-identity model and a separately enumerated service and proxy allowance.
+Keep immutable input guards and exact VPS identity preservation.
+
 This temporarily departs from ADR-0007 for the servers.
 Remove the compatibility sources only through a separately reviewed Release Channel migration that passes software, compatibility, and data-recovery checks.
 The desktop's channel policy remains unchanged.
@@ -27,6 +38,7 @@ The desktop's channel policy remains unchanged.
 - Personal-tool updates do not change server software.
 - Old shared behavior remains an explicit maintenance cost until the server migration.
 - Evaluation can establish configuration equivalence but cannot establish backup quality or safe activation.
+- Shared permissive agent policy does not authorize privileged server operations; owner review and runtime acceptance precede activation.
 
 ## Alternatives considered
 

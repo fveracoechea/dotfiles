@@ -90,6 +90,15 @@ The server Release Channel migration requires separate review and data-recovery 
 
 ### Development environment
 
+The shell Grouping lives in `modules/shell/home.nix`; its System entry is `modules/shell/nixos.nix`.
+The existing `dotfiles.shell.enable` and `dotfiles.system-shell.enable` switches remain separate across Home and System.
+Zsh, tmux, Bat, Btop, Yazi, and Git keep their independent flat switches and Grouping opt-outs.
+Optional aliases, the Git editor, and Yazi's Eza preview follow enabled companions without enabling them.
+Home Zsh and tmux retain the System-compatible Zsh package.
+Homelab still uses its frozen compatibility shell implementation and package graph.
+
+`modules/networking/nixos.nix` owns reusable network policy; the Host owns its hostname and interface selection.
+
 - **[Neovim](https://neovim.io/)**: Extensible text editor with custom configuration
 - **[TMUX](https://github.com/tmux/tmux)**: Terminal multiplexer with custom scripts
 - **[Zsh](https://zsh.sourceforge.io/)** + **[Oh My Posh](https://ohmyposh.dev/)**: Enhanced shell experience
@@ -117,7 +126,7 @@ The sandboxed flake smoke check uses the shared module's generated Home Manager 
 ### Coding agents
 
 OpenCode comes from the Latest Channel's nixpkgs package, with Home Manager schema validation enabled.
-Operator comes directly from its upstream flake, pinned to release `v2.3.1`.
+Operator comes directly from its upstream flake, pinned to release `v2.3.2`.
 Operator owns global agent instructions, its full skill catalog, and its OpenCode server plugin.
 The separate `operator-agents` input pins Operator's shared `super` and `worker` Markdown modes without upgrading the CLI or device state.
 Home Manager links them into `~/.config/opencode/agents/`.
@@ -127,9 +136,12 @@ The OpenCode module selects Sol high for `super` and Sol medium for `worker`.
 The built-in `plan` agent is disabled.
 Edit prompts and permissions in Operator's `agents/opencode/`, then advance the `operator-agents` revision here.
 Herdr and Hunk remain separately managed.
-The desktop declares `nix-mcp` globally with an absolute Nix executable path.
+The coding-agent capability declares `nix-mcp` globally with an absolute Nix executable path.
+It installs official NixOS/nixfmt and oxfmt and explicitly enables their OpenCode V2 formatter commands.
+Nix files use nixfmt; JavaScript and TypeScript files use oxfmt without requiring a project-local formatter dependency.
+The external Neovim pin also selects nixfmt and imports its separately approved Biome, isort, Black and CodeSnap removal.
 
-After you rebuild, follow [Operator's update procedure](https://github.com/fveracoechea/operator/blob/v2.3.1/docs/update.md).
+After you rebuild, follow [Operator's update procedure](https://github.com/fveracoechea/operator/blob/v2.3.2/docs/update.md).
 Finish active Operator assignments before any command can migrate device state.
 Register this checkout only if it is not already registered, then inspect and select the OpenCode host through Operator's config plan/apply commands.
 Do not replace existing device settings or credentials.
@@ -185,6 +197,12 @@ Each reusable module declares its own enable option and wraps its configuration 
 Host-only services live in `hosts/<host>/services/` and are imported directly.
 Each service file includes its application settings and related reverse-proxy, firewall, and secret references.
 
+`modules/hyprland/`, `modules/gaming/`, and `modules/audio/` own their Home and System implementations and checks.
+The context registries in `modules/home-manager/default.nix` and `modules/nixos/default.nix` keep explicit import lists.
+Home gaming defaults MangoHud on; Sunshine remains independently optional.
+Audio keeps separate `dotfiles.pro-audio.enable` (Home applications) and `dotfiles.pipewire.enable` (System audio) switches.
+Neither audio switch enables the other evaluation context.
+
 ### Atomic modules
 
 Single-app modules that configure one application:
@@ -217,7 +235,7 @@ dotfiles.hyprland.enable = true;
 dotfiles.hyprland.enable = true;
 ```
 
-The desktop's monitor settings are in `config/hypr/settings.lua`.
+The desktop's monitor settings are in `modules/hyprland/assets/settings.lua`.
 Hyprland's four native Lua files use store-backed installation.
 Home Manager adds the source of `entry.lua` to `hyprland.lua`.
 Rebuild and activation install source edits and trigger an internal reload hook.
@@ -295,12 +313,22 @@ It saves the active System path before `test`; `nixos-rebuild test --rollback` d
 │   └── vps/                 # VPS control plane, host-local services/, networking, and storage
 ├── modules/                  # Reusable configuration modules
 │   ├── core/                # Cross-cutting options (palette)
-│   ├── nixos/               # NixOS-specific modules
-│   └── home-manager/        # User environment modules
+│   ├── coding-agents/       # Capability-owned Home implementation, packages, and checks
+│   ├── nixos/               # Explicit System registry and unmigrated implementations
+│   └── home-manager/        # Explicit Home registry and unmigrated implementations
 ├── packages/                # Custom packages (locally-built + wrapped from inputs)
-├── config/                  # Store-backed native app configuration, including hypr/ and nvim/
+├── config/                  # Native configuration for capabilities not yet migrated
 └── flake.nix               # Main flake configuration
 ```
+
+Reusable implementations migrate by capability, following ADR-0001 and ADR-0005.
+The registries remain explicit and static.
+Coding agents use `modules/coding-agents/home.nix` through `homeManagerModules.default` and `dotfiles.coding-agents.enable`.
+That switch owns Herdr, OpenCode, Operator, Hunk, language tooling, and the held Nix MCP package and declaration.
+It does not enable Git or lazygit; Hunk configures their pagers only when they are enabled.
+Ordinary upstream definitions override the default OpenCode model and Herdr sidebar width.
+Upstream list options merge contributions; use `lib.mkForce` only to deliberately replace an entire list.
+Native capability assets belong beside their implementation; external instructions, skills, and Neovim sources retain their owners.
 
 ## Documentation
 

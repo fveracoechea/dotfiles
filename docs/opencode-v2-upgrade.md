@@ -93,7 +93,7 @@ The `name` selects terminal-palette colors, while `mode` selects automatic light
 Inspect any existing `cli.json` and saved preferences before declaring the file.
 An existing `cli.json` skips the initial import. [2]
 
-`modules/home-manager/coding-agents/herdr.nix` now installs `opencode/herdr-opencode/tui.js` from the full `assets/opencode/herdr-tui-session.js`.
+`modules/coding-agents/herdr.nix` installs `opencode/herdr-opencode/tui.js` from the full `assets/opencode/herdr-tui-session.js`.
 That file already exports a v2-compatible `setup(api)` implementation.
 Register its directory, `./herdr-opencode`, in `cli.json.plugins`.
 Copying the old single-file registration into `cli.json` does not work because v2 resolves a directory's TUI entrypoint. [5] [6]
@@ -117,7 +117,7 @@ Do not treat successful config loading as proof that LSP is active.
 ### Environment flags and search
 
 Neither `OPENCODE_ENABLE_EXA` nor `OPENCODE_EXPERIMENTAL_LSP_TOOL` has a runtime reference in the tagged package sources. [8]
-Their assignments have been removed from `modules/home-manager/coding-agents/opencode.nix`.
+Their assignments have been removed from `modules/coding-agents/opencode.nix`.
 For explicit Exa selection, v2 supports `websearch.provider = "exa"` and `EXA_API_KEY`.
 The old enable flag does not select Exa. [9]
 Live search authentication and provider access remain unverified.

@@ -6,6 +6,7 @@
     ./services/home-assistant.nix
     ./services/immich.nix
     ./services/ollama.nix
+    ./services/opencode.nix
     ./services/paperless.nix
     ./services/paperless-gpt.nix
     ./services/postgresql.nix

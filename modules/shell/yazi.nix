@@ -81,20 +81,21 @@ in {
               run = "mediainfo";
             }
           ];
-          prepend_previewers = [
-            {
-              mime = "{audio,video,image}/*";
-              run = "mediainfo";
-            }
-            {
-              mime = "application/subrip";
-              run = "mediainfo";
-            }
-            {
+          prepend_previewers =
+            [
+              {
+                mime = "{audio,video,image}/*";
+                run = "mediainfo";
+              }
+              {
+                mime = "application/subrip";
+                run = "mediainfo";
+              }
+            ]
+            ++ lib.optional config.programs.eza.enable {
               url = "*/";
               run = ''piper -- eza -TL=3 --git-ignore --color=always --icons=always --group-directories-first --no-quotes "$1"'';
-            }
-          ];
+            };
           prepend_fetchers = [
             {
               id = "git";

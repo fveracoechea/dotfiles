@@ -4,12 +4,12 @@
 {
   pkgs,
   inputs,
-}: {
+}:
+(import ../modules/coding-agents/packages.nix {inherit pkgs inputs;})
+// {
   dev-manager-desktop = inputs.dev-manager-desktop.packages.${pkgs.stdenv.hostPlatform.system}.default;
   herdr-nvim = pkgs.callPackage ./herdr-nvim.nix {};
   railway = pkgs.callPackage ./railway.nix {};
 
-  herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
-  operator = inputs.operator.packages.${pkgs.stdenv.hostPlatform.system}.default;
   tmux-powerkit = inputs.tmux-powerkit.packages.${pkgs.stdenv.hostPlatform.system}.default;
 }

@@ -13,7 +13,7 @@
     ./git.nix
   ];
 
-  options.dotfiles.shell.enable = lib.mkEnableOption "shell suite (zsh, tmux, bat, btop, yazi, git, lazydocker)";
+  options.dotfiles.shell.enable = lib.mkEnableOption "shell grouping (zsh, tmux, bat, btop, yazi, git, lazydocker)";
 
   config = lib.mkIf config.dotfiles.shell.enable {
     home.packages = with pkgs; [

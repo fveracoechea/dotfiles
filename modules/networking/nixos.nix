@@ -3,14 +3,10 @@
   config,
   ...
 }: {
-  options.dotfiles.networking.enable = lib.mkEnableOption "networking stack (hostname, firewall, iwd)";
+  options.dotfiles.networking.enable = lib.mkEnableOption "networking stack (firewall, iwd)";
 
   config = lib.mkIf config.dotfiles.networking.enable {
     networking = {
-      hostName = "nixos";
-
-      interfaces."eno1".wakeOnLan.enable = true;
-
       firewall.enable = true;
 
       # wireless.enable = true;

@@ -1,21 +1,16 @@
 {
   lib,
-  inputs,
+  home-manager,
+  homeModule,
   pkgs,
   pkgs-stable,
 }: let
-  home = inputs.home-manager.lib.homeManagerConfiguration {
+  home = home-manager.lib.homeManagerConfiguration {
     inherit pkgs;
     extraSpecialArgs = {inherit pkgs-stable;};
     modules = [
-      inputs.dms.homeModules.dank-material-shell
-      ../modules/home-manager/hyprland
-      ../modules/core/palette.nix
+      homeModule
       {
-        _module.args = {
-          dmsThemeSource = inputs.catppuccin-dms;
-          dmsSource = inputs.dms;
-        };
         home = {
           username = "hyprland-fixture";
           homeDirectory = "/tmp/hyprland-fixture";

@@ -12,13 +12,15 @@
     path = plain package;
     derivation = plain package.drvPath;
   };
+  homelabCheck = host: import ./homelab.nix {inherit lib host;};
 
   # The deployed System identity covers transitive runtimes, generated files,
   # permissions, networking, and Home Manager, not just top-level versions.
   preserved = candidates: {
     homelab = let
       host = candidates.homelab;
-      originalImage = host.extendModules {
+      homeCheck = homelabCheck host;
+      originalImage = homeCheck.counterfactual.extendModules {
         modules = [
           ({lib, ...}: {
             virtualisation.oci-containers.containers.paperless-gpt.image =
@@ -29,6 +31,7 @@
     in
       host.config.virtualisation.oci-containers.containers.paperless-gpt.image
       == baseline.paperlessGpt.image
+      && homeCheck.preserved
       && plain originalImage.config.system.build.toplevel
       == baseline.hosts.homelab.systemPath
       && host.config.system.stateVersion == baseline.hosts.homelab.systemStateVersion
@@ -82,6 +85,77 @@
   };
   unexpectedHostname = hosts.vps.extendModules {
     modules = [({lib, ...}: {networking.hostName = lib.mkForce "unexpected-vps";})];
+  };
+  changedAuthorization = hosts.homelab.extendModules {
+    modules = [({lib, ...}: {security.sudo.wheelNeedsPassword = lib.mkForce true;})];
+  };
+  changedHome = hosts.homelab.extendModules {
+    modules = [{home-manager.users.fveracoechea.home.file."unrelated-preservation-fixture".text = "unexpected";}];
+  };
+  changedEnabledHome = hosts.homelab.extendModules {
+    modules = [
+      {
+        home-manager.users.fveracoechea = {
+          lib,
+          config,
+          ...
+        }: {
+          home.sessionVariables = lib.mkIf config.dotfiles.coding-agents.enable {UNRELATED_PRESERVATION_FIXTURE = "unexpected";};
+        };
+      }
+    ];
+  };
+  changedUnit = hosts.homelab.extendModules {
+    modules = [({lib, ...}: {systemd.services.postgresql.serviceConfig.RestartSec = lib.mkForce 123;})];
+  };
+  changedFirewall = hosts.homelab.extendModules {
+    modules = [{networking.firewall.allowedTCPPorts = [49123];}];
+  };
+  changedSecretReference = hosts.homelab.extendModules {
+    modules = [({lib, ...}: {services.tailscale.authKeyFile = lib.mkForce "/var/lib/tailscale/unapproved-key";})];
+  };
+  changedUserPackages = hosts.homelab.extendModules {
+    modules = [({pkgs, ...}: {users.users.fveracoechea.packages = [pkgs.hello];})];
+  };
+  changedWebIdentity = hosts.homelab.extendModules {
+    modules = [{users.users.opencode-web.extraGroups = ["wheel"];}];
+  };
+  changedWebListener = hosts.homelab.extendModules {
+    modules = [({lib, ...}: {systemd.services.opencode-web.serviceConfig.ExecStart = lib.mkForce "/unexpected-server --hostname 0.0.0.0";})];
+  };
+  changedWebProxy = hosts.homelab.extendModules {
+    modules = [({lib, ...}: {services.caddy.virtualHosts."opencode.veracoechea.com".extraConfig = lib.mkForce "reverse_proxy 127.0.0.1:4096";})];
+  };
+  changedWebFirewall = hosts.homelab.extendModules {
+    modules = [
+      ({
+        config,
+        lib,
+        ...
+      }: {
+        networking.firewall.allowedTCPPorts = lib.mkIf config.dotfiles.coding-agents.web.enable [4096];
+      })
+    ];
+  };
+  changedWebConfinement = hosts.homelab.extendModules {
+    modules = [({lib, ...}: {systemd.services.opencode-web.confinement.enable = lib.mkForce false;})];
+  };
+  unrelatedWebUnit = hosts.homelab.extendModules {
+    modules = [
+      ({
+        config,
+        lib,
+        pkgs,
+        ...
+      }: {
+        systemd.packages = lib.mkIf config.dotfiles.coding-agents.web.enable [
+          (pkgs.writeTextDir "lib/systemd/system/unrelated-preservation-fixture.service" ''
+            [Service]
+            ExecStart=/unexpected-fixture
+          '')
+        ];
+      })
+    ];
   };
 
   manifests =
@@ -234,9 +308,23 @@
     changed-database-major = !(accepted (hosts // {homelab = changedDatabase;}));
     unapproved-image = !(accepted (hosts // {homelab = changedImage;}));
     unexpected-vps-hostname = !(accepted (hosts // {vps = unexpectedHostname;}));
+    changed-homelab-authorization = !(accepted (hosts // {homelab = changedAuthorization;}));
+    unrelated-home-file = !(accepted (hosts // {homelab = changedHome;}));
+    unrelated-enabled-home-environment = !(accepted (hosts // {homelab = changedEnabledHome;}));
+    changed-service-unit = !(accepted (hosts // {homelab = changedUnit;}));
+    unrelated-firewall-port = !(accepted (hosts // {homelab = changedFirewall;}));
+    changed-secret-reference = !(accepted (hosts // {homelab = changedSecretReference;}));
+    unrelated-system-user-package = !(accepted (hosts // {homelab = changedUserPackages;}));
+    privileged-web-identity = !(accepted (hosts // {homelab = changedWebIdentity;}));
+    public-web-listener = !(accepted (hosts // {homelab = changedWebListener;}));
+    unrestricted-web-proxy = !(accepted (hosts // {homelab = changedWebProxy;}));
+    enabled-only-web-firewall = !(accepted (hosts // {homelab = changedWebFirewall;}));
+    unconfined-web-service = !(accepted (hosts // {homelab = changedWebConfinement;}));
+    unrelated-enabled-systemd-package = !(accepted (hosts // {homelab = unrelatedWebUnit;}));
   };
 in {
   inherit manifests preservation negativeCases;
+  homelabDelta = (homelabCheck hosts.homelab).delta;
   check = assert lib.assertMsg (accepted hosts) "Server configuration differs from the verified deployed baseline. See lib.serverPreservation and ADR-0008.";
   assert lib.assertMsg isolation "Host isolation or desktop State Versions changed.";
   assert lib.assertMsg baselineDetailsMatch "Recorded server versions or State Versions differ from evaluation.";
