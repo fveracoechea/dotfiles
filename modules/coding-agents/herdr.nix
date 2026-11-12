@@ -38,8 +38,6 @@ in {
       };
     };
 
-    programs.opencode.cli.plugins = ["./herdr-opencode"];
-
     xdg.configFile."opencode/herdr-opencode/tui.js".source = "${assets}/opencode/herdr-tui-session.js";
   };
 }

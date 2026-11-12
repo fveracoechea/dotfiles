@@ -117,6 +117,7 @@
     };
     nixosModules.default = {
       imports = [
+        (import ./modules/coding-agents/nixos.nix {inherit inputs stablePkgsFor; agentPkgs = latestPkgsFor "x86_64-linux";})
         ./modules/nixos/default.nix
         inputs.musnix.nixosModules.musnix
       ];
@@ -144,13 +145,19 @@
     };
 
     codingAgentChecks = system:
-      import ./modules/coding-agents/checks.nix {
+      (import ./modules/coding-agents/checks.nix {
         inherit lib home-manager;
+        homelab = inputs.self.nixosConfigurations.homelab;
         pkgs = latestPkgsFor system;
         homeModule = homeManagerModules.default;
         dotfilesPkgs = dotfilesPkgsFor system;
         pkgs-stable = stablePkgsFor system;
-      };
+      }) // (import ./modules/coding-agents/web-checks.nix {
+        inherit lib;
+        pkgs = latestPkgsFor system;
+        homelab = inputs.self.nixosConfigurations.homelab;
+        desktop = inputs.self.nixosConfigurations.nixos-desktop;
+      });
 
     shellChecks = system:
       import ./modules/shell/checks.nix {
@@ -191,6 +198,8 @@
     lib.hostManifests = hostChecks.manifests;
     lib.serverPreservation = hostChecks.preservation;
     lib.serverPreservationNegativeCases = hostChecks.negativeCases;
+    lib.homelabCodingAgentDelta = hostChecks.homelabDelta;
+    lib.homelabWebDelta = (import ./checks/homelab.nix {inherit lib; host = inputs.self.nixosConfigurations.homelab;}).webDelta;
 
     checks = builtins.listToAttrs (map (system: {
         name = system;
@@ -212,6 +221,7 @@
       specialArgs = homelabSpecialArgs;
       modules = [
         ./hosts/homelab/configuration.nix
+        (import ./modules/coding-agents/nixos.nix {inherit inputs stablePkgsFor; agentPkgs = latestPkgsFor "x86_64-linux";})
         inputs.server-dotfiles-compat.nixosModules.default
         inputs.server-home-manager.nixosModules.home-manager
         {
@@ -220,7 +230,13 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "hm-backup";
-          home-manager.users.fveracoechea = import ./hosts/homelab/home.nix;
+          home-manager.users.fveracoechea.imports = [
+            (import ./modules/coding-agents/home-compat.nix {
+              inherit inputs stablePkgsFor;
+              agentPkgs = latestPkgsFor "x86_64-linux";
+            })
+            ./hosts/homelab/home.nix
+          ];
           home-manager.extraSpecialArgs = homelabSpecialArgs;
         }
       ];

@@ -3,6 +3,7 @@
   stablePkgsFor,
 }: {pkgs, ...}: {
   _module.args = {
+    codingAgentPkgs = pkgs;
     codingAgentSources = {
       inherit (inputs) herdr hunk operator;
     };

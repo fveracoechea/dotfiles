@@ -1,0 +1,6 @@
+{
+  "groupHash": "a52e0a2ab5848c5df04c692e21a66a346bf4db1e3710ec92d206342082075e5b",
+  "proxy": "tls /var/lib/acme/veracoechea.com/fullchain.pem /var/lib/acme/veracoechea.com/key.pem\n@tailnet remote_ip 100.64.0.0/10\nhandle @tailnet {\n  reverse_proxy 127.0.0.1:4096\n}\nhandle {\n  respond 403\n}\n",
+  "unitHash": "2fdda0e1d24ca3884763037df6f617763da70facd0a1ae303ff9263fa404ae8c",
+  "userHash": "69680cef4cf3caf3535cf216445925a0388c9311b0315afd4b959db76aebda10"
+}

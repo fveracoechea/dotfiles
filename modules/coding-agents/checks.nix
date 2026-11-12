@@ -5,6 +5,7 @@
   homeModule,
   dotfilesPkgs,
   pkgs-stable,
+  homelab,
 }: let
   fixture = modules:
     (home-manager.lib.homeManagerConfiguration {
@@ -55,7 +56,47 @@
     name = f.target;
     path = f.source;
   }) (lib.filterAttrs (name: f: f.enable && builtins.any (prefix: lib.hasPrefix prefix name) ["opencode/" "herdr/" "hunk/"]) configFiles));
+  serverHome = homelab.config.home-manager.users.fveracoechea;
+  serverOff = (homelab.extendModules {
+    modules = [({lib, ...}: {home-manager.users.fveracoechea.dotfiles.coding-agents.enable = lib.mkForce false;})];
+  }).config.home-manager.users.fveracoechea;
+  serverFiles = pkgs.linkFarm "homelab-coding-agents-config" (lib.mapAttrsToList (name: f: {
+    inherit name;
+    path = f.source;
+  }) (lib.filterAttrs (name: f: f.enable && builtins.any (prefix: lib.hasPrefix prefix name) ["opencode/" "herdr/" "hunk/"]) serverHome.xdg.configFile));
 in {
+  coding-agents-homelab = check "homelab" (
+    serverHome.dotfiles.coding-agents.enable
+    && serverHome.programs.opencode.package == pkgs.opencode
+    && serverHome.programs.herdr.package == dotfilesPkgs.herdr
+    && !serverHome.programs.opencode.web.enable
+    && !serverHome.programs.claude-code.enable
+    && !(serverHome.home.file ? "OPINIONS.md")
+    && serverHome.programs.git.settings.core.pager == "hunk pager"
+    && serverHome.programs.lazygit.settings.git.diffRenderers == [{command = "hunk pager";}]
+    && serverHome.programs.opencode.settings == desktop.programs.opencode.settings
+    && serverHome.programs.herdr.settings == desktop.programs.herdr.settings
+    && serverHome.programs.git.settings == serverOff.programs.git.settings
+    && serverHome.programs.lazygit.settings == serverOff.programs.lazygit.settings
+    && serverHome.home.sessionVariables == serverOff.home.sessionVariables
+    && serverHome.systemd.user.services == serverOff.systemd.user.services
+  );
+  coding-agents-homelab-config = pkgs.runCommand "homelab-coding-agents-config-check" {nativeBuildInputs = [pkgs.jq pkgs.check-jsonschema];} ''
+    set -eu
+    config=${serverFiles}
+    check-jsonschema --force-filetype=json --schemafile=${pkgs.opencode.jsonschema.config} "$config/opencode/opencode.json"
+    check-jsonschema --force-filetype=json --schemafile=${pkgs.opencode.jsonschema.cli} "$config/opencode/cli.json"
+    test -s "$config/opencode/herdr-opencode/tui.js"
+    test -s "$config/opencode/plugins/operator.ts"
+    test -s "$config/opencode/AGENTS.md"
+    grep -q 'agent\|Agent' "$config/opencode/AGENTS.md"
+    test -f "$config/hunk/extensions/hunk-gh/index.ts"
+    sed 's|${serverOff.home.path}|${serverHome.home.path}|g' ${serverOff.xdg.configFile."fontconfig/conf.d/10-hm-fonts.conf".source} > fontconfig-expected.xml
+    cmp fontconfig-expected.xml ${serverHome.xdg.configFile."fontconfig/conf.d/10-hm-fonts.conf".source}
+    ${lib.concatMapStringsSep "\n" (name: ''test -s "$config/opencode/skills/${name}/SKILL.md"'') (dotfilesPkgs.operator.skills ++ ["herdr" "hunk-review"])}
+    jq -e '.plugins == ["./herdr-opencode"]' "$config/opencode/cli.json"
+    touch "$out"
+  '';
   coding-agents-disabled = check "disabled" (
     !disabled.programs.opencode.enable
     && !disabled.programs.herdr.enable
