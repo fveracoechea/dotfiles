@@ -7,7 +7,7 @@ This is a Linux dotfiles repository using Nix flakes.
 - User-only config test: `nixos-rebuild test --flake .#nixos-desktop`
 - Check flake: `nix flake check`
 - Neovim lua config checks `nix flake check`
-  Commit most changes and push them to main.
+- Commit most changes and push them to main.
 - SSH to the VPS with `ssh vps`.
 - SSH to the homelab with `ssh homelab`.
 
