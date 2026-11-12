@@ -53,6 +53,17 @@
         update = "disable";
         model = lib.mkDefault "openai/gpt-6.1-sol";
 
+        formatter = {
+          oxfmt = {
+            command = [(lib.getExe pkgs.oxfmt) "--write" "$FILE"];
+            extensions = [".js" ".jsx" ".mjs" ".cjs" ".ts" ".tsx" ".mts" ".cts"];
+          };
+          nixfmt = {
+            command = [(lib.getExe pkgs.nixfmt) "$FILE"];
+            extensions = [".nix"];
+          };
+        };
+
         mcp.servers.nix-mcp = {
           type = "local";
           command = [(lib.getExe codingAgentMcpPackage)];

@@ -128,6 +128,9 @@ The built-in `plan` agent is disabled.
 Edit prompts and permissions in Operator's `agents/opencode/`, then advance the `operator-agents` revision here.
 Herdr and Hunk remain separately managed.
 The coding-agent capability declares `nix-mcp` globally with an absolute Nix executable path.
+It installs official NixOS/nixfmt and oxfmt and explicitly enables their OpenCode V2 formatter commands.
+Nix files use nixfmt; JavaScript and TypeScript files use oxfmt without requiring a project-local formatter dependency.
+The pinned external Neovim configuration still owns its Alejandra package and Nix-buffer formatter selection.
 
 After you rebuild, follow [Operator's update procedure](https://github.com/fveracoechea/operator/blob/v2.3.2/docs/update.md).
 Finish active Operator assignments before any command can migrate device state.

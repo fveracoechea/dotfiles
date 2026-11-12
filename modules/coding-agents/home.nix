@@ -12,6 +12,7 @@
       codingAgentPackages.operator
       python3
       nixd
+      nixfmt
       typescript-language-server
       biome
       oxfmt
