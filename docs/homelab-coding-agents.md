@@ -2,7 +2,9 @@
 
 Homelab uses the current coding-agent capability in its existing NixOS-integrated Home.
 Its System, Home Manager, and compatibility inputs remain frozen under ADR-0008.
-The desktop's evaluated System identity must remain unchanged.
+Unrelated desktop behavior must remain unchanged.
+Recovery also requires main's newer personal-tool policy and the separately requested Herdr sound-only change.
+The historical checkpoint does not yet include those parent changes.
 
 ## Compatibility adapter
 
@@ -28,16 +30,18 @@ Remove this adapter when a separately reviewed server migration supplies the cur
 ## Preservation evidence
 
 `checks/server-baseline.json` remains the immutable historical server control.
-The agents-disabled counterfactual must reproduce the previous homelab System identity.
+The agents-and-web-disabled counterfactual must reproduce the previous homelab System identity.
 The check also applies the pre-existing Paperless image-reference normalization before comparing with the historical control.
 VPS identity and the immutable server input guards remain exact.
 
 `checks/homelab-agent-delta.json` enumerates the permitted Home package and file changes.
 It also fixes the complete Home generation, profile, NixOS user-package list, and Home Manager activation-unit identity.
-The normalized enabled System restores only the verified Home profile and Home Manager unit.
-Its full identity must match the agents-disabled System.
+`checks/homelab-web-delta.json` separately fixes the dedicated account, group, service unit, and Caddy route.
+The normalized enabled System removes those verified web additions and restores the historical Home profile and Home Manager unit.
+Its full identity must match the agents-and-web-disabled System.
 This comparison includes unrelated service closures, units, networking, authorization, secret references, and activation behavior.
-The additional negative cases reject unrelated Home files, enabled-only environment changes, sudo changes, service-unit changes, firewall changes, secret-reference changes, and user-package additions.
+The negative cases reject unrelated Home files, enabled-only environment changes, sudo changes, service-unit changes, firewall changes, secret-reference changes, and user-package additions.
+They also reject a privileged web identity, public backend, unrestricted proxy, and enabled-only firewall change.
 Do not refresh the historical baseline or the Home delta to hide an unexplained change.
 
 The fontconfig file is an indirect profile-reference change, not a new font policy.
@@ -49,40 +53,85 @@ All other font configuration remains unchanged.
 
 The owner subsequently requested an OpenCode web server at `opencode.veracoechea.com`.
 This supersedes the original assignment's prohibition on that endpoint, but not its unrelated preservation requirements.
-The web service and exposure are not implemented yet.
-The recorded Operator question `web-access-model` requests the owner's access, service-identity, and secret-provisioning decisions.
+The owner selected tailnet-only HTTPS and a dedicated non-sudo account in the recorded `web-access-model` answer.
+These decisions are settled; they do not authorize activation or access to existing projects.
 
-Current V2 documentation uses `opencode serve`, which serves the browser interface and accepts `OPENCODE_PASSWORD`.
-The locked executable is OpenCode 2.2.5; its Basic authentication username is `opencode`.
-The proposed backend binds only to loopback behind existing Caddy TLS and refuses startup without an owner-provisioned password.
-Existing wildcard TLS covers the requested name, but the repository does not establish public DNS or router forwarding.
-The existing homelab proxy accepts LAN and tailnet traffic; its existing virtual hosts are not tailnet-only.
-A private endpoint therefore needs an explicit access rule, not an assumption about the existing proxy.
-No new listener, proxy route, DNS record, account, credential, firewall rule, or web service has been configured by this change yet.
+The System Module enables `opencode-web.service` through `dotfiles.coding-agents.web.enable`.
+Its backend runs `opencode serve --hostname 127.0.0.1 --port 4096`.
+The optional `web.port` and `web.environmentFile` settings belong to that module; host composition owns ingress.
+The desktop does not enable the service.
+
+`hosts/homelab/services/opencode.nix` adds the Caddy route for `opencode.veracoechea.com`.
+It reuses the existing wildcard certificate and forwards only socket peers in `100.64.0.0/10`.
+Other peers receive HTTP 403, including ordinary LAN clients.
+Forwarding headers do not grant access.
+This route permits IPv4 tailnet addresses only; tailnet IPv6 addresses do not match it.
+The backend needs no new firewall opening, and no external DNS or router configuration was changed.
+The existing proxy's other virtual hosts retain their existing access rules.
+
+The dedicated `opencode-web` account has no supplementary groups, SSH keys, wheel membership, or Nix trusted-user grant.
+Systemd protects the owner's Home, prevents privilege elevation, and restricts writes outside the service's private state.
+The account owns `/var/lib/opencode-web`, with mode `0700` and a `0077` umask.
+It starts in its own `workspace` directory.
+Data, cache, and state use separate directories there; shared declarative configuration comes from the read-only Nix store.
+No owner credentials, Home directory, Herdr socket, or existing project directories are mounted into the service.
+These restrictions are configuration guarantees, not evidence of deployed isolation.
+
+The required runtime file is `/var/lib/opencode-web.env`, outside the Nix store and the service-owned state directory.
+The owner must provision it as root-owned, mode `0600`, with a nonempty `OPENCODE_PASSWORD` entry using systemd EnvironmentFile syntax.
+The service account must not own or write that file.
+Systemd reads the file before starting the process; a missing file prevents startup.
+The start wrapper also rejects an unset or empty password before creating a workspace or launching OpenCode.
+OpenCode's Basic authentication username is `opencode`.
+No password or provider credentials were generated, inspected, copied, or committed.
+Provider credentials must belong to the dedicated identity and remain outside the declarative configuration.
 
 Sources: <https://opencode.ai/v2/docs/cli/web>, <https://opencode.ai/v2/docs/cli/config>, and the locked executable's source.
 Do not use the legacy `/web` documentation's authentication environment names as the V2 contract.
 
+## Web workers and runtime limits
+
+Native OpenCode subagents run in server-side child sessions under the service identity.
+That does not establish support for Operator-dispatched WorkerAgents.
+Operator dispatch requires a live Herdr socket and runtime context; this service supplies neither.
+Its Operator plugin and skills do not create that context or authorize sharing the owner's socket.
+The Home capability supplies terminal integration separately.
+Validate native subagents and Operator readiness as separate acceptance checks for the selected agent mode.
+Do not promise browser-to-Herdr dispatch, phone compatibility, disconnect recovery, or unattended restart recovery without runtime evidence.
+
+`coding-agents-web` checks the evaluated identity, state paths, privilege restrictions, missing/empty password rejection, and Caddy's adapted route.
+It also verifies that isolation and proxy mutations fail their checks.
+Address examples test the configured matcher, not live network packets.
+These checks do not establish HTTP authentication behavior, deployed firewall rejection, namespace isolation, or browser streaming.
+
 ## Owner acceptance before activation
 
-**Wildcard OpenCode tool permission and homelab's passwordless wheel sudo require explicit owner review before activation.**
-Running the web service as the existing user would share that user's filesystem and privilege authority.
-A separate account would require a separate decision about project access, state, and credentials.
-Neither choice is implied by installing the terminal tools.
+**The shared wildcard tool permission requires owner review before activation.**
+The managed Home retains the existing owner's passwordless wheel authority; the web service uses the separate restricted account.
+The dedicated identity does not authorize access to the owner's existing projects or credentials.
 
 After separately authorizing activation, the owner must:
 
-1. Resolve the web access, identity, password-file, and DNS questions before enabling exposure.
-2. Check existing managed files and `hm-backup` collisions without deleting user configuration.
-3. Verify provider, GitHub, Exa, and SSH credentials without copying them into the Nix store.
-4. Verify the existing Zsh secret source exists and has suitable permissions without inspecting its contents.
-5. Check writable OpenCode, Herdr, and Operator state and the terminal's TERM, colors, resize, and reconnect behavior.
-6. Complete the documented Operator project/integration setup and run its readiness checks on homelab.
-7. Verify Herdr/OpenCode working, idle, completion, and steering behavior in the full TUI, Mini, and automation modes separately.
-8. Check the managed CLI file after changing settings because OpenCode can replace its symlink.
-9. Test web authentication, rejected clients, proxy streaming, and the approved network access rules before using the endpoint.
+1. Confirm the approved private route, certificate, and owner-managed DNS resolution from a tailnet client.
+2. Provision the runtime password file and separate provider credentials without putting secrets into Nix or chat.
+3. Check existing managed files and `hm-backup` collisions without deleting user configuration.
+4. Verify provider, GitHub, Exa, and SSH credentials separately for each intended identity without copying the owner's credentials into the service.
+5. Verify the existing Home Zsh secret source exists and has suitable permissions without inspecting its contents.
+6. Check writable OpenCode, Herdr, and Operator state and the terminal's TERM, colors, resize, and reconnect behavior.
+7. Complete the documented Operator project/integration setup and run its readiness checks in the intended Herdr context on homelab.
+8. Verify Herdr/OpenCode working, idle, completion, and steering behavior in the full TUI, Mini, and automation modes separately.
+9. Check the managed CLI file after changing settings because OpenCode can replace its symlink.
+10. Confirm the backend listens only on loopback and cannot start with a missing or empty runtime password.
+11. Reject unauthenticated and wrong-password requests; verify successful authenticated requests through the HTTPS route without logging credentials.
+12. Verify LAN/public rejection, including requests with forged forwarding headers, and authenticated tailnet access.
+13. Verify the service cannot read the owner's Home, SSH keys, provider state, or existing projects, or obtain sudo/Nix trusted-user authority.
+14. Test browser streaming, phone layout, disconnect/reconnect behavior, and native subagents under the dedicated identity.
 
 Operator issue <https://github.com/fveracoechea/operator/issues/332> concerns integration behavior outside this refactor.
-The attempted device update was cancelled after its release failed; this work retains the locked Operator source.
+The checkpoint predates main's Operator 2.3.1, native agent modes, and native compaction policy.
+Supported parent integration must retain that newer policy and the authorized Herdr sound-only change before final validation.
+Historical checks do not authorize restoring old pins, prompts, or compaction settings.
 A fix in another workspace does not prove the locked package passes the runtime checks above.
+Full final builds, main-inclusive preservation, and exact-head independent review remain pending while root integration is blocked.
+No remote runtime, browser, authentication, or deployed security acceptance ran for this checkpoint.
 Builds and evaluation do not establish credentials, deployed state, backup readiness, or safe activation.
