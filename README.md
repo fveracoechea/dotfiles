@@ -117,12 +117,19 @@ The sandboxed flake smoke check uses the shared module's generated Home Manager 
 ### Coding agents
 
 OpenCode comes from the Latest Channel's nixpkgs package, with Home Manager schema validation enabled.
-Operator comes directly from its upstream flake, pinned to release `v2.2.2`.
+Operator comes directly from its upstream flake, pinned to release `v2.3.1`.
 Operator owns global agent instructions, its full skill catalog, and its OpenCode server plugin.
+The separate `operator-agents` input pins Operator's shared `super` and `worker` Markdown modes without upgrading the CLI or device state.
+Home Manager links them into `~/.config/opencode/agents/`.
+Select `super` to supervise work, or `worker` with an absolute Operator brief in the initial prompt.
+Both are primary agents and load their matching installed skills before other tool calls.
+The OpenCode module selects Sol high for `super` and Sol medium for `worker`.
+The built-in `plan` agent is disabled.
+Edit prompts and permissions in Operator's `agents/opencode/`, then advance the `operator-agents` revision here.
 Herdr and Hunk remain separately managed.
-The desktop declares `nix-mcp` globally with an absolute Nix executable path.
+The coding-agent capability declares `nix-mcp` globally with an absolute Nix executable path.
 
-After you rebuild, follow [Operator's update procedure](https://github.com/fveracoechea/operator/blob/v2.2.2/docs/update.md).
+After you rebuild, follow [Operator's update procedure](https://github.com/fveracoechea/operator/blob/v2.3.1/docs/update.md).
 Finish active Operator assignments before any command can migrate device state.
 Register this checkout only if it is not already registered, then inspect and select the OpenCode host through Operator's config plan/apply commands.
 Do not replace existing device settings or credentials.
