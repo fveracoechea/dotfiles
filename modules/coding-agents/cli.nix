@@ -10,5 +10,5 @@
   };
   diffs.wrap = "word";
   animations = true;
-  plugins = ["./herdr-opencode"];
+  plugins = [ "./herdr-opencode" ];
 }

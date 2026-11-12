@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.sunshine.enable = lib.mkEnableOption "Sunshine game streaming config";
 
   config = lib.mkIf config.dotfiles.sunshine.enable {

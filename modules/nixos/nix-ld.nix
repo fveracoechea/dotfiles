@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.nix-ld.enable = lib.mkEnableOption "nix-ld dynamic linker";
 
   config = lib.mkIf config.dotfiles.nix-ld.enable {

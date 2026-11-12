@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted - 2026-11-08. Decided in #50. Amended 2026-11-09: permit current coding agents in homelab's managed Home, with exact unrelated behavior preservation. Amended 2026-11-12: accept basic configuration evaluation without whole-System or mutation test gates.
+Accepted - 2026-11-08. Decided in #50. Amended 2026-11-09: permit current coding agents in homelab's managed Home, with exact unrelated behavior preservation. Amended 2026-11-12: accept basic configuration evaluation without whole-System or mutation test gates. Amended 2026-11-12: let homelab's Home use current Home Manager and the Latest Channel independently of the preserved server System.
 
 ## Context
 
@@ -13,19 +13,19 @@ Shared modules had also changed since the servers last deployed them.
 
 ## Decision
 
-Consolidate host ownership while retaining the servers' complete, immutable dependency graph.
-Preserve compatibility-sensitive shared module behavior as well as System packages because package versions alone do not prove equivalence.
+Consolidate host ownership while retaining the servers' immutable System dependency graph.
+Preserve compatibility-sensitive System module behavior as well as System packages because package versions alone do not prove equivalence.
 Keep hardware, networking, secrets, and authorization host-specific.
 New reusable capabilities use the existing Dotfiles Option namespace and upstream configuration options.
 
-Homelab's requested coding-agent addition, including its explicitly requested authenticated web endpoint, is the permitted functional change during the capability refactor.
-It remains in the NixOS-integrated Home and uses current personal-tool dependencies without replacing the server dependency graph.
-A temporary capability-owned adapter shares current policy while retaining the older Home Manager contract.
-Remove that adapter when the separately reviewed server migration supplies the current contract.
+Homelab's NixOS-integrated Home uses current Home Manager, shared Home modules, and the Latest Channel.
+Personal tools, including coding agents, must update independently of server services without a frozen Home compatibility layer.
+Version-Coupled Packages still match their System partners under ADR-0007.
+The authenticated coding-agent web endpoint also uses current personal-tool dependencies without replacing unrelated server dependencies.
 
 The addition necessarily changes homelab's complete System identity because that identity includes Home.
 Retain the historical whole-System and Home change records without requiring counterfactual or mutation checks for this refactor.
-Keep unrelated System and Home behavior unchanged; basic configuration evaluation does not prove that preservation.
+Keep unrelated System behavior unchanged; basic configuration evaluation does not prove that preservation.
 Any web exposure requires an owner-approved access and service-identity model and a separately enumerated service and proxy allowance.
 Keep immutable input revisions and unrelated VPS behavior unchanged.
 
@@ -36,7 +36,8 @@ The desktop's channel policy remains unchanged.
 ## Consequences
 
 - Personal-tool updates do not change server software.
-- Old shared behavior remains an explicit maintenance cost until the server migration.
+- Only System compatibility remains an explicit maintenance cost until the server migration.
+- Home updates can change shell tools and editor configuration without a server migration.
 - Evaluation can establish configuration equivalence but cannot establish backup quality or safe activation.
 - Shared permissive agent policy does not authorize privileged server operations; owner review and runtime acceptance precede activation.
 

@@ -4,11 +4,13 @@
   codingAgentPackages,
   codingAgentSources,
   ...
-}: let
+}:
+let
   # Declarative equivalent of `herdr integration install opencode`,
   # which cannot patch the read-only configs home-manager writes.
   assets = "${codingAgentSources.herdr}/src/integration/assets";
-in {
+in
+{
   config = lib.mkIf config.dotfiles.coding-agents.enable {
     programs.herdr = {
       enable = true;

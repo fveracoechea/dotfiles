@@ -3,8 +3,9 @@
   lib,
   pkgs,
   ...
-}: let
-  format = pkgs.formats.yaml {};
+}:
+let
+  format = pkgs.formats.yaml { };
   headscaleConfig = format.generate "headscale.yml" (
     lib.recursiveUpdate config.services.headscale.settings {
       tls_cert_path = "/dev/null";
@@ -12,7 +13,8 @@
       policy.path = "/dev/null";
     }
   );
-in {
+in
+{
   services.headplane = {
     enable = true;
     settings = {

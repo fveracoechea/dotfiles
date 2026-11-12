@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   services.paperless = {
     enable = true;
     address = "127.0.0.1";
@@ -8,7 +8,10 @@
       PAPERLESS_ADMIN_USER = "fveracoechea";
       PAPERLESS_URL = "https://docs.veracoechea.com";
       PAPERLESS_OCR_LANGUAGE = "eng";
-      PAPERLESS_CONSUMER_IGNORE_PATTERN = [".DS_STORE/*" "desktop.ini"];
+      PAPERLESS_CONSUMER_IGNORE_PATTERN = [
+        ".DS_STORE/*"
+        "desktop.ini"
+      ];
     };
   };
 

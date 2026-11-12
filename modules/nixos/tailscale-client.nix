@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.tailscale-client.enable = lib.mkEnableOption "Enable Tailscale client";
 
   config = lib.mkIf config.dotfiles.tailscale-client.enable {
@@ -10,7 +11,7 @@
     services.tailscale = {
       enable = true;
       useRoutingFeatures = "client";
-      extraUpFlags = ["--login-server=https://vpn.veracoechea.com"];
+      extraUpFlags = [ "--login-server=https://vpn.veracoechea.com" ];
     };
   };
 }

@@ -1,7 +1,7 @@
 {
   networking = {
     firewall.enable = true;
-    nameservers = ["1.1.1.1"];
+    nameservers = [ "1.1.1.1" ];
     hostName = "vps";
     useDHCP = false;
     defaultGateway = {

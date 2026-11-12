@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.dotfiles.hyprland.enable {
     home.pointerCursor = {
       enable = true;

@@ -1,7 +1,7 @@
 # Split nixpkgs channels by package owner
 
-The servers temporarily retain their deployed dependency graph under [ADR-0008](0008-preserve-server-software-during-consolidation.md).
-The channel policy below remains unchanged for the desktop.
+The server Systems temporarily retain their deployed dependency graph under [ADR-0008](0008-preserve-server-software-during-consolidation.md).
+The Latest Channel policy also applies to homelab's Home, with Version-Coupled Packages matching its preserved System.
 
 This flake pulls from two nixpkgs channels.
 Package ownership decides the channel by default.

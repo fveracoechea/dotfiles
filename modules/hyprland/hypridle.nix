@@ -3,7 +3,8 @@
   config,
   pkgs-stable,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.dotfiles.hyprland.enable {
     services.hypridle = {
       enable = true;

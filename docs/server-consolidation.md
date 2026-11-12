@@ -1,7 +1,8 @@
 # Server consolidation and deployment
 
 The dotfiles flake owns `nixos-desktop`, `homelab`, and `vps`.
-Consolidation does not upgrade server software or move service data.
+Consolidation does not upgrade server System software or move service data.
+Homelab's Home uses current Home Manager and Latest Channel tools independently of its System.
 The temporary server dependency policy is recorded in [ADR-0008](adr/0008-preserve-server-software-during-consolidation.md).
 
 ## Host ownership
@@ -26,17 +27,15 @@ These sources are immutable in `flake.nix`, not just incidentally locked to movi
 
 | Input | Revision | Consumers | Removal condition |
 | --- | --- | --- | --- |
-| `nixpkgs-servers` | `2fcb964de67fcf60b43471c55d5d99e61a9ccb5a` | Both server System module trees, packages, and homelab Home | Reviewed server Release Channel migration |
-| `server-home-manager` | `e13ba5e5abbd9b912fa8c6979bd119e87ca7fdd9` | Homelab Home Manager integration | Equivalent Home configuration validated with replacement integration |
+| `nixpkgs-servers` | `2fcb964de67fcf60b43471c55d5d99e61a9ccb5a` | Both server System module trees and packages, plus homelab's System-coupled Home Zsh | Reviewed server Release Channel migration |
 | `server-disko` | `ff8702b4de27f72b4c78573dfb89ec74e36abdf1` | VPS storage module | Storage and boot equivalence validated with replacement module |
-| `server-dotfiles-compat` | `a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46` | Homelab System shell, timezone, Home modules, and Dotfiles Pkgs | Shared System and Home behavior validated against current modules |
+| `server-dotfiles-compat` | `a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46` | Homelab System shell, timezone, and System Dotfiles Pkgs | Shared System behavior validated against current modules |
 
-The compatibility source retains its transitive inputs, including its own Home Manager module dependency.
-Its Home Manager revision is distinct from `server-home-manager`; both match the original lock graph.
-This is intentional.
-Replacing the old aggregate with today's modules would change generated user configuration even with unchanged nixpkgs.
-Do not deduplicate these sources by following the desktop inputs.
-The existing shell Grouping remains optional and retains its original behavior for homelab.
+The compatibility source retains its transitive inputs, including its own historical Home Manager dependency.
+Homelab no longer imports that Home aggregate or a separate frozen Home Manager integration.
+Its Home shares the desktop's current modules and Latest Channel package set.
+Home Zsh and tmux match the preserved System's registered login shell.
+Do not deduplicate the remaining System compatibility sources by following the desktop inputs.
 
 The servers report `26.11.20260810.2fcb964`.
 This identifies a development snapshot, not the released NixOS 26.11.

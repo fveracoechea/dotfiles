@@ -2,22 +2,39 @@
   lib,
   codingAgentMcpPackage,
   codingAgentPkgs,
-}: {
+}:
+{
   update = "disable";
   model = "openai/gpt-6.1-sol";
   formatter = {
     oxfmt = {
-      command = [(lib.getExe codingAgentPkgs.oxfmt) "--write" "$FILE"];
-      extensions = [".js" ".jsx" ".mjs" ".cjs" ".ts" ".tsx" ".mts" ".cts"];
+      command = [
+        (lib.getExe codingAgentPkgs.oxfmt)
+        "--write"
+        "$FILE"
+      ];
+      extensions = [
+        ".js"
+        ".jsx"
+        ".mjs"
+        ".cjs"
+        ".ts"
+        ".tsx"
+        ".mts"
+        ".cts"
+      ];
     };
     nixfmt = {
-      command = [(lib.getExe codingAgentPkgs.nixfmt) "$FILE"];
-      extensions = [".nix"];
+      command = [
+        (lib.getExe codingAgentPkgs.nixfmt)
+        "$FILE"
+      ];
+      extensions = [ ".nix" ];
     };
   };
   mcp.servers.nix-mcp = {
     type = "local";
-    command = [(lib.getExe codingAgentMcpPackage)];
+    command = [ (lib.getExe codingAgentMcpPackage) ];
   };
   compaction = {
     buffer = "25%";
@@ -67,7 +84,11 @@
       };
       body.provider = {
         sort = "throughput";
-        only = ["baseten" "novita" "fireworks"];
+        only = [
+          "baseten"
+          "novita"
+          "fireworks"
+        ];
         allow_fallbacks = true;
         data_collection = "deny";
         zdr = true;
@@ -76,12 +97,24 @@
   };
   lsp = {
     nixd = {
-      command = ["nixd"];
-      extensions = [".nix"];
+      command = [ "nixd" ];
+      extensions = [ ".nix" ];
     };
     typescript = {
-      command = ["typescript-language-server" "--stdio"];
-      extensions = [".js" ".jsx" ".ts" ".tsx" ".mjs" ".cjs" ".mts" ".cts"];
+      command = [
+        "typescript-language-server"
+        "--stdio"
+      ];
+      extensions = [
+        ".js"
+        ".jsx"
+        ".ts"
+        ".tsx"
+        ".mjs"
+        ".cjs"
+        ".mts"
+        ".cts"
+      ];
     };
   };
 }

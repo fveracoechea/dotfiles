@@ -1298,7 +1298,6 @@
         "operator-agents": "operator-agents",
         "server-disko": "server-disko",
         "server-dotfiles-compat": "server-dotfiles-compat",
-        "server-home-manager": "server-home-manager",
         "spicetify-nix": "spicetify-nix_2",
         "tmux-powerkit": "tmux-powerkit_2"
       }
@@ -1399,27 +1398,6 @@
         "owner": "fveracoechea",
         "repo": "dotfiles",
         "rev": "a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46",
-        "type": "github"
-      }
-    },
-    "server-home-manager": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs-servers"
-        ]
-      },
-      "locked": {
-        "lastModified": 1786538400,
-        "narHash": "sha256-PH8B1YKxedcWKNw2xsk6cKPVk/rJoLgdlWd5d+Icies=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "e13ba5e5abbd9b912fa8c6979bd119e87ca7fdd9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "e13ba5e5abbd9b912fa8c6979bd119e87ca7fdd9",
         "type": "github"
       }
     },

@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.git.enable = lib.mkEnableOption "git";
 
   config = lib.mkIf config.dotfiles.git.enable {

@@ -4,17 +4,18 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.gaming.enable = lib.mkEnableOption "gaming suite (steam, gamescope, sunshine, openrgb, AMD tools)";
 
   config = lib.mkIf config.dotfiles.gaming.enable {
-    boot.kernelModules = ["ntsync"];
+    boot.kernelModules = [ "ntsync" ];
 
     # Gaming packages take the Latest Channel even though this module sits in
     # the system layer. Routed through package options; GameMode is the one
     # exception: its NixOS module exposes no package option.
     # See ADR-0007.
-    hardware.graphics.extraPackages = [pkgs-latest.gamescope-wsi];
+    hardware.graphics.extraPackages = [ pkgs-latest.gamescope-wsi ];
 
     # Uncomment if HDR removal does not stop the RDNA3 illegal-opcode hangs.
     # Disables GFX11 user-mode queues; most reported workaround for this bug class.
@@ -28,7 +29,7 @@
           enable = true;
           package = pkgs-latest.protontricks;
         };
-        extraCompatPackages = [pkgs-latest.proton-ge-bin];
+        extraCompatPackages = [ pkgs-latest.proton-ge-bin ];
         gamescopeSession = {
           enable = true;
           env = {
@@ -74,8 +75,8 @@
     systemd.services.lact = {
       enable = true;
       description = "AMDGPU Control Daemon";
-      after = ["multi-user.target"];
-      wantedBy = ["multi-user.target"];
+      after = [ "multi-user.target" ];
+      wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         ExecStart = "${pkgs-latest.lact}/bin/lact daemon";
       };
@@ -92,8 +93,9 @@
       keyd = {
         enable = true;
         keyboards.default = {
-          ids = ["*"];
-          settings."control+alt".q = "command(${pkgs.util-linux}/bin/logger -t steam-exit combo fired, killing gamescope; ${pkgs.procps}/bin/pkill -x gamescope || ${pkgs.procps}/bin/pkill -x .gamescope-wrap)";
+          ids = [ "*" ];
+          settings."control+alt".q =
+            "command(${pkgs.util-linux}/bin/logger -t steam-exit combo fired, killing gamescope; ${pkgs.procps}/bin/pkill -x gamescope || ${pkgs.procps}/bin/pkill -x .gamescope-wrap)";
         };
       };
 
@@ -110,8 +112,8 @@
     # Sunshine probes encoders once at startup; give gamescope time to take DRM
     # and modeset the Dummy Plug first, or probing fails until Sunshine restarts
     systemd.user.services.sunshine = {
-      wantedBy = ["nixos-fake-graphical-session.target"];
-      after = ["nixos-fake-graphical-session.target"];
+      wantedBy = [ "nixos-fake-graphical-session.target" ];
+      after = [ "nixos-fake-graphical-session.target" ];
       serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
     };
   };

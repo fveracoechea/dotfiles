@@ -1,6 +1,4 @@
-{serverDotfiles, ...}: {
-  imports = [serverDotfiles.homeManagerModules.default];
-
+{ ... }: {
   dotfiles = {
     shell.enable = true;
     neovim.enable = true;

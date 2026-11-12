@@ -51,15 +51,15 @@ Use `just --dry-run deploy-vps` to inspect commands without running them.
 
 ### Package channels
 
-The desktop uses two nixpkgs channels, so Home packages can move without disturbing its System.
+The desktop and homelab separate Home packages from System packages, so personal tools can update independently.
 See [ADR-0007](docs/adr/0007-split-nixpkgs-channels-by-package-owner.md).
-The servers temporarily retain a separate immutable dependency graph under [ADR-0008](docs/adr/0008-preserve-server-software-during-consolidation.md).
+The server Systems temporarily retain a separate immutable dependency graph under [ADR-0008](docs/adr/0008-preserve-server-software-during-consolidation.md).
 
 | Channel             | Input                       | Branch                   | Builds                        |
 | ------------------- | --------------------------- | ------------------------ | ----------------------------- |
 | **Latest Channel**  | `nixpkgs-latest`            | `nixpkgs-unstable`       | Home-owned packages           |
 | **Release Channel** | `nixpkgs-stable`     | `nixos-26.05`            | Desktop System-owned packages |
-| Server source | `nixpkgs-servers` | Immutable deployed revision | Both server Systems and homelab Home |
+| Server source | `nixpkgs-servers` | Immutable deployed revision | Both server Systems and System-coupled Home Zsh |
 
 Package ownership decides the channel.
 Version-Coupled Packages follow their partner.
@@ -94,7 +94,8 @@ The existing `dotfiles.shell.enable` and `dotfiles.system-shell.enable` switches
 Zsh, tmux, Bat, Btop, Yazi, and Git keep their independent flat switches and Grouping opt-outs.
 Optional aliases, the Git editor, and Yazi's Eza preview follow enabled companions without enabling them.
 Home Zsh and tmux retain the System-compatible Zsh package.
-Homelab still uses its frozen compatibility shell implementation and package graph.
+Homelab uses the same current Home modules and Latest Channel tools as the desktop.
+Its Home Zsh and tmux match its preserved System login shell.
 
 `modules/networking/nixos.nix` owns reusable network policy; the Host owns its hostname and interface selection.
 

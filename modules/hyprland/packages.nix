@@ -4,7 +4,8 @@
   pkgs,
   pkgs-stable,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.dotfiles.hyprland.enable {
     programs.mpv.enable = true;
 

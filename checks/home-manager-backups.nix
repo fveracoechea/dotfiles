@@ -1,16 +1,19 @@
 {
   pkgs,
   desktop,
-}: let
+}:
+let
   home = desktop.home-manager.users.fveracoechea;
   environment = desktop.systemd.services.home-manager-fveracoechea.environment;
 in
-  pkgs.runCommand "home-manager-backups" {
-    nativeBuildInputs = [pkgs.gettext];
+pkgs.runCommand "home-manager-backups"
+  {
+    nativeBuildInputs = [ pkgs.gettext ];
     HOME_MANAGER_BACKUP_COMMAND = environment.HOME_MANAGER_BACKUP_COMMAND or "";
     HOME_MANAGER_BACKUP_EXT = environment.HOME_MANAGER_BACKUP_EXT or "";
     HOME_MANAGER_BACKUP_OVERWRITE = environment.HOME_MANAGER_BACKUP_OVERWRITE or "";
-  } ''
+  }
+  ''
     ${home.lib.bash.initHomeManagerLib}
     export HOME="$TMPDIR/home with spaces"
     newGenPath="$TMPDIR/generation"

@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./hardware-configuration.nix
   ];
@@ -26,7 +26,10 @@
 
   nix = {
     optimise.automatic = true;
-    settings.experimental-features = ["nix-command" "flakes"];
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     gc.automatic = true;
     gc.options = "--delete-older-than 30d";
   };
@@ -44,7 +47,7 @@
       layout = "us";
       variant = "";
     };
-    videoDrivers = ["modesetting"];
+    videoDrivers = [ "modesetting" ];
   };
 
   users.users.fveracoechea = {

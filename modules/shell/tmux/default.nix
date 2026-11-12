@@ -5,7 +5,8 @@
   pkgs-stable,
   dotfilesPkgs,
   ...
-}: {
+}:
+{
   options.dotfiles.tmux.enable = lib.mkEnableOption "tmux terminal multiplexer";
 
   config = lib.mkIf config.dotfiles.tmux.enable {

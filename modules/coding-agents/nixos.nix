@@ -2,13 +2,22 @@
   agentPkgs,
   inputs,
   stablePkgsFor,
-}: {
+}:
+{
   lib,
   config,
   ...
-}: let
+}:
+let
   cfg = config.dotfiles.coding-agents.web;
-  codingAgentSources = {inherit (inputs) herdr hunk operator operator-agents;};
+  codingAgentSources = {
+    inherit (inputs)
+      herdr
+      hunk
+      operator
+      operator-agents
+      ;
+  };
   codingAgentPackages = import ../../packages {
     inherit inputs;
     pkgs = agentPkgs;
@@ -18,22 +27,29 @@
     inherit lib codingAgentMcpPackage;
     codingAgentPkgs = agentPkgs;
   };
-  json = (agentPkgs.formats.json {}).generate "opencode-web.json" ({"$schema" = "https://opencode.ai/config.json";} // settings);
-  checkedJson = agentPkgs.runCommand "opencode-web-config" {nativeBuildInputs = [agentPkgs.check-jsonschema];} ''
-    check-jsonschema --force-filetype=json --schemafile=${agentPkgs.opencode.jsonschema.config} ${json}
-    cp ${json} "$out"
-  '';
-  files =
-    {
-      "opencode/opencode.json" = checkedJson;
-      "opencode/AGENTS.md" = "${inputs.operator}/agents/AGENTS.md";
-      "opencode/plugins/operator.ts" = "${codingAgentPackages.operator}/share/opencode/plugins/operator.ts";
-      "opencode/agents/super.md" = "${codingAgentSources.operator-agents}/agents/opencode/super.md";
-      "opencode/agents/worker.md" = "${codingAgentSources.operator-agents}/agents/opencode/worker.md";
-    }
-    // lib.mapAttrs' (name: source: lib.nameValuePair "opencode/skills/${name}" source)
-    (import ./skills.nix {inherit lib codingAgentPackages codingAgentSources;});
-  configDirectory = agentPkgs.linkFarm "opencode-web-config-directory" (lib.mapAttrsToList (name: path: {inherit name path;}) files);
+  json = (agentPkgs.formats.json { }).generate "opencode-web.json" (
+    { "$schema" = "https://opencode.ai/config.json"; } // settings
+  );
+  checkedJson =
+    agentPkgs.runCommand "opencode-web-config" { nativeBuildInputs = [ agentPkgs.check-jsonschema ]; }
+      ''
+        check-jsonschema --force-filetype=json --schemafile=${agentPkgs.opencode.jsonschema.config} ${json}
+        cp ${json} "$out"
+      '';
+  files = {
+    "opencode/opencode.json" = checkedJson;
+    "opencode/AGENTS.md" = "${inputs.operator}/agents/AGENTS.md";
+    "opencode/plugins/operator.ts" =
+      "${codingAgentPackages.operator}/share/opencode/plugins/operator.ts";
+    "opencode/agents/super.md" = "${codingAgentSources.operator-agents}/agents/opencode/super.md";
+    "opencode/agents/worker.md" = "${codingAgentSources.operator-agents}/agents/opencode/worker.md";
+  }
+  // lib.mapAttrs' (name: source: lib.nameValuePair "opencode/skills/${name}" source) (
+    import ./skills.nix { inherit lib codingAgentPackages codingAgentSources; }
+  );
+  configDirectory = agentPkgs.linkFarm "opencode-web-config-directory" (
+    lib.mapAttrsToList (name: path: { inherit name path; }) files
+  );
   nsswitch = agentPkgs.writeText "opencode-web-nsswitch.conf" ''
     passwd: files
     group: files
@@ -49,7 +65,8 @@
     cd "$HOME/workspace"
     exec ${lib.getExe agentPkgs.opencode} serve --hostname 127.0.0.1 --port ${toString cfg.port}
   '';
-in {
+in
+{
   options.dotfiles.coding-agents.web = {
     enable = lib.mkEnableOption "a dedicated, loopback-only OpenCode web service";
     port = lib.mkOption {
@@ -66,11 +83,12 @@ in {
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = lib.hasPrefix "/" cfg.environmentFile && !(lib.hasPrefix "/nix/store/" cfg.environmentFile);
+        assertion =
+          lib.hasPrefix "/" cfg.environmentFile && !(lib.hasPrefix "/nix/store/" cfg.environmentFile);
         message = "OpenCode web authentication must use an absolute runtime environment-file reference outside the Nix store.";
       }
     ];
-    users.groups.opencode-web = {};
+    users.groups.opencode-web = { };
     users.users.opencode-web = {
       isSystemUser = true;
       group = "opencode-web";
@@ -78,14 +96,29 @@ in {
     };
     systemd.services.opencode-web = {
       description = "Dedicated OpenCode web agent";
-      wantedBy = ["multi-user.target"];
-      after = ["network.target"];
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
       unitConfig.ConditionPathExists = cfg.environmentFile;
-      path = with agentPkgs; [git gh python3 nixd nixfmt typescript-language-server biome oxfmt lsof codingAgentMcpPackage codingAgentPackages.operator];
+      path = with agentPkgs; [
+        git
+        gh
+        python3
+        nixd
+        nixfmt
+        typescript-language-server
+        biome
+        oxfmt
+        lsof
+        codingAgentMcpPackage
+        codingAgentPackages.operator
+      ];
       confinement = {
         enable = true;
         # Confinement infers executables, but not PATH packages or XDG assets.
-        packages = config.systemd.services.opencode-web.path ++ [configDirectory agentPkgs.cacert];
+        packages = config.systemd.services.opencode-web.path ++ [
+          configDirectory
+          agentPkgs.cacert
+        ];
       };
       environment = {
         HOME = "/var/lib/opencode-web";
@@ -125,7 +158,11 @@ in {
         ProtectKernelTunables = true;
         ProtectKernelModules = true;
         ProtectControlGroups = true;
-        RestrictAddressFamilies = ["AF_UNIX" "AF_INET" "AF_INET6"];
+        RestrictAddressFamilies = [
+          "AF_UNIX"
+          "AF_INET"
+          "AF_INET6"
+        ];
       };
     };
   };

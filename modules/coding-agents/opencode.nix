@@ -7,13 +7,18 @@
   codingAgentMcpPackage,
   codingAgentPackages,
   ...
-}: let
-  settings = import ./settings.nix {inherit lib codingAgentMcpPackage codingAgentPkgs;};
-in {
+}:
+let
+  settings = import ./settings.nix { inherit lib codingAgentMcpPackage codingAgentPkgs; };
+in
+{
   config = lib.mkIf config.dotfiles.coding-agents.enable {
-    xdg.configFile."opencode/plugins/operator.ts".source = "${codingAgentPackages.operator}/share/opencode/plugins/operator.ts";
-    xdg.configFile."opencode/agents/super.md".source = "${codingAgentSources.operator-agents}/agents/opencode/super.md";
-    xdg.configFile."opencode/agents/worker.md".source = "${codingAgentSources.operator-agents}/agents/opencode/worker.md";
+    xdg.configFile."opencode/plugins/operator.ts".source =
+      "${codingAgentPackages.operator}/share/opencode/plugins/operator.ts";
+    xdg.configFile."opencode/agents/super.md".source =
+      "${codingAgentSources.operator-agents}/agents/opencode/super.md";
+    xdg.configFile."opencode/agents/worker.md".source =
+      "${codingAgentSources.operator-agents}/agents/opencode/worker.md";
     home.packages = with codingAgentPkgs; [
       lsof
       # Latest depends on broken fastmcp-slim. Return when its MCP 2 support is fixed.
@@ -22,8 +27,10 @@ in {
     programs.opencode = {
       enable = true;
       context = "${codingAgentSources.operator}/agents/AGENTS.md";
-      skills = import ./skills.nix {inherit lib codingAgentPackages codingAgentSources;};
-      settings = settings // {model = lib.mkDefault settings.model;};
+      skills = import ./skills.nix { inherit lib codingAgentPackages codingAgentSources; };
+      settings = settings // {
+        model = lib.mkDefault settings.model;
+      };
     };
   };
 }

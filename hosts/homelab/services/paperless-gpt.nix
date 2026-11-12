@@ -1,10 +1,10 @@
-{...}: {
+{ ... }: {
   virtualisation.podman.enable = true;
   virtualisation.oci-containers.containers.paperless-gpt = {
     # Registry digest read from the running container, not from the mutable tag.
     image = "ghcr.io/icereed/paperless-gpt@sha256:6b9024d1adebfcd6bd7ec5e9da2ca17f9879b1fb5ce749d72905bbb121091ef8";
     autoStart = true;
-    extraOptions = ["--network=host"];
+    extraOptions = [ "--network=host" ];
     environment = {
       LISTEN_INTERFACE = "127.0.0.1:8080";
       PAPERLESS_BASE_URL = "http://127.0.0.1:28981";
@@ -21,7 +21,7 @@
       LOG_LEVEL = "info";
       CREATE_NEW_TAGS = "true";
     };
-    environmentFiles = ["/var/lib/paperless-gpt/paperless-gpt.env"];
+    environmentFiles = [ "/var/lib/paperless-gpt/paperless-gpt.env" ];
     volumes = [
       "/var/lib/paperless-gpt/prompts:/app/prompts"
       "/var/lib/paperless-gpt/config:/app/config"

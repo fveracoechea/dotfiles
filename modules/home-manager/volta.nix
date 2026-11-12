@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   options.dotfiles.volta.enable = lib.mkEnableOption "Volta JS toolchain manager";
 
   config = lib.mkIf config.dotfiles.volta.enable {

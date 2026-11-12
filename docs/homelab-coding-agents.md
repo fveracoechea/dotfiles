@@ -1,7 +1,8 @@
 # Homelab coding agents
 
 Homelab uses the current coding-agent capability in its existing NixOS-integrated Home.
-Its System, Home Manager, and compatibility inputs remain frozen under ADR-0008.
+Its Home uses the same current Home Manager, shared modules, and Latest Channel packages as the desktop.
+Only its System dependencies remain frozen under ADR-0008.
 Unrelated desktop behavior must remain unchanged.
 The recovered content includes main's native supervisor/worker modes and OpenAI compaction policy, with a 25% buffer and 20000 kept tokens.
 Operator and its coupled agent prompts use the authorized stable v2.3.2 release.
@@ -20,40 +21,30 @@ The module's `_module.args` supplies named dependencies to the shared coding-age
 - `codingAgentMcpPackage` selects `mcp-nixos` from the Release Channel under the Channel Hold documented in `opencode.nix`.
 
 This module installs nothing by itself; the capability's enabled Home modules consume these dependencies.
-The separate names let homelab select current agent dependencies without replacing its frozen Home-wide package set.
+Both hosts supply their Latest Channel Home package set through this composition module.
 
-## Compatibility adapter
+## Shared Home configuration
 
-`home.nix` uses the current Home Manager OpenCode interface; homelab's frozen Home Manager cannot evaluate those options.
-`home-compat.nix` imports the same `home-base.nix` policy but adapts file generation and package conflicts to the frozen interface.
-The adapter remains necessary while ADR-0008 requires the older server dependency graph.
-Replacing it with `home.nix` requires a separately reviewed server migration, not just deleting these overrides.
+`modules/coding-agents/home.nix` is the Home entry point for both homelab and desktop.
+Current Home Manager generates OpenCode instructions, skills, and CLI settings directly.
+Its `validateFiles` options validate both OpenCode configuration files against the selected executable's schemas.
+No frozen Home adapter or package-list filtering is required.
 
-`modules/coding-agents/home-compat.nix` replaces only the historical coding-agent subtree.
-Its disabled-module identifier is the imported directory, not that directory's `default.nix` file.
-Using the latter leaves duplicate declarations and the historical Claude implementation available.
-The compatibility aggregate and its unrelated Home implementations remain installed.
+Homelab imports the current Home aggregate instead of the historical compatibility Home.
+This also updates its enabled shell tools, Neovim, and fonts to the shared modules and Latest Channel packages.
+Home Zsh and tmux still use the preserved System's Zsh package so they match the registered login shell.
+Home Manager's release check is disabled for the intentional Home/System channel split, as on desktop.
 
-The adapter supplies current tool packages and sources without replacing server `pkgs`, `lib`, or `dotfilesPkgs`.
-Its forced source selection overrides the frozen aggregate's conflicting agent-source definition.
-Both Home entry files share tool policy, CLI preferences, skills, Herdr integration, and Hunk settings.
-The pinned OpenCode module has no `cli` or `validateFiles` options.
-The adapter generates `cli.json` through `xdg.configFile` and validates it against the selected executable's schema during its build.
-The capability check evaluates the selected Home settings and web service options without executing the applications.
-Skill directories use explicit directory links because the pinned renderer probes unrealized package paths during evaluation.
-Instructions use an explicit source because the pinned renderer treats a string path as inline text.
-
-The frozen Git implementation already installs Hunk and GitHub CLI.
-When coding agents are enabled, the adapter removes only those exact historical package entries.
-It replaces the old Hunk configuration with current shared policy and preserves the existing Git/lazygit pager behavior.
-It does not disable or duplicate the frozen Git implementation.
-Remove this adapter when a separately reviewed server migration supplies the current Home Manager contract.
+The current Git module no longer installs Hunk or GitHub CLI.
+The coding-agent capability owns those packages and their Hunk configuration, including Git/lazygit pager integration.
+The capability check evaluates both hosts' OpenCode package, settings, CLI preferences, validation options, and Herdr settings, plus homelab's web service options.
+It does not execute the applications.
 
 ## Historical preservation evidence
 
 `checks/server-baseline.json` remains the immutable historical server control.
 The removed preservation harness compared an agents-and-web-disabled counterfactual with the previous homelab System identity.
-The server inputs remain frozen; current checks do not repeat whole-System comparisons.
+The System inputs remain frozen; current checks do not repeat whole-System comparisons.
 
 `checks/homelab-agent-delta.json` enumerates the permitted Home package and file changes.
 It also fixes the complete Home generation, profile, NixOS user-package list, and Home Manager activation-unit identity.
@@ -62,10 +53,8 @@ These JSON records remain historical evidence, not active check expectations.
 The owner requested basic Nix evaluation instead of the whole-Host and negative-case harness.
 Do not refresh the historical baseline or the Home delta to hide an unexplained change.
 
-The fontconfig file is an indirect profile-reference change, not a new font policy.
-Pinned Home Manager embeds the Home profile path in its generated font directories and includes.
-The added tools change that profile path, so its generated XML changes too.
-All other font configuration remains unchanged.
+Those records predate the migration to current Home Manager and Home modules.
+They do not constrain the current Home generation or establish that the new Home preserves historical behavior.
 
 ## Requested web endpoint
 

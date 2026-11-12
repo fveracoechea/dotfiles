@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   options.dotfiles.hyprland.enable = lib.mkEnableOption "Hyprland compositor";
 
   config = lib.mkIf config.dotfiles.hyprland.enable {

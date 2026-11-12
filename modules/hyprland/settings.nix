@@ -4,7 +4,8 @@
   pkgs,
   pkgs-stable,
   ...
-}: let
+}:
+let
   luaFiles = {
     settings = {
       content = pkgs.replaceVars ./assets/settings.lua {
@@ -40,7 +41,8 @@
       fi
     )
   '';
-in {
+in
+{
   config = lib.mkIf config.dotfiles.hyprland.enable {
     wayland.windowManager.hyprland = {
       enable = true;
@@ -48,17 +50,19 @@ in {
       package = null;
       portalPackage = null;
       configType = "lua";
-      settings = {};
+      settings = { };
       extraConfig = builtins.readFile ./assets/entry.lua;
       extraLuaFiles = luaFiles;
     };
 
     # Home Manager skips its own config reload when package = null.
     xdg.configFile."dotfiles/hyprland.stamp" = {
-      text = builtins.hashString "sha256" (builtins.toJSON {
-        entry = builtins.hashFile "sha256" ./assets/entry.lua;
-        modules = lib.mapAttrs (_: file: builtins.hashFile "sha256" file.content) luaFiles;
-      });
+      text = builtins.hashString "sha256" (
+        builtins.toJSON {
+          entry = builtins.hashFile "sha256" ./assets/entry.lua;
+          modules = lib.mapAttrs (_: file: builtins.hashFile "sha256" file.content) luaFiles;
+        }
+      );
       onChange = reload;
     };
   };

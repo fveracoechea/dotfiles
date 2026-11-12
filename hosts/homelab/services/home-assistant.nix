@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   hardware.bluetooth.enable = true;
   services.home-assistant = {
     enable = true;
@@ -28,8 +28,8 @@
       "zwave_js"
       "zha"
     ];
-    extraPackages = ps:
-      with ps; [
+    extraPackages =
+      ps: with ps; [
         gtts
         radios
         pyswitchbot
@@ -47,17 +47,23 @@
         sensirion-ble
       ];
     config = {
-      default_config = {};
+      default_config = { };
       http = {
         use_x_forwarded_for = true;
-        trusted_proxies = ["127.0.0.1" "::1"];
+        trusted_proxies = [
+          "127.0.0.1"
+          "::1"
+        ];
       };
       automation = "!include automations.yaml";
       script = "!include scripts.yaml";
       scene = "!include scenes.yaml";
     };
   };
-  systemd.services.home-assistant.serviceConfig.AmbientCapabilities = ["CAP_NET_ADMIN" "CAP_NET_RAW"];
+  systemd.services.home-assistant.serviceConfig.AmbientCapabilities = [
+    "CAP_NET_ADMIN"
+    "CAP_NET_RAW"
+  ];
 
   services.caddy.virtualHosts."home.veracoechea.com".extraConfig = ''
     tls /var/lib/acme/veracoechea.com/fullchain.pem /var/lib/acme/veracoechea.com/key.pem

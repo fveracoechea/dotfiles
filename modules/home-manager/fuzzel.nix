@@ -2,10 +2,12 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   p = config.dotfiles.palette;
   toHex = color: "${lib.substring 1 6 (lib.strings.toLower color)}ff";
-in {
+in
+{
   options.dotfiles.fuzzel.enable = lib.mkEnableOption "fuzzel (Wayland app launcher)";
 
   config = lib.mkIf config.dotfiles.fuzzel.enable {

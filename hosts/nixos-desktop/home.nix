@@ -3,7 +3,8 @@
   pkgs-stable,
   dotfilesPkgs,
   ...
-}: {
+}:
+{
   dotfiles = {
     shell.enable = true;
     neovim.enable = true;

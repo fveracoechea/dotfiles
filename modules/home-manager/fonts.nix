@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   options.dotfiles.fonts.enable = lib.mkEnableOption "font packages and fontconfig";
 
   config = lib.mkIf config.dotfiles.fonts.enable {
@@ -24,10 +25,10 @@
       enable = true;
       antialiasing = true;
       defaultFonts = {
-        serif = ["Inter"];
-        sansSerif = ["Inter"];
-        monospace = ["JetBrainsMono Nerd Font"];
-        emoji = ["JetBrainsMono Nerd Font"];
+        serif = [ "Inter" ];
+        sansSerif = [ "Inter" ];
+        monospace = [ "JetBrainsMono Nerd Font" ];
+        emoji = [ "JetBrainsMono Nerd Font" ];
       };
     };
   };

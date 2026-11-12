@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.crash-capture.enable = lib.mkEnableOption "ramoops-backed pstore for capturing kernel panic logs across reboots";
 
   config = lib.mkIf config.dotfiles.crash-capture.enable {

@@ -4,7 +4,8 @@
   pkgs,
   pkgs-stable,
   ...
-}: {
+}:
+{
   options.dotfiles.zsh.enable = lib.mkEnableOption "zsh shell";
 
   config = lib.mkIf config.dotfiles.zsh.enable {

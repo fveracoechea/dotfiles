@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   services.headscale = {
     enable = true;
     address = "127.0.0.1";
@@ -19,10 +19,10 @@
         base_domain = "";
         override_local_dns = false;
         nameservers = {
-          global = [];
-          split = {};
+          global = [ ];
+          split = { };
         };
-        search_domains = [];
+        search_domains = [ ];
       };
       derp = {
         server = {
@@ -32,7 +32,7 @@
           region_name = "Hostinger VPS";
           stun_listen_addr = "0.0.0.0:3478";
         };
-        urls = [];
+        urls = [ ];
         auto_update_enabled = false;
       };
       log = {
@@ -52,5 +52,5 @@
       header_up X-Forwarded-For {remote_host}
     }
   '';
-  networking.firewall.allowedUDPPorts = [3478];
+  networking.firewall.allowedUDPPorts = [ 3478 ];
 }

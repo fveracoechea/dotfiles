@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   options.dotfiles.ghostty.enable = lib.mkEnableOption "Ghostty terminal emulator";
 
   config = lib.mkIf config.dotfiles.ghostty.enable {

@@ -5,19 +5,18 @@
   dmsThemeSource,
   dmsSource,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.dotfiles.hyprland.enable {
     programs.dank-material-shell = {
       enable = true;
       systemd.enable = true;
       systemd.target = "wayland-session@hyprland.desktop.target";
       package = (dmsSource.lib.mkDmsShell pkgs).overrideAttrs (old: {
-        postInstall =
-          old.postInstall
-          + ''
-            chmod -R u+w "$out/share/quickshell/dms/Modules/DBar"
-            ${pkgs.patch}/bin/patch --directory="$out/share/quickshell/dms" --fuzz=0 -p2 < ${./dms-bar-max-width.patch}
-          '';
+        postInstall = old.postInstall + ''
+          chmod -R u+w "$out/share/quickshell/dms/Modules/DBar"
+          ${pkgs.patch}/bin/patch --directory="$out/share/quickshell/dms" --fuzz=0 -p2 < ${./dms-bar-max-width.patch}
+        '';
       });
 
       enableSystemMonitoring = true;
@@ -108,7 +107,7 @@
         lockScreenShowMediaPlayer = false;
         lockScreenShowWeather = false;
         lockScreenWallpaperPath = "${config.home.homeDirectory}/dotfiles/assets/wallpapers/dark-forrest-ultrawide.png";
-        screenPreferences.wallpaper = [];
+        screenPreferences.wallpaper = [ ];
 
         barConfigs = [
           {
@@ -231,7 +230,7 @@
                 enabled = true;
               }
             ];
-            screenPreferences = ["all"];
+            screenPreferences = [ "all" ];
             scrollEnabled = true;
             scrollXBehavior = "column";
             scrollYBehavior = "workspace";
@@ -301,10 +300,10 @@
       };
 
       session = {
-        recentColors = ["#00634f97"];
+        recentColors = [ "#00634f97" ];
         lastPlayerIdentity = "Chrome";
         lastAppliedIconTheme = "Papirus-Dark";
-        launcherQueryHistory = ["set"];
+        launcherQueryHistory = [ "set" ];
         settingsSidebarExpandedIds = ",dock_launcher,applications,system,power_security,";
         settingsSidebarCollapsedIds = ",network,";
         configVersion = 4;
@@ -321,8 +320,8 @@
     };
 
     systemd.user.services.dms = {
-      Unit.Requisite = ["wayland-session@hyprland.desktop.target"];
-      Service.Environment = ["DMS_DISABLE_MATUGEN=1"];
+      Unit.Requisite = [ "wayland-session@hyprland.desktop.target" ];
+      Service.Environment = [ "DMS_DISABLE_MATUGEN=1" ];
     };
   };
 }

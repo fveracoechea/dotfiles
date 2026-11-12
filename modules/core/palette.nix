@@ -1,4 +1,4 @@
-{lib, ...}: {
+{ lib, ... }: {
   options.dotfiles.palette = lib.mkOption {
     type = lib.types.attrs;
     default = {

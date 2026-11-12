@@ -27,6 +27,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     homepage = "https://github.com/railwayapp/cli";
     license = lib.licenses.mit;
     mainProgram = "railway";
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
   };
 })

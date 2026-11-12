@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.btop.enable = lib.mkEnableOption "btop system monitor";
 
   config = lib.mkIf config.dotfiles.btop.enable {

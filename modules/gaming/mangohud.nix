@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.mangohud.enable = lib.mkEnableOption "MangoHud performance overlay";
 
   config = lib.mkIf config.dotfiles.mangohud.enable {

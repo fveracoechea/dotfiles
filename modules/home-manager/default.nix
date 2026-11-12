@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   imports = [
     ../core/palette.nix
 

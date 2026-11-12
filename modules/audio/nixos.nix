@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.pipewire.enable = lib.mkEnableOption "PipeWire audio (with musnix)";
 
   config = lib.mkIf config.dotfiles.pipewire.enable {

@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.dotfiles.bootloader.enable = lib.mkEnableOption "bootloader (GRUB)";
 
   config = lib.mkIf config.dotfiles.bootloader.enable {

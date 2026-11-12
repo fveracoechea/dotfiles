@@ -6,5 +6,5 @@ configHome: {
   transparent_background = true;
   hunk_headers = false;
   # Hunk's automatic discovery skips symlinked extension directories.
-  extensions.paths = ["${configHome}/hunk/extensions/hunk-gh"];
+  extensions.paths = [ "${configHome}/hunk/extensions/hunk-gh" ];
 }

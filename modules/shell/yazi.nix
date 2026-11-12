@@ -3,20 +3,21 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   theme = pkgs.fetchFromGitHub {
     owner = "catppuccin";
     repo = "yazi";
     rev = "baaf5d1c9427b836fbefd126aa855f9eab7a9d0d";
     hash = "sha256-L6SApM07CSQk0znEsFP8WaxW+ZHcindXo612r1XcwIg=";
   };
-  themePath =
-    theme + "/themes/mocha/catppuccin-mocha-blue.toml";
-in {
+  themePath = theme + "/themes/mocha/catppuccin-mocha-blue.toml";
+in
+{
   options.dotfiles.yazi.enable = lib.mkEnableOption "yazi terminal file manager";
 
   config = lib.mkIf config.dotfiles.yazi.enable {
-    home.packages = with pkgs; [mediainfo];
+    home.packages = with pkgs; [ mediainfo ];
 
     programs.yazi = {
       enable = true;
@@ -27,7 +28,15 @@ in {
       theme = fromTOML (builtins.readFile themePath);
 
       plugins = with pkgs.yaziPlugins; {
-        inherit git yatline yatline-catppuccin smart-enter smart-filter mediainfo piper;
+        inherit
+          git
+          yatline
+          yatline-catppuccin
+          smart-enter
+          smart-filter
+          mediainfo
+          piper
+          ;
       };
 
       initLua =
@@ -44,7 +53,11 @@ in {
         mgr = {
           show_hidden = true;
           sort_dir_first = true;
-          ratio = [1 1 2];
+          ratio = [
+            1
+            1
+            2
+          ];
 
           prepend_keymap = [
             {
@@ -67,7 +80,10 @@ in {
 
         tasks = {
           image_alloc = 0; # unlimited
-          image_bound = [0 0]; # unlimited
+          image_bound = [
+            0
+            0
+          ]; # unlimited
         };
 
         plugin = {
@@ -81,21 +97,20 @@ in {
               run = "mediainfo";
             }
           ];
-          prepend_previewers =
-            [
-              {
-                mime = "{audio,video,image}/*";
-                run = "mediainfo";
-              }
-              {
-                mime = "application/subrip";
-                run = "mediainfo";
-              }
-            ]
-            ++ lib.optional config.programs.eza.enable {
-              url = "*/";
-              run = ''piper -- eza -TL=3 --git-ignore --color=always --icons=always --group-directories-first --no-quotes "$1"'';
-            };
+          prepend_previewers = [
+            {
+              mime = "{audio,video,image}/*";
+              run = "mediainfo";
+            }
+            {
+              mime = "application/subrip";
+              run = "mediainfo";
+            }
+          ]
+          ++ lib.optional config.programs.eza.enable {
+            url = "*/";
+            run = ''piper -- eza -TL=3 --git-ignore --color=always --icons=always --group-directories-first --no-quotes "$1"'';
+          };
           prepend_fetchers = [
             {
               id = "git";

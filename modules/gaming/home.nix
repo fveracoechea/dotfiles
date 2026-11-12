@@ -3,8 +3,9 @@
   config,
   pkgs,
   ...
-}: {
-  imports = [./mangohud.nix];
+}:
+{
+  imports = [ ./mangohud.nix ];
 
   options.dotfiles.gaming.enable = lib.mkEnableOption "Home gaming tools";
 

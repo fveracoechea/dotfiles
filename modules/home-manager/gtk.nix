@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   options.dotfiles.gtk.enable = lib.mkEnableOption "GTK theme and GNOME app packages";
 
   config = lib.mkIf config.dotfiles.gtk.enable {
@@ -12,7 +13,7 @@
       comment = "Gnome Control Center";
       icon = "org.gnome.Settings";
       exec = "env XDG_CURRENT_DESKTOP=gnome ${pkgs.gnome-control-center}/bin/gnome-control-center";
-      categories = ["X-Preferences"];
+      categories = [ "X-Preferences" ];
       terminal = false;
     };
 
@@ -30,7 +31,7 @@
         name = "catppuccin-mocha-blue-standard+float";
         package = pkgs.catppuccin-gtk.override {
           variant = "mocha";
-          tweaks = ["float"];
+          tweaks = [ "float" ];
         };
       };
       font = {
