@@ -60,9 +60,7 @@
 
         agents = {
           plan.disabled = true;
-          build = {
-            model = "openai/gpt-6.1-sol#high";
-          };
+          build.model = "openai/gpt-6.1-sol#high";
           super.model = "openai/gpt-6.1-sol#high";
           worker.model = "openai/gpt-6.1-sol#medium";
         };
