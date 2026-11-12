@@ -53,8 +53,10 @@
         update = "disable";
         model = "openai/gpt-6.1-sol";
 
-        # Compact at 268K with the 500K OpenAI input cap.
-        compaction.buffer = 232000;
+        compaction = {
+          buffer = "25%";
+          keep.tokens = 20000;
+        };
 
         agents = {
           plan.disabled = true;
@@ -78,6 +80,7 @@
 
         providers = {
           openai = {
+            settings.compaction.type = "native";
             models."gpt-6.1-sol" = {
               settings.reasoningEffort = "high";
               variants = [
