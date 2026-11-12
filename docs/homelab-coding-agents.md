@@ -3,8 +3,10 @@
 Homelab uses the current coding-agent capability in its existing NixOS-integrated Home.
 Its System, Home Manager, and compatibility inputs remain frozen under ADR-0008.
 Unrelated desktop behavior must remain unchanged.
-Recovery also requires main's newer personal-tool policy and the separately requested Herdr sound-only change.
-The historical checkpoint does not yet include those parent changes.
+The recovered content includes main's native supervisor/worker modes and OpenAI compaction policy, with a 25% buffer and 20000 kept tokens.
+Operator and its coupled agent prompts use the authorized stable v2.3.2 release.
+Herdr notification sound is disabled without changing its visual notification policy.
+These ordinary content edits do not resolve the root PR's separate Git ancestry conflict or establish default-branch readiness before landing.
 
 ## Compatibility adapter
 
@@ -84,7 +86,9 @@ These restrictions are configuration guarantees, not evidence of deployed isolat
 The required runtime file is `/var/lib/opencode-web.env`, outside the Nix store and the service-owned state directory.
 The owner must provision it as root-owned, mode `0600`, with a nonempty `OPENCODE_PASSWORD` entry using systemd EnvironmentFile syntax.
 The service account must not own or write that file.
-Systemd reads the file before starting the process; a missing file prevents startup.
+The unit's required-file condition leaves the service dormant when the file is absent, without failing the service start or rebuild activation.
+Systemd reads an existing file before starting the process.
+An invalid or unreadable supplied file can fail startup and activation; the condition does not validate its contents.
 The start wrapper also rejects an unset or empty password before creating a workspace or launching OpenCode.
 OpenCode's Basic authentication username is `opencode`.
 No password or provider credentials were generated, inspected, copied, or committed.
@@ -112,6 +116,7 @@ These checks do not establish HTTP authentication behavior, deployed firewall re
 It replaces the server command with a probe and omits the password-file requirement; it never starts an authenticated server or provisions credentials.
 The probe rejects synthetic world-readable project, Home credential, unrelated-directory, and unrelated Nix-store files that the same account can read outside confinement.
 It also writes private workspace/state files, reads immutable configuration, executes OpenCode's version command, initializes a Git repository, and loads certificate roots.
+The VM separately verifies that the real service's absent runtime file skips startup without creating credentials or launching the server.
 These are isolated-fixture filesystem results, not deployed acceptance or proof that every server operation works inside confinement.
 
 ## Owner acceptance before activation
@@ -138,10 +143,10 @@ After separately authorizing activation, the owner must:
 14. Test browser streaming, phone layout, disconnect/reconnect behavior, and native subagents under the dedicated identity.
 
 Operator issue <https://github.com/fveracoechea/operator/issues/332> concerns integration behavior outside this refactor.
-The checkpoint predates main's Operator 2.3.1, native agent modes, and native compaction policy.
-Supported parent integration must retain that newer policy and the authorized Herdr sound-only change before final validation.
-Historical checks do not authorize restoring old pins, prompts, or compaction settings.
+The final content preserves main's native agent modes/compaction and sound-only change, and advances only Operator and its coupled prompts to v2.3.2.
+Historical checks do not authorize restoring old inputs, prompts, or compaction settings.
 A fix in another workspace does not prove the locked package passes the runtime checks above.
-Full final builds, main-inclusive preservation, and exact-head independent review remain pending while root integration is blocked.
+Final cumulative builds and exact-head independent review must cover this updated content; earlier checkpoint results do not establish them.
+Default-branch integration and genuine GitHub checks/non-author approval remain separate merge prerequisites.
 No remote runtime, browser, authentication, or deployed security acceptance ran for this checkpoint.
 Builds and evaluation do not establish credentials, deployed state, backup readiness, or safe activation.

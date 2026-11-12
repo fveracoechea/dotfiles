@@ -8,7 +8,7 @@
   ...
 }: let
   cfg = config.dotfiles.coding-agents.web;
-  codingAgentSources = {inherit (inputs) herdr hunk operator;};
+  codingAgentSources = {inherit (inputs) herdr hunk operator operator-agents;};
   codingAgentPackages = import ./packages.nix {
     inherit inputs;
     pkgs = agentPkgs;
@@ -25,6 +25,8 @@
       "opencode/opencode.json" = checkedJson;
       "opencode/AGENTS.md" = "${inputs.operator}/agents/AGENTS.md";
       "opencode/plugins/operator.ts" = "${codingAgentPackages.operator}/share/opencode/plugins/operator.ts";
+      "opencode/agents/super.md" = "${codingAgentSources.operator-agents}/agents/opencode/super.md";
+      "opencode/agents/worker.md" = "${codingAgentSources.operator-agents}/agents/opencode/worker.md";
     }
     // lib.mapAttrs' (name: source: lib.nameValuePair "opencode/skills/${name}" source)
     (import ./skills.nix {inherit lib codingAgentPackages codingAgentSources;});
@@ -75,6 +77,7 @@ in {
       description = "Dedicated OpenCode web agent";
       wantedBy = ["multi-user.target"];
       after = ["network.target"];
+      unitConfig.ConditionPathExists = cfg.environmentFile;
       path = with agentPkgs; [git gh python3 nixd typescript-language-server biome oxfmt lsof codingAgentMcpPackage codingAgentPackages.operator];
       confinement = {
         enable = true;

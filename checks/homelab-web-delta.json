@@ -1,7 +1,7 @@
 {
-  "confinementPackages": ["/nix/store/synjv7wq0yva0hf06lykb7fi0i3l6nry-opencode-web-chroot-paths"],
+  "confinementPackages": ["/nix/store/wii56q1srr62kd93kij76hg09sx0whlg-opencode-web-chroot-paths"],
   "groupHash": "a52e0a2ab5848c5df04c692e21a66a346bf4db1e3710ec92d206342082075e5b",
   "proxy": "tls /var/lib/acme/veracoechea.com/fullchain.pem /var/lib/acme/veracoechea.com/key.pem\n@tailnet remote_ip 100.64.0.0/10\nhandle @tailnet {\n  reverse_proxy 127.0.0.1:4096\n}\nhandle {\n  respond 403\n}\n",
-  "unitHash": "f8fa2e171f6071f628d1b54117069ceea7650efdcdef831ee2761df5874263ec",
+  "unitHash": "b4745b6f910804a89cbd5484030ab898926d583ae680992aec63c63d941221b2",
   "userHash": "69680cef4cf3caf3535cf216445925a0388c9311b0315afd4b959db76aebda10"
 }

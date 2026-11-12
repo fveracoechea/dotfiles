@@ -57,6 +57,7 @@
     && s.WorkingDirectory == "/var/lib/opencode-web"
     && s.UMask == "0077"
     && s.EnvironmentFile == "/var/lib/opencode-web.env"
+    && service.unitConfig.ConditionPathExists == s.EnvironmentFile
     && (s.ReadWritePaths or []) == []
     && (s.BindPaths or []) == []
     && builtins.length s.BindReadOnlyPaths == 6
@@ -99,6 +100,7 @@
     whole-unit-closure.service.confinement.fullUnit = true;
     full-store-bind.service.serviceConfig.BindReadOnlyPaths = ["/nix/store"];
     store-password.service.serviceConfig.EnvironmentFile = "/nix/store/unapproved-password";
+    missing-file-condition.service.unitConfig.ConditionPathExists = "/unexpected-fixture";
     ssh-key.user.openssh.authorizedKeys.keys = ["unapproved-key"];
   };
   rejectsMutations = builtins.all (name:
@@ -139,6 +141,8 @@ in {
       python3 ${./web-check.py} proxy.json --mutations
       test -s ${service.environment.XDG_CONFIG_HOME}/opencode/opencode.json
       test -s ${service.environment.XDG_CONFIG_HOME}/opencode/AGENTS.md
+      test -s ${service.environment.XDG_CONFIG_HOME}/opencode/agents/super.md
+      test -s ${service.environment.XDG_CONFIG_HOME}/opencode/agents/worker.md
       test -s ${service.environment.XDG_CONFIG_HOME}/opencode/skills/herdr/SKILL.md
       test -s ${service.environment.XDG_CONFIG_HOME}/opencode/plugins/operator.ts
       touch "$out"

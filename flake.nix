@@ -48,8 +48,14 @@
     herdr.url = "github:herdrdev/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    operator.url = "github:fveracoechea/operator";
+    operator.url = "github:fveracoechea/operator/v2.3.2";
     operator.inputs.nixpkgs.follows = "nixpkgs-latest";
+
+    # Agent prompts can advance without upgrading the Operator CLI or device state.
+    operator-agents = {
+      url = "github:fveracoechea/operator/v2.3.2";
+      flake = false;
+    };
 
     hex.url = "github:anomalyco/hex/dev";
     hex.inputs.nixpkgs.follows = "nixpkgs-latest";
@@ -117,7 +123,10 @@
     };
     nixosModules.default = {
       imports = [
-        (import ./modules/coding-agents/nixos.nix {inherit inputs stablePkgsFor; agentPkgs = latestPkgsFor "x86_64-linux";})
+        (import ./modules/coding-agents/nixos.nix {
+          inherit inputs stablePkgsFor;
+          agentPkgs = latestPkgsFor "x86_64-linux";
+        })
         ./modules/nixos/default.nix
         inputs.musnix.nixosModules.musnix
       ];
@@ -152,7 +161,8 @@
         homeModule = homeManagerModules.default;
         dotfilesPkgs = dotfilesPkgsFor system;
         pkgs-stable = stablePkgsFor system;
-      }) // (import ./modules/coding-agents/web-checks.nix {
+      })
+      // (import ./modules/coding-agents/web-checks.nix {
         inherit lib;
         pkgs = latestPkgsFor system;
         homelab = inputs.self.nixosConfigurations.homelab;
@@ -199,7 +209,11 @@
     lib.serverPreservation = hostChecks.preservation;
     lib.serverPreservationNegativeCases = hostChecks.negativeCases;
     lib.homelabCodingAgentDelta = hostChecks.homelabDelta;
-    lib.homelabWebDelta = (import ./checks/homelab.nix {inherit lib; host = inputs.self.nixosConfigurations.homelab;}).webDelta;
+    lib.homelabWebDelta =
+      (import ./checks/homelab.nix {
+        inherit lib;
+        host = inputs.self.nixosConfigurations.homelab;
+      }).webDelta;
 
     checks = builtins.listToAttrs (map (system: {
         name = system;
@@ -221,7 +235,10 @@
       specialArgs = homelabSpecialArgs;
       modules = [
         ./hosts/homelab/configuration.nix
-        (import ./modules/coding-agents/nixos.nix {inherit inputs stablePkgsFor; agentPkgs = latestPkgsFor "x86_64-linux";})
+        (import ./modules/coding-agents/nixos.nix {
+          inherit inputs stablePkgsFor;
+          agentPkgs = latestPkgsFor "x86_64-linux";
+        })
         inputs.server-dotfiles-compat.nixosModules.default
         inputs.server-home-manager.nixosModules.home-manager
         {

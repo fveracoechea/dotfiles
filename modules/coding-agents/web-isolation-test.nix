@@ -22,6 +22,8 @@
     done
     test -r "$XDG_CONFIG_HOME/opencode/opencode.json"
     test -r "$XDG_CONFIG_HOME/opencode/AGENTS.md"
+    test -r "$XDG_CONFIG_HOME/opencode/agents/super.md"
+    test -r "$XDG_CONFIG_HOME/opencode/agents/worker.md"
     test ! -w "$XDG_CONFIG_HOME/opencode/opencode.json"
     test -r /etc/resolv.conf
     /usr/bin/env /bin/sh -c 'test -w "$HOME/workspace"'
@@ -71,10 +73,20 @@ in
             RemainAfterExit = true;
           };
       };
+      systemd.services.opencode-web-unprovisioned = {
+        inherit (service) path confinement serviceConfig unitConfig;
+        environment = builtins.removeAttrs service.environment ["PATH"];
+      };
     };
     testScript = ''
       machine.start()
       machine.wait_for_unit("multi-user.target")
+      machine.succeed("test ! -e /var/lib/opencode-web.env")
+      machine.succeed("test ! -d /var/lib/opencode-web/workspace")
+      machine.succeed("systemctl start opencode-web-unprovisioned.service")
+      machine.succeed("systemctl show opencode-web-unprovisioned.service -p ConditionResult --value | grep '^no$'")
+      machine.fail("systemctl is-active --quiet opencode-web-unprovisioned.service")
+      machine.succeed("test ! -d /var/lib/opencode-web/workspace")
       for path in ${builtins.toJSON deniedPaths}:
           machine.succeed(f"runuser -u opencode-web -- cat {path}")
       machine.succeed("systemctl start opencode-web.service")

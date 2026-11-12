@@ -31,6 +31,7 @@ in {
         };
 
         ui = {
+          sound.enabled = false;
           sidebar_width = lib.mkDefault 32;
           agent_panel_sort = "spaces";
           show_agent_labels_on_pane_borders = true;
