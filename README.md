@@ -186,7 +186,7 @@ See the [Hex Nix guide](https://github.com/anomalyco/hex/blob/dev/docs/nix.md) f
 
 ### Other tools
 
-- **[Volta](https://volta.sh/)**: JavaScript toolchain manager
+- **[Bun](https://bun.sh/)**: JavaScript runtime and package manager
 - **[Bat](https://github.com/sharkdp/bat)**: Enhanced `cat` with syntax highlighting
 
 ## Theming

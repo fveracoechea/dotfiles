@@ -9,7 +9,6 @@
     shell.enable = true;
     neovim.enable = true;
     gtk.enable = true;
-    volta.enable = true;
     ghostty.enable = true;
     sunshine.enable = true;
     fonts.enable = true;
@@ -29,6 +28,7 @@
   home.file.".face.icon".source = ../../assets/face.jpg;
 
   home.packages = with pkgs; [
+    bun
     vesktop
     google-chrome
     kooha

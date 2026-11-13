@@ -21,7 +21,6 @@
     ./spotify.nix
     ../gaming/sunshine.nix
     ../shell/tmux
-    ./volta.nix
     ../shell/yazi.nix
     ../shell/zsh.nix
   ];
