@@ -22,7 +22,6 @@
       nixd
       nixfmt
       typescript-language-server
-      biome
       oxfmt
     ];
 

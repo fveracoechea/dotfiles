@@ -106,7 +106,6 @@ in
         nixd
         nixfmt
         typescript-language-server
-        biome
         oxfmt
         lsof
         codingAgentMcpPackage
