@@ -6,7 +6,13 @@
 let
   home = desktop.home-manager.users.fveracoechea;
   serverHome = homelab.home-manager.users.fveracoechea;
+  sharedService = serverHome.systemd.user.services.opencode;
 in
+assert !homelab.dotfiles.coding-agents.web.enable;
+assert !(homelab.systemd.services ? opencode-web);
+assert homelab.users.users.fveracoechea.linger;
+assert sharedService.Install.WantedBy == [ "default.target" ];
+assert sharedService.Service.UMask == "0077";
 {
   coding-agents-evaluation = pkgs.writeText "coding-agents-evaluation.json" (
     builtins.toJSON {
@@ -30,8 +36,10 @@ in
           ;
         herdr = serverHome.programs.herdr.settings;
         web = {
-          inherit (homelab.dotfiles.coding-agents.web) enable port environmentFile;
-          inherit (homelab.systemd.services.opencode-web.serviceConfig) User Group;
+          dedicated = homelab.dotfiles.coding-agents.web.enable;
+          service = sharedService;
+          linger = homelab.users.users.fveracoechea.linger;
+          proxy = homelab.services.caddy.virtualHosts."opencode.veracoechea.com".extraConfig;
         };
       };
     }

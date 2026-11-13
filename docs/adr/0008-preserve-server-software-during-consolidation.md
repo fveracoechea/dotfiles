@@ -48,3 +48,4 @@ The desktop's channel policy remains unchanged.
 - Wait for a later release before consolidation. Rejected because repository ownership can change independently of deployed software.
 
 Related: ADR-0007 (package ownership still governs the desktop and the eventual server Release Channel migration).
+Related: ADR-0009 (the owner selects a shared personal OpenCode identity for terminal and web access).

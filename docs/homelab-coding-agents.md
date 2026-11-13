@@ -37,7 +37,7 @@ Home Manager's release check is disabled for the intentional Home/System channel
 
 The current Git module no longer installs Hunk or GitHub CLI.
 The coding-agent capability owns those packages and their Hunk configuration, including Git/lazygit pager integration.
-The capability check evaluates both hosts' OpenCode package, settings, CLI preferences, validation options, and Herdr settings, plus homelab's web service options.
+The capability check evaluates both hosts' OpenCode package, settings, CLI preferences, validation options, and Herdr settings, plus homelab's shared service and proxy.
 It does not execute the applications.
 
 ## Historical preservation evidence
@@ -56,94 +56,87 @@ Do not refresh the historical baseline or the Home delta to hide an unexplained 
 Those records predate the migration to current Home Manager and Home modules.
 They do not constrain the current Home generation or establish that the new Home preserves historical behavior.
 
-## Requested web endpoint
+## Shared terminal and web service
 
-The owner subsequently requested an OpenCode web server at `opencode.veracoechea.com`.
-This supersedes the original assignment's prohibition on that endpoint, but not its unrelated preservation requirements.
-The owner selected tailnet-only HTTPS and a dedicated non-sudo account in the recorded `web-access-model` answer.
-These decisions are settled; they do not authorize activation or access to existing projects.
+ADR-0009 records the owner's decision to share their existing personal OpenCode service between the SSH TUI and web UI.
+The earlier dedicated non-sudo identity did not share sessions or provider connections.
+Homelab now disables `dotfiles.coding-agents.web.enable`; the optional isolated execution mode remains available but is not deployed here.
+Neither the old database nor `/var/lib/opencode-web.env` is deleted or copied into the personal service.
 
-The System Module enables `opencode-web.service` through `dotfiles.coding-agents.web.enable`.
-Its backend runs `opencode serve --hostname 127.0.0.1 --port 4096`.
-The optional `web.port` and `web.environmentFile` settings belong to that module; host composition owns ingress.
-The desktop does not enable the service.
+`hosts/homelab/services/opencode.nix` owns the host-specific service identity and ingress configuration.
+It installs the `opencode.service` Home Manager user unit for `fveracoechea` and enables lingering so the service starts without an SSH login.
+The unit runs the same OpenCode package as the TUI, using `serve --service --hostname 127.0.0.1 --port 49374`.
+Its pre-start command stops an existing unmanaged personal service before systemd takes ownership.
+The service retains the owner's normal OpenCode data, configuration, state, and private service password.
+No alternate database or provider credential store is configured.
+Its PATH includes the managed Home profile and System tools.
 
-`hosts/homelab/services/opencode.nix` adds the Caddy route for `opencode.veracoechea.com`.
-It reuses the existing wildcard certificate and forwards only socket peers in `100.64.0.0/10`.
+The Caddy route for `opencode.veracoechea.com` forwards to that same loopback port.
+It reuses the existing wildcard certificate and permits only socket peers in `100.64.0.0/10`.
 Other peers receive HTTP 403, including ordinary LAN clients.
-Forwarding headers do not grant access.
-This route permits IPv4 tailnet addresses only; tailnet IPv6 addresses do not match it.
-The backend needs no new firewall opening, and no external DNS or router configuration was changed.
-The existing proxy's other virtual hosts retain their existing access rules.
+Forwarding headers do not grant access, and tailnet IPv6 addresses do not match the IPv4 rule.
+No new firewall port, DNS entry, or router change is required.
+Other virtual hosts retain their existing access rules.
 
-The dedicated `opencode-web` account has no supplementary groups, SSH keys, wheel membership, or Nix trusted-user grant.
-Systemd protects the owner's Home, prevents privilege elevation, and restricts writes outside the service's private state.
-Its filesystem confinement exposes only the selected runtime closure, private state, and explicit runtime files.
-It does not expose the host's entire Nix store, `/srv`, `/opt`, or other existing project directories.
-Read-only runtime bindings supply name resolution, account metadata, and `/usr/bin/env`; certificate roots come from the selected runtime closure.
-The account owns `/var/lib/opencode-web`, with mode `0700` and a `0077` umask.
-It starts in its own `workspace` directory.
-Data, cache, and state use separate directories there; shared declarative configuration comes from the read-only Nix store.
-No owner credentials, Home directory, Herdr socket, or existing project directories are mounted into the service.
-These restrictions are configuration guarantees, not evidence of deployed isolation.
+**Browser sessions now have the owner's personal account access, including passwordless sudo authority.**
+The dedicated service's confinement is not a security boundary for this shared personal service.
+Provider sign-ins and sessions belong to the same database, so changes in either interface appear in both.
 
-The required runtime file is `/var/lib/opencode-web.env`, outside the Nix store and the service-owned state directory.
-The owner must provision it as root-owned, mode `0600`, with a nonempty `OPENCODE_PASSWORD` entry using systemd EnvironmentFile syntax.
-The service account must not own or write that file.
-The unit's required-file condition leaves the service dormant when the file is absent, without failing the service start or rebuild activation.
-Systemd reads an existing file before starting the process.
-An invalid or unreadable supplied file can fail startup and activation; the condition does not validate its contents.
-The start wrapper also rejects an unset or empty password before creating a workspace or launching OpenCode.
-OpenCode's Basic authentication username is `opencode`.
-No password or provider credentials were generated, inspected, copied, or committed.
-Provider credentials must belong to the dedicated identity and remain outside the declarative configuration.
+## Pairing and operation
 
-Sources: <https://opencode.ai/v2/docs/cli/web>, <https://opencode.ai/v2/docs/cli/config>, and the locked executable's source.
-Do not use the legacy `/web` documentation's authentication environment names as the V2 contract.
+On the homelab, run:
 
-## Web workers and runtime limits
+```sh
+opencode pair --url https://opencode.veracoechea.com
+```
 
-Native OpenCode subagents run in server-side child sessions under the service identity.
-That does not establish support for Operator-dispatched WorkerAgents.
-Operator dispatch requires a live Herdr socket and runtime context; this service supplies neither.
-Its Operator plugin and skills do not create that context or authorize sharing the owner's socket.
-The Home capability supplies terminal integration separately.
-Validate native subagents and Operator readiness as separate acceptance checks for the selected agent mode.
-Do not promise browser-to-Herdr dispatch, phone compatibility, disconnect recovery, or unattended restart recovery without runtime evidence.
+Open the generated single-use link in the desktop browser.
+The `--url` option changes the address in the link, not the service that issues the code.
+It is correct here because Caddy and the local CLI now reach the same personal service.
+Pair again after this migration; cookies issued by the retired isolated service use a different signing password.
+Do not publish pairing links, passwords, or provider tokens.
 
-`coding-agents-evaluation` evaluates Home settings, the web switch, its runtime-file path, and the configured service account.
-The VM, runtime, formatter, and mutation harnesses are removed under the owner's evaluation-only acceptance.
-The actual service's password guards and confinement settings are unchanged.
-Configuration evaluation does not establish deployed isolation, HTTP authentication, or browser behavior.
+The ordinary `opencode` TUI discovers the same registered personal service without additional flags.
+Check it with `opencode service status` and `opencode api get /api/info`.
+Use `systemctl --user status opencode` to inspect its supervisor.
+Use `systemctl --user stop opencode` to stop it deliberately; the unit restarts when its process exits otherwise.
+Service configuration changes may trigger that automatic restart.
 
-## Owner acceptance before activation
+The evaluation check asserts lingering, the enabled user unit, private file permissions, and the absence of the isolated system service.
+It also records the shared unit and proxy configuration alongside both hosts' coding-agent settings.
+Historical delta files remain unchanged.
 
-**The shared wildcard tool permission requires owner review before activation.**
-The managed Home retains the existing owner's passwordless wheel authority; the web service uses the separate restricted account.
-The dedicated identity does not authorize access to the owner's existing projects or credentials.
+## Runtime acceptance
 
-After separately authorizing activation, the owner must:
+Server activation still requires owner authorization under `server-consolidation.md`.
+The owner explicitly authorized this shared-service migration and its brief OpenCode restart.
+Before activation, back up both OpenCode databases and retain the active System generation.
+Compare the candidate service changes with the running generation before switching.
 
-1. Confirm the approved private route, certificate, and owner-managed DNS resolution from a tailnet client.
-2. Provision the runtime password file and separate provider credentials without putting secrets into Nix or chat.
-3. Check existing managed files and `hm-backup` collisions without deleting user configuration.
-4. Verify provider, GitHub, Exa, and SSH credentials separately for each intended identity without copying the owner's credentials into the service.
-5. Verify the existing Home Zsh secret source exists and has suitable permissions without inspecting its contents.
-6. Check writable OpenCode, Herdr, and Operator state and the terminal's TERM, colors, resize, and reconnect behavior.
-7. Complete the documented Operator project/integration setup and run its readiness checks in the intended Herdr context on homelab.
-8. Verify Herdr/OpenCode working, idle, completion, and steering behavior in the full TUI, Mini, and automation modes separately.
-9. Check the managed CLI file after changing settings because OpenCode can replace its symlink.
-10. Confirm the backend listens only on loopback and cannot start with a missing or empty runtime password.
-11. Reject unauthenticated and wrong-password requests; verify successful authenticated requests through the HTTPS route without logging credentials.
-12. Verify LAN/public rejection, including requests with forged forwarding headers, and authenticated tailnet access.
-13. Verify the service cannot read the owner's Home, SSH keys, provider state, or existing projects, or obtain sudo/Nix trusted-user authority.
-14. Test browser streaming, phone layout, disconnect/reconnect behavior, and native subagents under the dedicated identity.
+After activation, verify:
 
-Operator issue <https://github.com/fveracoechea/operator/issues/332> concerns integration behavior outside this refactor.
-The final content preserves main's native agent modes/compaction and sound-only change, and advances only Operator and its coupled prompts to v2.3.2.
-Historical checks do not authorize restoring old inputs, prompts, or compaction settings.
-A fix in another workspace does not prove the locked package passes the runtime checks above.
-Acceptance for this refactor is basic Nix configuration evaluation, not full builds or another review round.
-The owner decides when to merge; automated merge guards are separate from that decision.
-No remote runtime, browser, authentication, or deployed security acceptance ran for this checkpoint.
-Builds and evaluation do not establish credentials, deployed state, backup readiness, or safe activation.
+1. The user unit is active and enabled, and lingering is enabled.
+2. The backend listens only on loopback, while unauthenticated and incorrect-password API requests fail.
+3. The local API and HTTPS API report the same process, session IDs, and OpenAI connection.
+4. A fresh browser-style pairing cookie authenticates through HTTPS without logging secrets.
+5. Non-tailnet requests remain forbidden, including requests with forged forwarding headers.
+
+Browser rendering, model generation, reboot recovery, native subagents, and Operator readiness are separate runtime checks.
+Operator dispatch still requires an appropriate live Herdr context; sharing a server alone does not establish that context.
+Do not claim these checks passed without running them.
+
+Sources: <https://opencode.ai/v2/docs/cli/web>, <https://opencode.ai/v2/docs/troubleshooting>, and the selected executable's source.
+
+## Deployment verification
+
+The owner authorized activation on 2026-11-13.
+`nix flake check`, the remote System build, and activation passed.
+The local and HTTPS APIs reported the same process, both original session IDs, and the original OpenAI connection ID.
+HTTP checks passed for browser-style pairing, the session cookie, authenticated event streaming, incorrect-password rejection, and non-tailnet rejection with forged forwarding headers.
+The user unit was active and enabled, lingering was enabled, and its restart count was zero.
+The retired service was stopped and its database remained in place.
+The other checked application services remained active; this was not application-level acceptance testing.
+
+Root-only database and service-credential backups are under `/var/backups/opencode-shared-20261113T071927Z` on the homelab.
+Both SQLite snapshots passed `PRAGMA quick_check`; restore was not rehearsed.
+No browser automation, model generation, reboot, or Operator dispatch test ran.
