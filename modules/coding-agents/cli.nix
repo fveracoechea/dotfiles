@@ -5,7 +5,7 @@
   };
   session = {
     sidebar = "auto";
-    scrollbar = false;
+    scrollbar = true;
     thinking = "show";
   };
   diffs.wrap = "word";
