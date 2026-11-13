@@ -1,4 +1,4 @@
-{ ... }: {
+{ pkgs, ... }: {
   dotfiles = {
     shell.enable = true;
     neovim.enable = true;
@@ -8,6 +8,8 @@
 
   home.username = "fveracoechea";
   home.homeDirectory = "/home/fveracoechea";
+  home.packages = [ pkgs.bun ];
+
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
