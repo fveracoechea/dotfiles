@@ -23,12 +23,17 @@ let
     pkgs = agentPkgs;
   };
   codingAgentMcpPackage = (stablePkgsFor agentPkgs.stdenv.hostPlatform.system).mcp-nixos;
-  settings = import ./settings.nix {
-    inherit lib codingAgentMcpPackage;
+  opencode = import ./opencode.nix {
+    inherit
+      lib
+      codingAgentMcpPackage
+      codingAgentPackages
+      codingAgentSources
+      ;
     codingAgentPkgs = agentPkgs;
   };
   json = (agentPkgs.formats.json { }).generate "opencode-web.json" (
-    { "$schema" = "https://opencode.ai/config.json"; } // settings
+    { "$schema" = "https://opencode.ai/config.json"; } // opencode.settings
   );
   checkedJson =
     agentPkgs.runCommand "opencode-web-config" { nativeBuildInputs = [ agentPkgs.check-jsonschema ]; }
@@ -44,9 +49,7 @@ let
     "opencode/agents/super.md" = "${codingAgentSources.operator-agents}/agents/opencode/super.md";
     "opencode/agents/worker.md" = "${codingAgentSources.operator-agents}/agents/opencode/worker.md";
   }
-  // lib.mapAttrs' (name: source: lib.nameValuePair "opencode/skills/${name}" source) (
-    import ./skills.nix { inherit lib codingAgentPackages codingAgentSources; }
-  );
+  // lib.mapAttrs' (name: source: lib.nameValuePair "opencode/skills/${name}" source) opencode.skills;
   configDirectory = agentPkgs.linkFarm "opencode-web-config-directory" (
     lib.mapAttrsToList (name: path: { inherit name path; }) files
   );

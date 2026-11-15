@@ -17,7 +17,7 @@
         ;
     };
     codingAgentPackages = import ../../packages { inherit inputs pkgs; };
-    # Channel Hold: the Latest Channel failure is documented in opencode.nix.
+    # Channel Hold: the Latest Channel failure is documented in home.nix.
     codingAgentMcpPackage = (stablePkgsFor pkgs.stdenv.hostPlatform.system).mcp-nixos;
   };
 }
