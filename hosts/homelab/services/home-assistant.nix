@@ -19,6 +19,7 @@
       "history_stats"
       "google_translate"
       "radio_browser"
+      "reolink"
       "profiler"
       "ipp"
       "tplink"
@@ -48,6 +49,7 @@
       ];
     config = {
       default_config = { };
+      homeassistant.internal_url = "http://10.0.0.2:8123";
       http = {
         use_x_forwarded_for = true;
         trusted_proxies = [
@@ -64,6 +66,8 @@
     "CAP_NET_ADMIN"
     "CAP_NET_RAW"
   ];
+
+  networking.firewall.interfaces.enp8s0.allowedTCPPorts = [ 8123 ];
 
   services.caddy.virtualHosts."home.veracoechea.com".extraConfig = ''
     tls /var/lib/acme/veracoechea.com/fullchain.pem /var/lib/acme/veracoechea.com/key.pem
