@@ -7,12 +7,21 @@ let
   home = desktop.home-manager.users.fveracoechea;
   serverHome = homelab.home-manager.users.fveracoechea;
   sharedService = serverHome.systemd.user.services.opencode;
+  browse = serverHome.programs.opencode.settings.mcp.servers.browse;
 in
 assert !homelab.dotfiles.coding-agents.web.enable;
 assert !(homelab.systemd.services ? opencode-web);
 assert homelab.users.users.fveracoechea.linger;
 assert sharedService.Install.WantedBy == [ "default.target" ];
 assert sharedService.Service.UMask == "0077";
+assert browse.type == "local";
+assert browse.environment.OPENCODE_BROWSER_AUTO_UPDATE == "off";
+assert browse.environment.OPENCODE_BROWSER_PORT == "19988";
+assert
+  (builtins.fromJSON serverHome.xdg.configFile."browse/config.json".text).hostname == "0.0.0.0";
+assert builtins.elem 19988 homelab.networking.firewall.interfaces.tailscale0.allowedTCPPorts;
+assert !(builtins.elem 19988 homelab.networking.firewall.allowedTCPPorts);
+assert !(home.programs.opencode.settings.mcp.servers ? browse);
 {
   coding-agents-evaluation = pkgs.writeText "coding-agents-evaluation.json" (
     builtins.toJSON {

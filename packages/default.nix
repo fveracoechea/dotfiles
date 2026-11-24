@@ -6,6 +6,7 @@
   inputs,
 }:
 {
+  browse = pkgs.callPackage ./browse.nix { };
   dev-manager-desktop =
     inputs.dev-manager-desktop.packages.${pkgs.stdenv.hostPlatform.system}.default;
   herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;

@@ -127,6 +127,40 @@ Do not claim these checks passed without running them.
 
 Sources: <https://opencode.ai/v2/docs/cli/web>, <https://opencode.ai/v2/docs/troubleshooting>, and the selected executable's source.
 
+## Browse relay
+
+Homelab's configuration includes Browse 0.1.5 for the personal OpenCode service.
+The custom package pins upstream's static Linux musl binary and its SHA-256.
+Desktop agents remain unchanged.
+The owner deferred activation on 2026-11-23; deployment and browser pairing remain pending.
+
+`hosts/homelab/services/browse.nix` owns the MCP entry, relay configuration, and firewall rule.
+Browse starts its relay on demand; no separate systemd service or browser runs on homelab.
+The relay listens on TCP 19988, with remote access permitted only through `tailscale0`.
+Only the extension connection accepts remote clients; the HTTP tool API remains local.
+Automatic binary replacement is disabled, but Browse still checks upstream for releases.
+Update the package through Nix and run `browse restart` after a version change.
+Browse's setup status can report "not installed" because its installer did not run.
+Use the MCP connection and browser status to verify this Nix-managed setup.
+
+After the owner deploys the flake:
+
+1. Install the Browse extension in desktop Chrome. `ssh homelab browse extension` prints its Chrome Web Store link.
+2. Run `ssh homelab tailscale ip -4` to get the relay's tailnet address.
+3. Run `ssh -t homelab 'OPENCODE_BROWSER_PORT=19988 browse pair'` to generate a one-time pairing code.
+4. In the extension's options, choose the remote-agent connection and enter that address with port `19988` and the code.
+5. Run `ssh homelab browse status --json` and confirm the browser is connected.
+6. Check Browse in OpenCode's `/mcps` interface. Use `/reload` if its configuration has not reloaded.
+
+Pairing codes expire after ten minutes.
+Keep pairing keys and relay tokens in the user's private runtime directories, never in the Nix store.
+Do not run `browse install`; it can create an unmanaged copy and edit the generated OpenCode configuration.
+The hostname file is Nix-managed, so change its listener setting in the flake rather than with `browse set hostname`.
+One extension instance connects to one relay at a time.
+This setup gives homelab agents access to the paired desktop Chrome profile's signed-in sites.
+
+Sources: [Browse setup and security](https://github.com/anomalyco/browse/tree/v0.1.5#readme), [stable release manifest](https://anoma.ly/release/browse/cli/stable.json).
+
 ## Deployment verification
 
 The owner authorized activation on 2026-11-13.

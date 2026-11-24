@@ -2,6 +2,7 @@
   imports = [
     ./hardware-configuration.nix
     ./services/adguardhome.nix
+    ./services/browse.nix
     ./services/caddy.nix
     ./services/home-assistant.nix
     ./services/immich.nix
