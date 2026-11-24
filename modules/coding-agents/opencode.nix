@@ -53,8 +53,8 @@
     };
     agents = {
       plan.disabled = true;
-      build.model = "openai/gpt-6.1-sol#high";
-      super.model = "openai/gpt-6.1-sol#high";
+      build.model = "openai/gpt-6.1-sol#medium";
+      super.model = "openai/gpt-6.1-sol#medium";
       worker.model = "openai/gpt-6.1-sol#medium";
     };
     permissions = [
@@ -69,30 +69,16 @@
     providers = {
       openai = {
         settings.compaction.type = "native";
-        models."gpt-6.1-sol" = {
-          settings.reasoningEffort = "high";
-          variants = [
-            {
-              id = "medium";
-              settings.reasoningEffort = "medium";
-            }
-            {
-              id = "high";
-              settings.reasoningEffort = "high";
-            }
-          ];
+        models = {
+          "gpt-6.1-sol" = {
+            settings.reasoningEffort = "medium";
+          };
+          "gpt-6.2-sol" = {
+            settings.reasoningEffort = "medium";
+          };
         };
       };
       openrouter = {
-        models."z-ai/glm-5.3-flash" = {
-          settings.reasoning.effort = "high";
-          variants = [
-            {
-              id = "high";
-              settings.reasoning.effort = "high";
-            }
-          ];
-        };
         body.provider = {
           sort = "throughput";
           only = [
