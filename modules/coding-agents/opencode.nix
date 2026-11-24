@@ -33,6 +33,10 @@
           ".tsx"
           ".mts"
           ".cts"
+          ".json"
+          ".jsonc"
+          ".css"
+          ".md"
         ];
       };
       nixfmt = {
