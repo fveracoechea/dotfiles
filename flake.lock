@@ -996,17 +996,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1794449356,
-        "narHash": "sha256-Sc1Z1lzaajlegsEZTGTYiojrxWi2/NEOMRTKAkBOcUg=",
+        "lastModified": 1795485233,
+        "narHash": "sha256-/wWNFFq+/9Ijugsff7hdR4ocUwrSxVqvDUnqqWAfII0=",
         "owner": "fveracoechea",
         "repo": "neovim",
-        "rev": "54d70b33bde49dfe962ac1f89167cce868aa16a4",
+        "rev": "01b3c02dc8891ea60b4a552f45bf6fa2b3d95da4",
         "type": "github"
       },
       "original": {
         "owner": "fveracoechea",
         "repo": "neovim",
-        "rev": "54d70b33bde49dfe962ac1f89167cce868aa16a4",
+        "rev": "01b3c02dc8891ea60b4a552f45bf6fa2b3d95da4",
         "type": "github"
       }
     },

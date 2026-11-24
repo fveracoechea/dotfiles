@@ -21,7 +21,7 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
 
-    neovim.url = "github:fveracoechea/neovim/54d70b33bde49dfe962ac1f89167cce868aa16a4";
+    neovim.url = "github:fveracoechea/neovim/01b3c02dc8891ea60b4a552f45bf6fa2b3d95da4";
     neovim.inputs.nixpkgs.follows = "nixpkgs-latest";
     neovim.inputs.home-manager.follows = "home-manager";
 

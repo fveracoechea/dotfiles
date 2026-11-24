@@ -55,11 +55,11 @@ The desktop and homelab separate Home packages from System packages, so personal
 See [ADR-0007](docs/adr/0007-split-nixpkgs-channels-by-package-owner.md).
 The server Systems temporarily retain a separate immutable dependency graph under [ADR-0008](docs/adr/0008-preserve-server-software-during-consolidation.md).
 
-| Channel             | Input                       | Branch                   | Builds                        |
-| ------------------- | --------------------------- | ------------------------ | ----------------------------- |
-| **Latest Channel**  | `nixpkgs-latest`            | `nixpkgs-unstable`       | Home-owned packages           |
-| **Release Channel** | `nixpkgs-stable`     | `nixos-26.05`            | Desktop System-owned packages |
-| Server source | `nixpkgs-servers` | Immutable deployed revision | Both server Systems and System-coupled Home Zsh |
+| Channel             | Input             | Branch                      | Builds                                          |
+| ------------------- | ----------------- | --------------------------- | ----------------------------------------------- |
+| **Latest Channel**  | `nixpkgs-latest`  | `nixpkgs-unstable`          | Home-owned packages                             |
+| **Release Channel** | `nixpkgs-stable`  | `nixos-26.05`               | Desktop System-owned packages                   |
+| Server source       | `nixpkgs-servers` | Immutable deployed revision | Both server Systems and System-coupled Home Zsh |
 
 Package ownership decides the channel.
 Version-Coupled Packages follow their partner.
@@ -117,9 +117,14 @@ This flake pins the shared repository and follows the Latest Channel for its edi
 `dotfiles.neovim.enable` enables the shared Home Manager module.
 The first launch downloads plugins and compiles parsers.
 
-Update plugins in the shared repository, commit its lockfile, then run `nix flake update neovim` here.
+Update plugins in the shared repository and commit its lockfile.
+Advance the pinned `neovim.url` revision in `flake.nix`, then run `nix flake update neovim` here.
 Home Manager installs store-backed Lua files and a writable lockfile copy.
-Activation advances an unchanged lockfile with the configuration revision and refuses local lockfile edits.
+Activation archives retired plugin caches and additive runtime lock entries before restoring the managed lockfile.
+This prevents `vim.pack` from recreating obsolete entries on startup.
+Backups live under `~/.local/state/nvim/lock-backups`, or the configured XDG state directory.
+Edits to existing plugin pins still fail a read-only check before Home Manager changes managed files.
+See [ADR-0005](docs/adr/0005-non-nix-config-in-top-level-config-directory.md).
 For development only, set `programs.neovim-config.pluginLockPath` to the shared checkout's lockfile at the same revision as the Lua configuration.
 Sessions and undo files live in Neovim's state directory.
 
@@ -222,7 +227,7 @@ dotfiles.hyprland.enable = true;
 Grouping modules compose several atomic modules under one switch. Members cascade via `mkDefault`, so a host can opt out of any member by setting it to `false`:
 
 ```nix
-dotfiles.shell.enable = true;  # enables zsh, tmux, oh-my-posh, bat, btop, yazi, git 
+dotfiles.shell.enable = true;  # enables zsh, tmux, oh-my-posh, bat, btop, yazi, git
 dotfiles.git.enable = false;  # opt out of one member
 ```
 
@@ -291,6 +296,7 @@ For the Hyprland language migration, follow the [migration test and recovery pro
 It saves the active System path before `test`; `nixos-rebuild test --rollback` does not necessarily select that pre-test state.
 
 1. **Clone the repository:**
+
    ```bash
     git clone https://github.com/fveracoechea/dotfiles.git ~/dotfiles
     cd ~/dotfiles
@@ -299,6 +305,7 @@ It saves the active System path before `test`; `nixos-rebuild test --rollback` d
 2. **Apply configuration:**
 
    **For NixOS:**
+
    ```bash
    sudo nixos-rebuild switch --flake .#nixos-desktop
    ```
