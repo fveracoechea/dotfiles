@@ -5,6 +5,10 @@ set positional-arguments
 default:
     @just --list
 
+# Forward local ports 3001 and 3002 to homelab until Ctrl+C.
+homescreen-tunel:
+    ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 127.0.0.1:3001:127.0.0.1:3001 -L 127.0.0.1:3002:127.0.0.1:3002 homelab
+
 # Evaluate all hosts and checks without building or activating Systems.
 evaluate:
     nix flake check --no-build
