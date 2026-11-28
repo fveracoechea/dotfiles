@@ -8,17 +8,11 @@
     # it provides. See ADR-0007.
     nixpkgs-latest.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-    # Release channel: system packages and services.
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
+    # Release candidate: review again after 26.11 leaves beta.
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.11";
 
-    # Deployed server graph. Remove only after the ADR-0008 migration gates pass.
-    nixpkgs-servers.url = "github:nixos/nixpkgs/2fcb964de67fcf60b43471c55d5d99e61a9ccb5a";
-    server-disko.url = "github:nix-community/disko/ff8702b4de27f72b4c78573dfb89ec74e36abdf1";
-    server-disko.inputs.nixpkgs.follows = "nixpkgs-servers";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs-stable";
-    server-dotfiles-compat.url = "github:fveracoechea/dotfiles/a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46";
-    server-dotfiles-compat.inputs.nixpkgs.follows = "nixpkgs-servers";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
@@ -135,102 +129,6 @@
 
       neovimChecks = system: inputs.neovim.checks.${system};
 
-      serverMigrations = builtins.fromJSON (builtins.readFile ./checks/server-migrations.json);
-      serverSource =
-        migrated:
-        let
-          input = if migrated then nixpkgs-stable else inputs.nixpkgs-servers;
-        in
-        {
-          input = if migrated then "nixpkgs-stable" else "nixpkgs-servers";
-          revision = input.rev;
-          channel =
-            if migrated then
-              (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.nixpkgs-stable.original.ref
-            else
-              null;
-          kind = if migrated then "release" else "preserved";
-        };
-      serverSystem =
-        host: migrated:
-        let
-          system = "x86_64-linux";
-          source = serverSource migrated;
-          nixpkgs = if migrated then nixpkgs-stable else inputs.nixpkgs-servers;
-          pkgs-latest = latestPkgsFor system;
-        in
-        nixpkgs.lib.nixosSystem {
-          specialArgs = lib.optionalAttrs (host == "homelab") {
-            dotfilesPkgs =
-              if migrated then dotfilesPkgsFor system else inputs.server-dotfiles-compat.dotfilesPkgs.${system};
-          };
-          modules = [
-            (./hosts + "/${host}/configuration.nix")
-            (import ./scripts/server-readiness/module.nix { inherit host source; })
-            ({ lib, ... }: {
-              nixpkgs.hostPlatform = system;
-              nixpkgs.config = lib.optionalAttrs (!migrated) { allowUnfree = true; };
-            })
-          ]
-          ++ lib.optionals migrated [
-            { nixpkgs.pkgs = stablePkgsFor system; }
-          ]
-          ++ lib.optionals (host == "vps") [
-            (if migrated then inputs.disko.nixosModules.disko else inputs.server-disko.nixosModules.disko)
-          ]
-          ++ lib.optionals (host == "homelab" && !migrated) [
-            (import ./modules/coding-agents/nixos.nix {
-              inherit inputs stablePkgsFor;
-              agentPkgs = pkgs-latest;
-            })
-          ]
-          ++ lib.optionals (host == "homelab") [
-            (if migrated then nixosModules.default else inputs.server-dotfiles-compat.nixosModules.default)
-            home-manager.nixosModules.home-manager
-            ({ pkgs, ... }: {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "hm-backup";
-              home-manager.users.fveracoechea = {
-                imports = [
-                  homeManagerModules.default
-                  ./hosts/homelab/home.nix
-                ];
-                _module.args.pkgs = pkgs-latest;
-                home.enableNixpkgsReleaseCheck = false;
-              };
-              home-manager.extraSpecialArgs = {
-                dotfilesPkgs = dotfilesPkgsFor system;
-                pkgs-stable = pkgs;
-                lib = homeManagerLib;
-              };
-            })
-          ];
-        };
-      serverSystems = builtins.mapAttrs (
-        host: status:
-        assert builtins.elem status [
-          "preserved"
-          "release"
-        ];
-        serverSystem host (status == "release")
-      ) serverMigrations;
-      readinessManifest = host: migrated: system: {
-        manifest = import ./scripts/server-readiness/manifest.nix {
-          inherit host;
-          inherit (system) config;
-          inherit (system) pkgs;
-          inherit (system) options;
-          lib = system.pkgs.lib;
-          source = serverSource migrated;
-        };
-        systemPath = system.config.system.build.toplevel.outPath;
-        systemDrv = system.config.system.build.toplevel.drvPath;
-      };
-      serverReadiness = builtins.mapAttrs (
-        host: system: readinessManifest host (serverMigrations.${host} == "release") system
-      ) serverSystems;
-
       capabilityChecks =
         system:
         let
@@ -245,10 +143,6 @@
           home-manager-backups = import ./checks/home-manager-backups.nix {
             inherit (args) pkgs desktop;
           };
-          server-readiness = import ./scripts/server-readiness/checks.nix {
-            inherit (args) pkgs;
-            manifests = builtins.mapAttrs (_: value: value.manifest) serverReadiness;
-          };
         }
         // (import ./modules/shell/checks.nix args)
         // (import ./modules/networking/checks.nix args)
@@ -258,11 +152,6 @@
     in
     {
       inherit homeManagerModules nixosModules;
-
-      lib.serverReadiness = serverReadiness;
-      lib.serverCandidates = builtins.mapAttrs (
-        host: _: readinessManifest host true (serverSystem host true)
-      ) serverMigrations;
 
       checks = builtins.listToAttrs (
         map (system: {
@@ -279,8 +168,53 @@
         }) supportedSystems
       );
 
-      nixosConfigurations.homelab = serverSystems.homelab;
-      nixosConfigurations.vps = serverSystems.vps;
+      nixosConfigurations.homelab =
+        let
+          system = "x86_64-linux";
+          pkgs-stable = stablePkgsFor system;
+          pkgs-latest = latestPkgsFor system;
+          specialArgs = {
+            dotfilesPkgs = dotfilesPkgsFor system;
+          };
+        in
+        nixpkgs-stable.lib.nixosSystem {
+          inherit specialArgs;
+          modules = [
+            nixosModules.default
+            ./hosts/homelab/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              nixpkgs.hostPlatform = system;
+              nixpkgs.pkgs = pkgs-stable;
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "hm-backup";
+              home-manager.users.fveracoechea = {
+                imports = [
+                  homeManagerModules.default
+                  ./hosts/homelab/home.nix
+                ];
+                _module.args.pkgs = pkgs-latest;
+                # Home tracks Latest independently of the System. See ADR-0007.
+                home.enableNixpkgsReleaseCheck = false;
+              };
+              home-manager.extraSpecialArgs = specialArgs // {
+                inherit pkgs-stable;
+                lib = homeManagerLib;
+              };
+            }
+          ];
+        };
+      nixosConfigurations.vps = nixpkgs-stable.lib.nixosSystem {
+        modules = [
+          inputs.disko.nixosModules.disko
+          ./hosts/vps/configuration.nix
+          {
+            nixpkgs.hostPlatform = "x86_64-linux";
+            nixpkgs.pkgs = stablePkgsFor "x86_64-linux";
+          }
+        ];
+      };
 
       nixosConfigurations.nixos-desktop =
         let

@@ -25,19 +25,18 @@
     programs.dms-shell = {
       enable = true;
       package = pkgs.dms-shell.overrideAttrs (old: {
-        postInstall = old.postInstall + ''
-          chmod -R u+w "$out/share/quickshell/dms/Modules/DankBar"
-          ${pkgs.patch}/bin/patch --directory="$out/share/quickshell/dms" --fuzz=0 -p2 < ${./dms-bar-max-width.patch}
+        postPatch = (old.postPatch or "") + ''
+          chmod -R u+w ../quickshell/Modules/DBar
+          ${pkgs.patch}/bin/patch --directory=../quickshell --fuzz=0 -p2 < ${./dms-bar-max-width.patch}
         '';
       });
       quickshell.package = pkgs.quickshell;
       systemd.enable = true;
       systemd.target = "wayland-session@hyprland.desktop.target";
-      enableSystemMonitoring = true;
-      enableVPN = false;
-      enableDynamicTheming = false;
-      enableAudioWavelength = false;
-      enableCalendarEvents = false;
+      excludePackages = with pkgs; [
+        matugen
+        cava
+      ];
     };
 
     systemd.user.services.dms = {
