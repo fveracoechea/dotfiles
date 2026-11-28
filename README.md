@@ -57,7 +57,7 @@ The server Systems temporarily retain a separate immutable dependency graph unde
 
 | Channel             | Input             | Branch                      | Builds                                          |
 | ------------------- | ----------------- | --------------------------- | ----------------------------------------------- |
-| **Latest Channel**  | `nixpkgs-latest`  | `nixpkgs-unstable`          | Home-owned packages                             |
+| **Latest Channel**  | `nixpkgs-latest`  | `nixos-unstable`            | Home-owned packages                             |
 | **Release Channel** | `nixpkgs-stable`  | `nixos-26.05`               | Desktop System-owned packages                   |
 | Server source       | `nixpkgs-servers` | Immutable deployed revision | Both server Systems and System-coupled Home Zsh |
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted - 2026-09-05. Amended 2026-11-12: let homelab's Home follow the Latest Channel independently of its System. Amended 2026-11-12: own DankMaterialShell and Quickshell through NixOS on the Release Channel, accepting downgrades.
+Accepted - 2026-09-05. Amended 2026-11-12: let homelab's Home follow the Latest Channel independently of its System. Amended 2026-11-12: own DankMaterialShell and Quickshell through NixOS on the Release Channel, accepting downgrades. Amended 2026-11-28: use the NixOS-tested rolling channel for NixOS-only Hosts.
 
 The server Systems temporarily retain their deployed dependency graph under [ADR-0008](0008-preserve-server-software-during-consolidation.md).
 The Latest Channel policy also applies to homelab's Home, with Version-Coupled Packages matching its preserved System.
@@ -10,7 +10,7 @@ The Latest Channel policy also applies to homelab's Home, with Version-Coupled P
 This flake pulls from two nixpkgs channels.
 Package ownership decides the channel by default.
 The Release Channel builds packages owned by the System layer.
-The Latest Channel, `nixpkgs-latest` on `nixpkgs-unstable`, builds packages owned by the Home layer.
+The Latest Channel, `nixpkgs-latest` on `nixos-unstable`, builds packages owned by the Home layer.
 This policy applies to Nix packages and Nix flake inputs.
 Volta has a separate update policy.
 Before this split, one `nixos-unstable` input fed everything, so a tool update also moved the kernel and could force a Hyprland source build.
@@ -39,8 +39,10 @@ Package ownership decides the channel, with two narrow departures:
   The outer System module tree, System Module definitions, and System packages remain on the Release Channel.
   `home.enableNixpkgsReleaseCheck` is off because the check reads the System package set and therefore reports the intentional channel split.
 - The Release Channel tracks `nixos-YY.MM` in `nixpkgs-stable`.
-- The Latest Channel tracks `nixpkgs-unstable`, not `nixos-unstable`.
-  The NixOS VM tests gate `nixos-unstable`, but do not test the Home layer this input supplies.
+- The Latest Channel tracks `nixos-unstable`, not `nixpkgs-unstable`.
+  All managed Hosts run NixOS, and selected System packages also use the Latest Channel.
+  Its NixOS VM test gate provides additional upstream coverage, but does not validate our mixed-channel configuration.
+  We accept delays when NixOS tests block channel advancement.
   `nixos-unstable-small` runs a reduced test set and builds fewer packages, so cache coverage is thinner.
 - Home Manager follows `nixpkgs-latest` but its source revision updates separately.
   App and tool inputs, including Operator, also follow `nixpkgs-latest` and update individually.
