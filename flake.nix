@@ -58,7 +58,7 @@
     dev-manager-desktop.inputs.nixpkgs.follows = "nixpkgs-latest";
     dev-manager-desktop.inputs.nixpkgs-x86-darwin.follows = "nixpkgs-latest";
 
-    homescreen.url = "git+ssh://git@github.com/fveracoechea/homescreen?ref=main&rev=d594834111c74fa27bae1929c3059015f2eb91f8";
+    homescreen.url = "git+ssh://git@github.com/fveracoechea/homescreen?ref=main&rev=5fbc8bd17ea2464ca591d741e6764e5fccbe95f6";
   };
 
   outputs =

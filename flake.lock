@@ -505,17 +505,17 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1795885911,
-        "narHash": "sha256-qTtmP0ZnE7JsnmOqpbVNwlZf8O1VbZORe+Lctmvf1jk=",
+        "lastModified": 1795889691,
+        "narHash": "sha256-tOQ1Z1fYHUhc+HWgqun4iESiTYmNUOAm7u+kqrgzHOA=",
         "ref": "main",
-        "rev": "d594834111c74fa27bae1929c3059015f2eb91f8",
-        "revCount": 244,
+        "rev": "5fbc8bd17ea2464ca591d741e6764e5fccbe95f6",
+        "revCount": 245,
         "type": "git",
         "url": "ssh://git@github.com/fveracoechea/homescreen"
       },
       "original": {
         "ref": "main",
-        "rev": "d594834111c74fa27bae1929c3059015f2eb91f8",
+        "rev": "5fbc8bd17ea2464ca591d741e6764e5fccbe95f6",
         "type": "git",
         "url": "ssh://git@github.com/fveracoechea/homescreen"
       }
