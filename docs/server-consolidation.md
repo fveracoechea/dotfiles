@@ -25,11 +25,11 @@ Custom Package definitions remain in their existing package sources; none were c
 
 These sources are immutable in `flake.nix`, not just incidentally locked to moving branches.
 
-| Input | Revision | Consumers | Removal condition |
-| --- | --- | --- | --- |
-| `nixpkgs-servers` | `2fcb964de67fcf60b43471c55d5d99e61a9ccb5a` | Both server System module trees and packages, plus homelab's System-coupled Home Zsh | Reviewed server Release Channel migration |
-| `server-disko` | `ff8702b4de27f72b4c78573dfb89ec74e36abdf1` | VPS storage module | Storage and boot equivalence validated with replacement module |
-| `server-dotfiles-compat` | `a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46` | Homelab System shell, timezone, and System Dotfiles Pkgs | Shared System behavior validated against current modules |
+| Input                    | Revision                                   | Consumers                                                                            | Removal condition                                              |
+| ------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `nixpkgs-servers`        | `2fcb964de67fcf60b43471c55d5d99e61a9ccb5a` | Both server System module trees and packages, plus homelab's System-coupled Home Zsh | Reviewed server Release Channel migration                      |
+| `server-disko`           | `ff8702b4de27f72b4c78573dfb89ec74e36abdf1` | VPS storage module                                                                   | Storage and boot equivalence validated with replacement module |
+| `server-dotfiles-compat` | `a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46` | Homelab System shell, timezone, and System Dotfiles Pkgs                             | Shared System behavior validated against current modules       |
 
 The compatibility source retains its transitive inputs, including its own historical Home Manager dependency.
 Homelab no longer imports that Home aggregate or a separate frozen Home Manager integration.
@@ -121,15 +121,16 @@ Before any activation:
 
 The existing host-local references remain unchanged:
 
-| Host | Reference | Use |
-| --- | --- | --- |
-| Both servers | `/var/lib/caddy/caddy.env` | Cloudflare DNS-01 credentials |
-| Both servers | `/var/lib/tailscale/auth-key` | Tailnet authentication |
-| Homelab | `/var/lib/paperless/admin-password` | Initial Paperless administrator password |
-| Homelab | `/var/lib/vaultwarden/vaultwarden.env` | Vaultwarden secrets |
-| Homelab | `/var/lib/paperless-gpt/paperless-gpt.env` | Paperless API token |
-| Homelab | `/var/lib/zwave-js/secrets.json` | Z-Wave security keys |
-| VPS | `/var/lib/headplane/cookie-secret` | Headplane session secret |
+| Host         | Reference                                  | Use                                      |
+| ------------ | ------------------------------------------ | ---------------------------------------- |
+| Both servers | `/var/lib/caddy/caddy.env`                 | Cloudflare DNS-01 credentials            |
+| Both servers | `/var/lib/tailscale/auth-key`              | Tailnet authentication                   |
+| Homelab      | `/var/lib/paperless/admin-password`        | Initial Paperless administrator password |
+| Homelab      | `/var/lib/vaultwarden/vaultwarden.env`     | Vaultwarden secrets                      |
+| Homelab      | `/var/lib/paperless-gpt/paperless-gpt.env` | Paperless API token                      |
+| Homelab      | `/var/lib/homescreen/homescreen.env`       | Homescreen TMDB access token             |
+| Homelab      | `/var/lib/zwave-js/secrets.json`           | Z-Wave security keys                     |
+| VPS          | `/var/lib/headplane/cookie-secret`         | Headplane session secret                 |
 
 Do not replace these files or copy their contents into the repository.
 Certificate paths remain under `/var/lib/acme/veracoechea.com/` on homelab and `/var/lib/acme/vpn.veracoechea.com/` on the VPS.
@@ -173,3 +174,48 @@ An equal or newer version is necessary for that migration but does not establish
 Do not mix individually retained server packages into a newer System module tree.
 Retain the old source if a candidate requires a downgrade or lacks a safe recovery procedure.
 Basic configuration evaluation does not replace the operational acceptance required for that migration.
+
+## Homescreen
+
+Homescreen runs as `homescreen.service` on `127.0.0.1:3002`.
+Caddy provides `https://homescreen.veracoechea.com` with the existing wildcard certificate.
+Only clients in `10.0.0.0/24` can use this unauthenticated API; other addresses receive HTTP 403.
+AdGuard Home resolves the hostname to `10.0.0.2` for LAN clients.
+The TV must use this LAN DNS resolver and trust the HTTPS certificate.
+No public DNS record or additional firewall port is required.
+
+Before deployment, create the secrets file on **homelab**, not this checkout:
+
+```sh
+sudo install -d -m 0700 /var/lib/homescreen
+sudo touch /var/lib/homescreen/homescreen.env
+sudo chown root:root /var/lib/homescreen/homescreen.env
+sudo chmod 0600 /var/lib/homescreen/homescreen.env
+sudoedit /var/lib/homescreen/homescreen.env
+```
+
+Use the following format, without `export`:
+
+```dotenv
+TMDB_API_ACCESS_TOKEN=your-tmdb-api-read-access-token
+```
+
+Keep the directory and file owned by root.
+Systemd reads this file before starting the dynamic service user.
+The packaged server does not load `.env` files itself.
+After editing an existing file, run `sudo systemctl restart homescreen`.
+
+The private Homescreen flake uses GitHub SSH authentication and an immutable revision.
+It retains its own nixpkgs lock because its build requires an exact Bun version.
+It does not upgrade the preserved server package set.
+
+Build the TV app locally from this dotfiles checkout:
+
+```sh
+just homescreen-tv
+```
+
+The IPK is `result-homescreen-tv/com.homescreen.launcher_0.1.0_all.ipk`.
+It uses `https://homescreen.veracoechea.com` and contains no server secrets.
+Install it through Dev Manager after approving TV access.
+This recipe builds only the app; it does not install it or activate homelab services.

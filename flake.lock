@@ -500,6 +500,26 @@
         "type": "github"
       }
     },
+    "homescreen": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1795885911,
+        "narHash": "sha256-qTtmP0ZnE7JsnmOqpbVNwlZf8O1VbZORe+Lctmvf1jk=",
+        "ref": "main",
+        "rev": "d594834111c74fa27bae1929c3059015f2eb91f8",
+        "revCount": 244,
+        "type": "git",
+        "url": "ssh://git@github.com/fveracoechea/homescreen"
+      },
+      "original": {
+        "ref": "main",
+        "rev": "d594834111c74fa27bae1929c3059015f2eb91f8",
+        "type": "git",
+        "url": "ssh://git@github.com/fveracoechea/homescreen"
+      }
+    },
     "hunk": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -1052,6 +1072,22 @@
         "type": "github"
       }
     },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1795761588,
+        "narHash": "sha256-lyvlcjA/bJySrgwKiEoIYFNkDJM6aOck6/9gGRm9He4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "78cc855faf4382e44b781c23bf9f456b924ef0e2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-latest": {
       "locked": {
         "lastModified": 1795761588,
@@ -1232,6 +1268,7 @@
         "herdr": "herdr",
         "hex": "hex",
         "home-manager": "home-manager",
+        "homescreen": "homescreen",
         "hunk": "hunk",
         "musnix": "musnix",
         "neovim": "neovim",

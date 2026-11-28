@@ -33,6 +33,11 @@
         safe_search.enabled = false;
         rewrites = [
           {
+            domain = "homescreen.veracoechea.com";
+            answer = "10.0.0.2";
+            enabled = true;
+          }
+          {
             domain = "photos.veracoechea.com";
             answer = "10.0.0.2";
             enabled = true;

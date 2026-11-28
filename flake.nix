@@ -57,6 +57,8 @@
     dev-manager-desktop.url = "github:webosbrew/dev-manager-desktop";
     dev-manager-desktop.inputs.nixpkgs.follows = "nixpkgs-latest";
     dev-manager-desktop.inputs.nixpkgs-x86-darwin.follows = "nixpkgs-latest";
+
+    homescreen.url = "git+ssh://git@github.com/fveracoechea/homescreen?ref=main&rev=d594834111c74fa27bae1929c3059015f2eb91f8";
   };
 
   outputs =
@@ -177,7 +179,9 @@
         in
         inputs.nixpkgs-servers.lib.nixosSystem {
           specialArgs = {
-            dotfilesPkgs = inputs.server-dotfiles-compat.dotfilesPkgs.${system};
+            dotfilesPkgs = inputs.server-dotfiles-compat.dotfilesPkgs.${system} // {
+              inherit (dotfilesPkgsFor system) homescreen-server;
+            };
           };
           modules = [
             ./hosts/homelab/configuration.nix

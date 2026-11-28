@@ -11,6 +11,8 @@
     inputs.dev-manager-desktop.packages.${pkgs.stdenv.hostPlatform.system}.default;
   herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
   herdr-nvim = pkgs.callPackage ./herdr-nvim.nix { };
+  homescreen-server = inputs.homescreen.packages.${pkgs.stdenv.hostPlatform.system}.app-server;
+  homescreen-tv = inputs.homescreen.packages.${pkgs.stdenv.hostPlatform.system}.tv-ipk;
   operator = inputs.operator.packages.${pkgs.stdenv.hostPlatform.system}.default;
   railway = pkgs.callPackage ./railway.nix { };
 

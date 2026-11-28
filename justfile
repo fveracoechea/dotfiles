@@ -9,6 +9,10 @@ default:
 homescreen-tunnel:
     ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 127.0.0.1:3001:127.0.0.1:3001 -L 127.0.0.1:3002:127.0.0.1:3002 homelab
 
+# Build the LG webOS app locally into result-homescreen-tv/.
+homescreen-tv:
+    nix build .#dotfilesPkgs.x86_64-linux.homescreen-tv --out-link result-homescreen-tv
+
 # Evaluate all hosts and checks without building or activating Systems.
 evaluate:
     nix flake check --no-build

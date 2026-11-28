@@ -5,6 +5,7 @@
     ./services/browse.nix
     ./services/caddy.nix
     ./services/home-assistant.nix
+    ./services/homescreen.nix
     ./services/immich.nix
     ./services/ollama.nix
     ./services/opencode.nix
