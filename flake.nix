@@ -2,11 +2,9 @@
   description = "Linux dotfiles and NixOS configuration";
 
   inputs = {
-    # Latest channel: apps, CLI, and tooling. `nixpkgs-unstable`, not
-    # `nixos-unstable`: this input no longer builds a NixOS system, so the
-    # NixOS VM integration tests that gate `nixos-unstable` validate nothing
-    # it provides. See ADR-0007.
-    nixpkgs-latest.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    # Latest channel: apps, CLI, tooling, and selected System packages.
+    # Keep the NixOS test gate for our NixOS-only hosts. See ADR-0007.
+    nixpkgs-latest.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Release candidate: review again after 26.11 leaves beta.
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.11";

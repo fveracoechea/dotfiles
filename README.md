@@ -59,7 +59,7 @@ The deployed server graph remains historical evidence under [ADR-0008](docs/adr/
 
 | Channel               | Input            | Branch               | Builds                                         |
 | --------------------- | ---------------- | -------------------- | ---------------------------------------------- |
-| **Latest Channel**    | `nixpkgs-latest` | `nixpkgs-unstable`   | Home-owned packages                            |
+| **Latest Channel**    | `nixpkgs-latest` | `nixos-unstable`     | Home-owned packages                            |
 | **Release candidate** | `nixpkgs-stable` | `nixos-26.11` (beta) | All System-owned packages and coupled Home Zsh |
 
 Package ownership decides the channel.
