@@ -1,7 +1,7 @@
 # Server consolidation and deployment
 
 The dotfiles flake owns `nixos-desktop`, `homelab`, and `vps`.
-Consolidation does not upgrade server System software or move service data.
+The draft 26.11 candidate changes System dependencies but does not deploy them or move service data.
 Homelab's Home uses current Home Manager and Latest Channel tools independently of its System.
 The temporary server dependency policy is recorded in [ADR-0008](adr/0008-preserve-server-software-during-consolidation.md).
 
@@ -15,32 +15,30 @@ Host-only services have no `dotfiles.*.enable` wrappers and are not exported as 
 Host directories also retain hardware, storage, networking, and authorization settings.
 Neither server imports desktop defaults.
 
-The desktop retains its existing channels, hostname `nixos`, packages, and enabled capabilities.
+The shared `nixpkgs-stable` update affects the desktop as well as both servers.
+Hostnames and enabled capabilities remain unchanged.
 Homelab retains Home Manager.
 The VPS has no Home Manager configuration.
 The public `homeManagerModules.default`, `nixosModules.default`, and `dotfilesPkgs` exports remain available.
 Custom Package definitions remain in their existing package sources; none were copied into host directories.
 
-## Preserved sources
+## Draft release candidate
 
-These sources are immutable in `flake.nix`, not just incidentally locked to moving branches.
+All three candidate Systems use `nixpkgs-stable` on `nixos-26.11`.
+Upstream still marks this channel beta; keep this PR in draft until the final release and owner review.
+Refresh `nixpkgs-stable` after release and repeat evaluation before merging.
 
-| Input | Revision | Consumers | Removal condition |
-| --- | --- | --- | --- |
-| `nixpkgs-servers` | `2fcb964de67fcf60b43471c55d5d99e61a9ccb5a` | Both server System module trees and packages, plus homelab's System-coupled Home Zsh | Reviewed server Release Channel migration |
-| `server-disko` | `ff8702b4de27f72b4c78573dfb89ec74e36abdf1` | VPS storage module | Storage and boot equivalence validated with replacement module |
-| `server-dotfiles-compat` | `a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46` | Homelab System shell, timezone, and System Dotfiles Pkgs | Shared System behavior validated against current modules |
+Both servers use the Release Channel module tree and package set.
+Homelab uses this flake's current System modules and Dotfiles Pkgs.
+Its Home still uses the Latest Channel, with Zsh coupled to its System.
+The VPS uses `disko`, following `nixpkgs-stable`.
+The candidate removes the unused `nixpkgs-servers`, `server-disko`, and `server-dotfiles-compat` inputs.
+State Versions, storage declarations, and the paperless-gpt image digest remain unchanged.
+The ACME DNS-check options and desktop-shell integration use the 26.11 interfaces.
 
-The compatibility source retains its transitive inputs, including its own historical Home Manager dependency.
-Homelab no longer imports that Home aggregate or a separate frozen Home Manager integration.
-Its Home shares the desktop's current modules and Latest Channel package set.
-Home Zsh and tmux match the preserved System's registered login shell.
-Do not deduplicate the remaining System compatibility sources by following the desktop inputs.
-
-The servers report `26.11.20260810.2fcb964`.
-This identifies a development snapshot, not the released NixOS 26.11.
-A later Release Channel migration is a separate change after release and compatibility review.
-Do not schedule an automatic channel switch.
+This is a configuration candidate, not evidence of a safe upgrade or an accepted deployment.
+The deployed servers previously reported `26.11.20260810.2fcb964`, a development snapshot.
+The historical baseline below retains those original sources.
 
 ## Verified baseline
 
@@ -88,7 +86,8 @@ nix eval --raw .#nixosConfigurations.vps.config.system.build.toplevel.drvPath
 The owner selected basic Nix configuration evaluation as acceptance for this refactor.
 Capability checks evaluate selected actual Host settings without runtime fixtures or mutation cases.
 The heavyweight preservation gate and its diagnostic exports are removed.
-The historical baseline and immutable input revisions remain unchanged.
+There is no additional deployment wrapper or Python test suite.
+The historical baseline remains unchanged.
 Evaluation does not prove runtime behavior, deployed identity, authentication, or safe activation.
 
 The desktop System derivation before and after the initial import was identical:
@@ -121,15 +120,15 @@ Before any activation:
 
 The existing host-local references remain unchanged:
 
-| Host | Reference | Use |
-| --- | --- | --- |
-| Both servers | `/var/lib/caddy/caddy.env` | Cloudflare DNS-01 credentials |
-| Both servers | `/var/lib/tailscale/auth-key` | Tailnet authentication |
-| Homelab | `/var/lib/paperless/admin-password` | Initial Paperless administrator password |
-| Homelab | `/var/lib/vaultwarden/vaultwarden.env` | Vaultwarden secrets |
-| Homelab | `/var/lib/paperless-gpt/paperless-gpt.env` | Paperless API token |
-| Homelab | `/var/lib/zwave-js/secrets.json` | Z-Wave security keys |
-| VPS | `/var/lib/headplane/cookie-secret` | Headplane session secret |
+| Host         | Reference                                  | Use                                      |
+| ------------ | ------------------------------------------ | ---------------------------------------- |
+| Both servers | `/var/lib/caddy/caddy.env`                 | Cloudflare DNS-01 credentials            |
+| Both servers | `/var/lib/tailscale/auth-key`              | Tailnet authentication                   |
+| Homelab      | `/var/lib/paperless/admin-password`        | Initial Paperless administrator password |
+| Homelab      | `/var/lib/vaultwarden/vaultwarden.env`     | Vaultwarden secrets                      |
+| Homelab      | `/var/lib/paperless-gpt/paperless-gpt.env` | Paperless API token                      |
+| Homelab      | `/var/lib/zwave-js/secrets.json`           | Z-Wave security keys                     |
+| VPS          | `/var/lib/headplane/cookie-secret`         | Headplane session secret                 |
 
 Do not replace these files or copy their contents into the repository.
 Certificate paths remain under `/var/lib/acme/veracoechea.com/` on homelab and `/var/lib/acme/vpn.veracoechea.com/` on the VPS.
@@ -144,8 +143,8 @@ just deploy-homelab
 ```
 
 Each deployment recipe runs `just evaluate` before `nixos-rebuild switch`, without a confirmation prompt.
-This evaluates the flake without building Systems; it does not compare historical whole-Host identities.
-It does not verify backups or replace owner-run build and smoke tests.
+It does not check for downgrades, verify backups, or replace owner-run compatibility, restore, and smoke tests.
+Do not run these commands against the beta candidate.
 Before the desktop SSH configuration is activated, use `just deploy-vps hostinger` with the legacy SSH alias.
 Renaming the selector does not itself install the new SSH alias or change the running server's hostname.
 
@@ -165,11 +164,13 @@ Update any external automation to run from this dotfiles checkout using `homelab
 Record the accepted deployed manifests and generation paths here.
 Do not delete the old repository as part of retirement.
 
-## Remove the temporary compatibility sources
+## Review before merging or deploying
 
-Review a released server Release Channel candidate separately.
+Wait for the final release and refresh the candidate lock.
 Compare actual configured packages, database majors, runtimes, extensions, container identity, and module behavior against a freshly verified deployed baseline.
 An equal or newer version is necessary for that migration but does not establish data compatibility.
 Do not mix individually retained server packages into a newer System module tree.
-Retain the old source if a candidate requires a downgrade or lacks a safe recovery procedure.
+Do not merge or deploy if the candidate requires a downgrade or lacks a safe recovery procedure.
+Review VPS storage and boot behavior against the previous Disko module.
+Complete the desktop Release Channel acceptance under ADR-0007 as well.
 Basic configuration evaluation does not replace the operational acceptance required for that migration.

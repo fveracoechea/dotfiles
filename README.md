@@ -26,6 +26,7 @@ See [server consolidation and deployment](docs/server-consolidation.md) before a
 Run `just` to list the available recipes.
 Deployment recipes evaluate all hosts, then activate without a confirmation prompt.
 Complete the backup and recovery checks before deploying servers.
+The 26.11 candidate is for draft review only while upstream marks it beta.
 
 ```sh
 just evaluate                    # Evaluation only, no System builds or activation
@@ -53,13 +54,13 @@ Use `just --dry-run deploy-vps` to inspect commands without running them.
 
 The desktop and homelab separate Home packages from System packages, so personal tools can update independently.
 See [ADR-0007](docs/adr/0007-split-nixpkgs-channels-by-package-owner.md).
-The server Systems temporarily retain a separate immutable dependency graph under [ADR-0008](docs/adr/0008-preserve-server-software-during-consolidation.md).
+All three candidate Systems use the shared `nixpkgs-stable` input.
+The deployed server graph remains historical evidence under [ADR-0008](docs/adr/0008-preserve-server-software-during-consolidation.md).
 
-| Channel             | Input             | Branch                      | Builds                                          |
-| ------------------- | ----------------- | --------------------------- | ----------------------------------------------- |
-| **Latest Channel**  | `nixpkgs-latest`  | `nixos-unstable`            | Home-owned packages                             |
-| **Release Channel** | `nixpkgs-stable`  | `nixos-26.05`               | Desktop System-owned packages                   |
-| Server source       | `nixpkgs-servers` | Immutable deployed revision | Both server Systems and System-coupled Home Zsh |
+| Channel               | Input            | Branch               | Builds                                         |
+| --------------------- | ---------------- | -------------------- | ---------------------------------------------- |
+| **Latest Channel**    | `nixpkgs-latest` | `nixos-unstable`     | Home-owned packages                            |
+| **Release candidate** | `nixpkgs-stable` | `nixos-26.11` (beta) | All System-owned packages and coupled Home Zsh |
 
 Package ownership decides the channel.
 Version-Coupled Packages follow their partner.
@@ -69,7 +70,7 @@ A broken Latest package can use a documented Channel Hold.
 # Newer coding agents, CLI, and apps. Leaves the kernel and compositor alone.
 nix flake update nixpkgs-latest
 
-# Move the System. Do this deliberately and test the desktop.
+# Move all Systems. Review service changes and test the desktop.
 nix flake update nixpkgs-stable
 
 # One tool only, when it has its own input.
@@ -77,8 +78,8 @@ nix flake update herdr
 ```
 
 When a release lands, change `nixpkgs-stable` to `nixos-YY.MM` before updating that input.
-Do not move `nixpkgs-servers` or the `server-*` compatibility inputs during personal-tool updates.
-The server Release Channel migration requires separate review and data-recovery checks.
+The draft candidate removes `nixpkgs-servers` and the `server-*` compatibility inputs.
+Wait for the final release, refresh the lock, and review service compatibility and data recovery before merging or deploying.
 
 ### Window management and desktop
 
@@ -99,7 +100,7 @@ Zsh, tmux, Bat, Btop, Yazi, and Git keep their independent flat switches and Gro
 Optional aliases, the Git editor, and Yazi's Eza preview follow enabled companions without enabling them.
 Home Zsh and tmux retain the System-compatible Zsh package.
 Homelab uses the same current Home modules and Latest Channel tools as the desktop.
-Its Home Zsh and tmux match its preserved System login shell.
+Its Home Zsh and tmux match its System login shell.
 
 `modules/networking/nixos.nix` owns reusable network policy; the Host owns its hostname and interface selection.
 
@@ -346,7 +347,7 @@ Native capability assets belong beside their implementation; external instructio
 
 ## Documentation
 
-- [Server consolidation and deployment](docs/server-consolidation.md): preserved sources, evaluation gates, backups, and workflow retirement.
+- [Server consolidation and deployment](docs/server-consolidation.md): release candidate, evaluation gates, backups, and workflow retirement.
 - [Hyprland configuration and migration](docs/hyprland-summary.md): native Lua ownership, verification, user-only activation, live tests, and rollback.
 - **[Architecture Decision Records](docs/adr/)**: module structure, theming, the `dotfiles.*` enable namespace, and the nixpkgs channel split.
 - [GLOSSARY.md](GLOSSARY.md) defines the repository's domain terms.

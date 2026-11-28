@@ -7,7 +7,8 @@
       extraDomainNames = [ "*.veracoechea.com" ];
       dnsProvider = "cloudflare";
       dnsResolver = "1.1.1.1:53";
-      dnsPropagationCheck = true;
+      dnsAuthoritativePropagationCheck = true;
+      dnsRecursivePropagationCheck = true;
       group = config.services.caddy.group;
       environmentFile = "/var/lib/caddy/caddy.env";
       reloadServices = [ "caddy.service" ];

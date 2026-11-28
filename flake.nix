@@ -6,15 +6,11 @@
     # Keep the NixOS test gate for our NixOS-only hosts. See ADR-0007.
     nixpkgs-latest.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Release channel: system packages and services.
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
+    # Release candidate: review again after 26.11 leaves beta.
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.11";
 
-    # Deployed server graph. Remove only after the ADR-0008 migration gates pass.
-    nixpkgs-servers.url = "github:nixos/nixpkgs/2fcb964de67fcf60b43471c55d5d99e61a9ccb5a";
-    server-disko.url = "github:nix-community/disko/ff8702b4de27f72b4c78573dfb89ec74e36abdf1";
-    server-disko.inputs.nixpkgs.follows = "nixpkgs-servers";
-    server-dotfiles-compat.url = "github:fveracoechea/dotfiles/a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46";
-    server-dotfiles-compat.inputs.nixpkgs.follows = "nixpkgs-servers";
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs-stable";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-latest";
@@ -173,23 +169,21 @@
       nixosConfigurations.homelab =
         let
           system = "x86_64-linux";
+          pkgs-stable = stablePkgsFor system;
           pkgs-latest = latestPkgsFor system;
-        in
-        inputs.nixpkgs-servers.lib.nixosSystem {
           specialArgs = {
-            dotfilesPkgs = inputs.server-dotfiles-compat.dotfilesPkgs.${system};
+            dotfilesPkgs = dotfilesPkgsFor system;
           };
+        in
+        nixpkgs-stable.lib.nixosSystem {
+          inherit specialArgs;
           modules = [
+            nixosModules.default
             ./hosts/homelab/configuration.nix
-            (import ./modules/coding-agents/nixos.nix {
-              inherit inputs stablePkgsFor;
-              agentPkgs = pkgs-latest;
-            })
-            inputs.server-dotfiles-compat.nixosModules.default
             home-manager.nixosModules.home-manager
-            ({ pkgs, ... }: {
+            {
               nixpkgs.hostPlatform = system;
-              nixpkgs.config.allowUnfree = true;
+              nixpkgs.pkgs = pkgs-stable;
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "hm-backup";
@@ -199,25 +193,23 @@
                   ./hosts/homelab/home.nix
                 ];
                 _module.args.pkgs = pkgs-latest;
-                # Home tracks Latest independently of the server System. See ADR-0008.
+                # Home tracks Latest independently of the System. See ADR-0007.
                 home.enableNixpkgsReleaseCheck = false;
               };
-              home-manager.extraSpecialArgs = {
-                dotfilesPkgs = dotfilesPkgsFor system;
-                # Zsh must match the server's registered login shell. See ADR-0007.
-                pkgs-stable = pkgs;
+              home-manager.extraSpecialArgs = specialArgs // {
+                inherit pkgs-stable;
                 lib = homeManagerLib;
               };
-            })
+            }
           ];
         };
-      nixosConfigurations.vps = inputs.nixpkgs-servers.lib.nixosSystem {
+      nixosConfigurations.vps = nixpkgs-stable.lib.nixosSystem {
         modules = [
-          inputs.server-disko.nixosModules.disko
+          inputs.disko.nixosModules.disko
           ./hosts/vps/configuration.nix
           {
             nixpkgs.hostPlatform = "x86_64-linux";
-            nixpkgs.config.allowUnfree = true;
+            nixpkgs.pkgs = stablePkgsFor "x86_64-linux";
           }
         ];
       };
