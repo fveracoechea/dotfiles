@@ -24,7 +24,9 @@ See [server consolidation and deployment](docs/server-consolidation.md) before a
 ## Project commands
 
 Run `just` to list the available recipes.
-Deployment recipes evaluate all hosts, then activate without a confirmation prompt.
+Deployment recipes evaluate all hosts.
+Server deployments also require readiness and owner acceptance before activation.
+See [server readiness](docs/server-readiness.md) for preparation and the later Release Channel cutover.
 Complete the backup and recovery checks before deploying servers.
 
 ```sh
@@ -33,6 +35,8 @@ just check                       # Build and run the flake checks
 just check-lua                    # Run Neovim flake checks
 just check-neovim-runtime         # Test first launch with plugin downloads
 just hyprland-baseline test       # Run the baseline script's self-tests
+just server-readiness homelab     # Read-only service evidence and candidate checks
+just server-readiness vps
 just deploy-desktop
 just deploy-homelab
 just deploy-vps

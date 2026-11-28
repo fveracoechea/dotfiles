@@ -1,0 +1,9 @@
+{
+  "zwave-js-server": {
+    "version": "3.9.0",
+    "sourceHash": "sha256-PZmIpGcNxjZ5q7rnYj2SdtxCO7SyjWd5QFl+JT89KDU=",
+    "npmDepsHash": "sha256-CIVGcz8K0kTfcJXaTO7SClt72AhRx1rZUXQgTm+aFdk=",
+    "driverVersion": "15.24.2",
+    "source": "https://github.com/zwave-js/zwave-js-server/blob/3.9.0/package-lock.json#L4740"
+  }
+}

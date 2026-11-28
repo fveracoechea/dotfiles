@@ -25,17 +25,19 @@ Custom Package definitions remain in their existing package sources; none were c
 
 These sources are immutable in `flake.nix`, not just incidentally locked to moving branches.
 
-| Input | Revision | Consumers | Removal condition |
-| --- | --- | --- | --- |
-| `nixpkgs-servers` | `2fcb964de67fcf60b43471c55d5d99e61a9ccb5a` | Both server System module trees and packages, plus homelab's System-coupled Home Zsh | Reviewed server Release Channel migration |
-| `server-disko` | `ff8702b4de27f72b4c78573dfb89ec74e36abdf1` | VPS storage module | Storage and boot equivalence validated with replacement module |
-| `server-dotfiles-compat` | `a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46` | Homelab System shell, timezone, and System Dotfiles Pkgs | Shared System behavior validated against current modules |
+| Input                    | Revision                                   | Consumers                                                                            | Removal condition                                              |
+| ------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `nixpkgs-servers`        | `2fcb964de67fcf60b43471c55d5d99e61a9ccb5a` | Both server System module trees and packages, plus homelab's System-coupled Home Zsh | Reviewed server Release Channel migration                      |
+| `server-disko`           | `ff8702b4de27f72b4c78573dfb89ec74e36abdf1` | VPS storage module                                                                   | Storage and boot equivalence validated with replacement module |
+| `server-dotfiles-compat` | `a4ede6eddbb6f3bc3b8c98cff0d86c99661f0f46` | Homelab System shell, timezone, and System Dotfiles Pkgs                             | Shared System behavior validated against current modules       |
 
 The compatibility source retains its transitive inputs, including its own historical Home Manager dependency.
 Homelab no longer imports that Home aggregate or a separate frozen Home Manager integration.
 Its Home shares the desktop's current modules and Latest Channel package set.
 Home Zsh and tmux match the preserved System's registered login shell.
 Do not deduplicate the remaining System compatibility sources by following the desktop inputs.
+The separately locked `disko` input follows the Release Channel for isolated VPS candidates only.
+It does not replace `server-disko` in the preserved VPS.
 
 The servers report `26.11.20260810.2fcb964`.
 This identifies a development snapshot, not the released NixOS 26.11.
@@ -88,6 +90,7 @@ nix eval --raw .#nixosConfigurations.vps.config.system.build.toplevel.drvPath
 The owner selected basic Nix configuration evaluation as acceptance for this refactor.
 Capability checks evaluate selected actual Host settings without runtime fixtures or mutation cases.
 The heavyweight preservation gate and its diagnostic exports are removed.
+The later [server-readiness operation](server-readiness.md) adds command-level deployment checks without restoring that whole-System consolidation gate.
 The historical baseline and immutable input revisions remain unchanged.
 Evaluation does not prove runtime behavior, deployed identity, authentication, or safe activation.
 
@@ -121,15 +124,15 @@ Before any activation:
 
 The existing host-local references remain unchanged:
 
-| Host | Reference | Use |
-| --- | --- | --- |
-| Both servers | `/var/lib/caddy/caddy.env` | Cloudflare DNS-01 credentials |
-| Both servers | `/var/lib/tailscale/auth-key` | Tailnet authentication |
-| Homelab | `/var/lib/paperless/admin-password` | Initial Paperless administrator password |
-| Homelab | `/var/lib/vaultwarden/vaultwarden.env` | Vaultwarden secrets |
-| Homelab | `/var/lib/paperless-gpt/paperless-gpt.env` | Paperless API token |
-| Homelab | `/var/lib/zwave-js/secrets.json` | Z-Wave security keys |
-| VPS | `/var/lib/headplane/cookie-secret` | Headplane session secret |
+| Host         | Reference                                  | Use                                      |
+| ------------ | ------------------------------------------ | ---------------------------------------- |
+| Both servers | `/var/lib/caddy/caddy.env`                 | Cloudflare DNS-01 credentials            |
+| Both servers | `/var/lib/tailscale/auth-key`              | Tailnet authentication                   |
+| Homelab      | `/var/lib/paperless/admin-password`        | Initial Paperless administrator password |
+| Homelab      | `/var/lib/vaultwarden/vaultwarden.env`     | Vaultwarden secrets                      |
+| Homelab      | `/var/lib/paperless-gpt/paperless-gpt.env` | Paperless API token                      |
+| Homelab      | `/var/lib/zwave-js/secrets.json`           | Z-Wave security keys                     |
+| VPS          | `/var/lib/headplane/cookie-secret`         | Headplane session secret                 |
 
 Do not replace these files or copy their contents into the repository.
 Certificate paths remain under `/var/lib/acme/veracoechea.com/` on homelab and `/var/lib/acme/vpn.veracoechea.com/` on the VPS.
@@ -143,9 +146,12 @@ just deploy-vps
 just deploy-homelab
 ```
 
-Each deployment recipe runs `just evaluate` before `nixos-rebuild switch`, without a confirmation prompt.
-This evaluates the flake without building Systems; it does not compare historical whole-Host identities.
-It does not verify backups or replace owner-run build and smoke tests.
+Each server deployment recipe runs `just evaluate`, then the shared readiness operation.
+Readiness requires fresh deployment evidence, rejects tracked downgrades, and requires candidate-bound owner acceptance.
+The owner deployment operation builds the immutable candidate and rechecks evidence before activation.
+It does not verify backups itself or replace owner-run restore and smoke tests.
+Existing generations require reviewed bootstrap evidence until a deployment installs their manifest.
+See [server readiness](server-readiness.md) before using these guarded recipes.
 Before the desktop SSH configuration is activated, use `just deploy-vps hostinger` with the legacy SSH alias.
 Renaming the selector does not itself install the new SSH alias or change the running server's hostname.
 

@@ -38,10 +38,14 @@ test-desktop: evaluate
 deploy-desktop: evaluate
     sudo nixos-rebuild switch --flake .#nixos-desktop
 
-# Activate homelab services after backup and recovery validation.
+# Inspect readiness without building or activating Systems.
+server-readiness host target=host selection="active":
+    python3 scripts/server-readiness/gate.py check "$1" "$2" "$3"
+
+# Activate homelab only after readiness and owner acceptance.
 deploy-homelab target="homelab": evaluate
-    nixos-rebuild switch --flake .#homelab --build-host "$1" --target-host "$1" --sudo
+    python3 scripts/server-readiness/gate.py deploy homelab "$1"
 
 # Activate VPS services. Use target hostinger until the vps SSH alias is installed.
 deploy-vps target="vps": evaluate
-    nixos-rebuild switch --flake .#vps --target-host "$1" --sudo
+    python3 scripts/server-readiness/gate.py deploy vps "$1"
